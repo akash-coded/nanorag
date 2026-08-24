@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: "Advanced RAG — Hands On"
+message: "If you use this material in teaching or research, please cite it."
+type: software
+authors:
+  - name: "FDE Academy"
+    website: "https://fde.academy"
+repository-code: "https://github.com/fde-academy-learning/adv-rag-hands-on"
+abstract: >-
+  A runnable retrieval, RAG and evaluation curriculum. Ten Jupyter notebooks and a Python
+  toolkit implementing lexical and dense retrieval, approximate nearest-neighbour search,
+  hybrid fusion, learned reranking, context packing, LLM-judge calibration, token economics
+  and agentic search — running entirely in memory with deterministic, reproducible
+  measurements and an evaluation gate in CI.
+keywords:
+  - retrieval-augmented generation
+  - information retrieval
+  - evaluation
+  - BM25
+  - reranking
+  - LLM-as-a-judge
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-08-31"

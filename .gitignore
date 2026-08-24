@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Notebooks — outputs are stripped before commit (see CONTRIBUTING.md)
+.ipynb_checkpoints/
+*.executed.ipynb
+
+# Local data, if you download the real MultiHop-RAG
+data/
+*.parquet
+
+# Never commit these
+.env
+.env.*
+*.pem
+credentials*
+.aws/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+!.vscode/settings.json
