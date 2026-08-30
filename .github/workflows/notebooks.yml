@@ -1,0 +1,56 @@
+name: Notebooks
+
+on:
+  push:
+    branches: [main]
+    paths: ["notebooks/**", "fde_rag/**", ".github/workflows/notebooks.yml"]
+  pull_request:
+    paths: ["notebooks/**", "fde_rag/**"]
+  schedule:
+    # Nightly on unchanged code. Not redundant: it is how you detect dependency
+    # drift and upstream changes that alter your system without anyone committing.
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  execute:
+    name: ${{ matrix.notebook }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook:
+          - 00_start_here.ipynb
+          - 01_retrieval_and_evaluation_foundations.ipynb
+          - 02_multihop_rag_use_case.ipynb
+          - 03_rag_system_design.ipynb
+          - 04_retrieval_methods_and_reranking.ipynb
+          - 05_llm_context_design.ipynb
+          - 06_evaluation_approaches.ipynb
+          - 07_cost_and_token_optimization.ipynb
+          - 08_agentic_search_and_evaluation.ipynb
+          - 09_capstone_build.ipynb
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -e ".[dev]"
+      - name: Execute
+        run: python scripts/verify_notebooks.py ${{ matrix.notebook }}
+
+  summary:
+    name: All notebooks green
+    needs: execute
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report
+        run: |
+          if [ "${{ needs.execute.result }}" != "success" ]; then
+            echo "::error::At least one notebook failed. A cohort cannot run this build."
+            exit 1
+          fi
+          echo "### All 10 notebooks executed clean ✅" >> $GITHUB_STEP_SUMMARY

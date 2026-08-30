@@ -1,0 +1,53 @@
+# Publish executed notebooks as a browsable static site, so a recruiter or an
+# interviewer can read the work without installing anything.
+name: Pages
+on:
+  push: { branches: [main], paths: ["notebooks/**", "fde_rag/**", "docs/**"] }
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -e ".[dev]" nbconvert
+      - name: Execute and export notebooks to HTML
+        run: |
+          mkdir -p _site
+          for nb in notebooks/*.ipynb; do
+            jupyter nbconvert --to html --execute --ExecutePreprocessor.timeout=900 \
+              --output-dir _site "$nb" || echo "::warning::$nb failed to export"
+          done
+          python - <<'PY'
+          import pathlib
+          links = "\n".join(
+              f'<li><a href="{p.name}">{p.stem.replace("_", " ")}</a></li>'
+              for p in sorted(pathlib.Path("_site").glob("*.html")))
+          pathlib.Path("_site/index.html").write_text(f"""<!doctype html>
+          <meta charset=utf-8><title>Advanced RAG — executed notebooks</title>
+          <style>body{{font:16px/1.6 system-ui;max-width:52rem;margin:4rem auto;padding:0 1rem}}
+          h1{{letter-spacing:-.02em}} li{{margin:.4rem 0}}</style>
+          <h1>Advanced RAG — hands on</h1>
+          <p>Executed notebooks, rendered with their outputs. Source:
+          <a href="https://github.com/fde-academy-learning/adv-rag-hands-on">GitHub</a>.</p>
+          <ul>{links}</ul>""")
+          PY
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

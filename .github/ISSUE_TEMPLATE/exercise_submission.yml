@@ -1,0 +1,66 @@
+name: 📝 Exercise submission
+description: Submit a completed exercise for faculty review
+title: "[exercise] EX-__ — "
+labels: ["type: exercise", "status: needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open this **after** you have pushed a branch. Faculty review the branch, not the issue —
+        the issue is where the conversation and the grade live.
+        Exercises are listed in [docs/EXERCISES.md](../blob/main/docs/EXERCISES.md).
+  - type: input
+    id: exercise
+    attributes:
+      label: Exercise ID
+      placeholder: "EX-04 — Beat the reranker baseline"
+    validations: { required: true }
+  - type: input
+    id: branch
+    attributes:
+      label: Your branch or PR
+      placeholder: "exercise/EX-04-yourname  or  #42"
+    validations: { required: true }
+  - type: textarea
+    id: numbers
+    attributes:
+      label: Your numbers
+      description: "Before / after / delta / interval. A submission without an interval is incomplete."
+      value: |
+        | Metric | Baseline | Mine | Δ | 95% CI | Verdict |
+        |---|---|---|---|---|---|
+        | Evidence Recall@k | | | | | |
+        | Full-chain recall | | | | | |
+        | Cost / query | | | | | |
+
+        Noise band on my eval set: ±
+        Held on the frozen slice: yes / no
+    validations: { required: true }
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision record
+      description: "What you shipped, what you rejected, and the number that decided it. One paragraph each."
+      value: |
+        **Shipped:**
+
+        **Rejected:**
+
+        **Revisit when:**
+    validations: { required: true }
+  - type: textarea
+    id: stuck
+    attributes:
+      label: Where you got stuck
+      description: "Optional, and genuinely useful — it tells us what to teach differently next cohort."
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: Every delta is quoted with an interval, not just a point estimate
+          required: true
+        - label: I looked at the frozen slice at most once
+          required: true
+        - label: "`make test` passes on my branch"
+          required: true

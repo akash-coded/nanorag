@@ -1,0 +1,25 @@
+name: Stale
+on:
+  schedule: [{ cron: "0 6 * * 1" }]
+  workflow_dispatch:
+permissions:
+  issues: write
+  pull-requests: write
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 45
+          days-before-close: 14
+          exempt-issue-labels: "type: exercise,cohort,pinned,type: extension,help wanted"
+          exempt-pr-labels: "pinned"
+          stale-issue-label: "status: stale"
+          stale-issue-message: |
+            No activity for 45 days. Marking stale so the board reflects reality —
+            an issue nobody is working on should not look like work in progress.
+
+            Comment to keep it open, or let it close and reopen when it matters again.
+          close-issue-message: |
+            Closing as stale. Not a judgement on the idea — reopen any time.

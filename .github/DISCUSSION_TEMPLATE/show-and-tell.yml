@@ -1,0 +1,20 @@
+labels: ["show-and-tell"]
+body:
+  - type: input
+    id: what
+    attributes: { label: "What you built", placeholder: "Capstone: routed fusion by query class" }
+    validations: { required: true }
+  - type: textarea
+    id: result
+    attributes:
+      label: The result
+      description: "Numbers with intervals. A screenshot of a chart is welcome alongside, not instead."
+    validations: { required: true }
+  - type: textarea
+    id: surprise
+    attributes:
+      label: What surprised you
+      description: "The most valuable field in this form. Negative results are especially welcome here."
+  - type: input
+    id: link
+    attributes: { label: "Branch, PR, or fork" }

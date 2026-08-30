@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install ruff
+      - run: ruff check fde_rag tests scripts
+      - name: Notebook outputs must be stripped
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          bad = []
+          for p in sorted(pathlib.Path("notebooks").glob("*.ipynb")):
+              nb = json.load(open(p))
+              if any(c.get("outputs") for c in nb["cells"]):
+                  bad.append(p.name)
+          if bad:
+              print("Committed notebooks carry outputs:", *bad, sep="\n  ")
+              print("\nRun `make strip` and commit again.")
+              sys.exit(1)
+          print("all notebooks clean")
+          PY
+
+  test:
+    name: Tests (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python }}", cache: pip }
+      - run: pip install -e ".[dev]"
+      - name: Unit tests
+        run: pytest -m "not notebooks" --cov=fde_rag --cov-report=term-missing
+      - name: Upload coverage
+        if: matrix.python == '3.11'
+        uses: actions/upload-artifact@v4
+        with: { name: coverage, path: .coverage, if-no-files-found: ignore }
+
+  one-click-promise:
+    name: One-click promise (fresh machine, no pip install)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Import and build a system with nothing pre-installed
+        run: |
+          # The README promises a learner can hit Run All on a clean machine and the
+          # bootstrap installs what it needs. This job is that promise, tested.
+          python -c "
+          from fde_rag.bootstrap import bootstrap
+          env = bootstrap()
+          assert not env.missing, env.missing
+          import fde_rag
+          bundle, index, pipe = fde_rag.quickstart(**fde_rag.TUNED)
+          trace = pipe.run('Which organization acquired Tessera Analytics?')
+          assert trace.packed, 'nothing was packed'
+          assert trace.citations, 'no citations emitted'
+          print('one-click path OK')
+          "

@@ -1,0 +1,27 @@
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A good question here gets answered once and helps everyone who searches for it later.
+        The shape below is the one that gets answered fastest.
+  - type: input
+    id: one-line
+    attributes:
+      label: The question in one line
+      placeholder: "Why does my Recall@N go up but full-chain recall stay flat?"
+    validations: { required: true }
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you have already tried
+      description: "This is the field that separates a question from a request. It also usually contains the answer."
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes:
+      label: The numbers or the traceback
+      render: text
+  - type: input
+    id: where
+    attributes: { label: "Notebook / section", placeholder: "01 §1.3" }

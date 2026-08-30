@@ -1,0 +1,50 @@
+name: 🚀 Extension proposal
+description: Propose a RAG technique to add to the playground
+title: "[ext] "
+labels: ["type: extension", "status: triage", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open items are catalogued in
+        [docs/EXTENSION-POINTS.md](../blob/main/docs/EXTENSION-POINTS.md).
+        Check there first — the one you want may already have a design sketch.
+  - type: input
+    id: technique
+    attributes:
+      label: Technique
+      placeholder: "HyDE / GraphRAG / ColBERT / RAPTOR / self-RAG / corrective RAG / query routing"
+    validations: { required: true }
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Falsifiable hypothesis
+      description: "Which metric, on which slice, moving by how much. 'Improves quality' is not a hypothesis."
+      placeholder: "Full-chain recall on the comparison slice rises by ≥5 points at unchanged k, because…"
+    validations: { required: true }
+  - type: textarea
+    id: seam
+    attributes:
+      label: Which seam does it plug into?
+      description: "Retriever, fusion, reranker, packer, generator, judge, or agent loop? See docs/ARCHITECTURE.md."
+    validations: { required: true }
+  - type: textarea
+    id: cost
+    attributes:
+      label: What it costs
+      description: "Index-time compute, query-time latency, storage, an extra model call, a second system to evaluate."
+    validations: { required: true }
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated effort
+      options: ["S — under a day", "M — 2–3 days", "L — a week", "XL — a cohort project"]
+    validations: { required: true }
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: It runs offline, or degrades cleanly to the offline path
+          required: true
+        - label: It can be measured on the existing eval set without new labels

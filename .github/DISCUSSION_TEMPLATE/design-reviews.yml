@@ -1,0 +1,41 @@
+labels: ["design-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Post a design *before* you build it. The point of this category is to get the
+        objection now rather than in week three.
+  - type: input
+    id: problem
+    attributes:
+      label: The problem, in the client's words
+      placeholder: "Answers are correct about 80% of the time; they want 95% in four weeks."
+    validations: { required: true }
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints you are designing against
+      value: |
+        - Latency:
+        - Cost:
+        - Data residency / ACLs:
+        - Corpus size and churn:
+        - Team size and timeline:
+    validations: { required: true }
+  - type: textarea
+    id: design
+    attributes:
+      label: Your design
+      description: "A mermaid diagram is welcome. Name the stage each decision belongs to."
+    validations: { required: true }
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: What your own design costs
+      description: "State this unprompted. A design presented with only upsides is the anti-signal on the interview scoring sheet."
+    validations: { required: true }
+  - type: textarea
+    id: measure
+    attributes:
+      label: What you would measure first
+    validations: { required: true }

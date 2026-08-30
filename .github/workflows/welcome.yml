@@ -1,0 +1,41 @@
+# Enterprise habit worth teaching: a first contribution gets a human-shaped reply
+# within seconds, not within days.
+name: Welcome
+on:
+  issues: { types: [opened] }
+  pull_request_target: { types: [opened] }
+permissions:
+  issues: write
+  pull-requests: write
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            Welcome to the playground 👋
+
+            A few things that will get you a faster answer:
+
+            - **Questions** live in [Discussions → Q&A](../../discussions/categories/q-a),
+              not in Issues. Issues are tracked work with an owner and a board column.
+            - If you are reporting a number that looks wrong, paste the number. The house
+              rule here is that evidence beats adjectives.
+            - New? Start with `notebooks/00_start_here.ipynb` and
+              [docs/EXERCISES.md](../../blob/main/docs/EXERCISES.md).
+
+            A maintainer will triage this shortly.
+          pr-message: |
+            Thanks for the pull request 🙌
+
+            Two things reviewers will look for first:
+
+            1. **The measurement table in the PR body.** Any change that could move a
+               number ships with the number — before, after, delta, and a 95% interval.
+               `python scripts/run_eval.py` prints it.
+            2. **Stripped notebook outputs** (`make strip`). A diff nobody can read is a
+               diff nobody reviews.
+
+            CI will post an eval scorecard on this PR automatically.

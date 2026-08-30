@@ -1,0 +1,21 @@
+# Auto-label PRs by what they touch, so the board and the reviewers route themselves.
+"area: notebooks":
+  - changed-files: [{ any-glob-to-any-file: "notebooks/**" }]
+"area: toolkit":
+  - changed-files: [{ any-glob-to-any-file: "fde_rag/**" }]
+"area: retrieval":
+  - changed-files: [{ any-glob-to-any-file: ["fde_rag/retrieve.py", "fde_rag/store.py", "fde_rag/embed.py", "fde_rag/chunking.py"] }]
+"area: evaluation":
+  - changed-files: [{ any-glob-to-any-file: ["fde_rag/metrics.py", "fde_rag/judge.py", "fde_rag/pipeline.py", ".github/eval-baseline.json"] }]
+"area: agent":
+  - changed-files: [{ any-glob-to-any-file: "fde_rag/agent.py" }]
+"area: cost":
+  - changed-files: [{ any-glob-to-any-file: "fde_rag/costs.py" }]
+"area: docs":
+  - changed-files: [{ any-glob-to-any-file: ["docs/**", "*.md"] }]
+"area: ci":
+  - changed-files: [{ any-glob-to-any-file: [".github/**", "Makefile", "pyproject.toml"] }]
+"area: bedrock":
+  - changed-files: [{ any-glob-to-any-file: "fde_rag/bedrock.py" }]
+"needs: eval-numbers":
+  - changed-files: [{ any-glob-to-any-file: ["fde_rag/retrieve.py", "fde_rag/metrics.py", "fde_rag/corpus.py", "fde_rag/chunking.py", "fde_rag/embed.py"] }]
