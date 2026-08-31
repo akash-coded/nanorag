@@ -34,7 +34,7 @@ jobs:
           - 08_agentic_search_and_evaluation.ipynb
           - 09_capstone_build.ipynb
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with: { python-version: "3.11", cache: pip }
       - run: pip install -e ".[dev]"
