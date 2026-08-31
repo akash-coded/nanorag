@@ -1,5 +1,5 @@
 """
-A tiny diagram language for the FDE Academy Advanced RAG notebooks.
+A tiny diagram language for the nanorag notebooks.
 
 Why not Mermaid? Because "one click and it runs" has to mean *everywhere* --
 JupyterLab, VS Code, Colab, nbviewer, a PDF export, a GitHub preview. Mermaid
@@ -7,7 +7,7 @@ renders in some of those and silently shows raw text in the others. These
 diagrams are drawn with matplotlib, so they are ordinary cell outputs: they
 survive export, they print, and they are byte-identical between runs.
 
-Every function here draws one of the shapes the accelerator deck uses:
+Every function here draws one of the shapes the course deck uses:
 
     flow()          a left-to-right pipeline                (deck: slides 5, 26, 52)
     funnel()        a narrowing sequence                    (deck: slide 6)
@@ -25,7 +25,7 @@ from __future__ import annotations
 import textwrap
 
 # ---------------------------------------------------------------- palette ----
-# Derived from the accelerator deck's brand tokens, re-tuned for a light
+# Derived from the course deck's palette, re-tuned for a light
 # notebook background (the deck runs on --ink; notebooks run on white).
 INK = "#101318"
 INK_SOFT = "#3A414B"
@@ -391,7 +391,7 @@ def hld(lanes, title="", kicker="", caption="", source=None, width=12.0, show=Tr
 
 def decision_tree(tree, title=None, kicker="Decision tree", caption=None, source=None,
                   width=12.0, path=None, show=True):
-    """Render a DecisionTree (see fde_rag.trees).
+    """Render a DecisionTree (see nanorag.trees).
 
     `path` optionally highlights the branch a real case actually took, which is
     what turns a poster into a debugger.

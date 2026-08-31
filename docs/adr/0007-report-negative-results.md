@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-31
-- **Deciders:** FDE Academy faculty
+- **Deciders:** Maintainers
 
 ## Context
 

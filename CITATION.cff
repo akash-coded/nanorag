@@ -3,9 +3,9 @@ title: "Advanced RAG — Hands On"
 message: "If you use this material in teaching or research, please cite it."
 type: software
 authors:
-  - name: "FDE Academy"
-    website: "https://fde.academy"
-repository-code: "https://github.com/fde-academy-lab/adv-rag-hands-on"
+  - name: "the maintainers"
+    website: "https://github.com/akash-coded/nanorag"
+repository-code: "https://github.com/akash-coded/nanorag"
 abstract: >-
   A runnable retrieval, RAG and evaluation curriculum. Ten Jupyter notebooks and a Python
   toolkit implementing lexical and dense retrieval, approximate nearest-neighbour search,

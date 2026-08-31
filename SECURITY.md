@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-**Do not open a public issue.** Email **security@fde.academy** with:
+**Do not open a public issue.** Email **the address in SECURITY.md** with:
 
 - What you found and where
 - How to reproduce it
@@ -37,7 +37,7 @@ precise about it is part of the lesson.
 **This repository never reads, stores or logs a credential.**
 
 - AWS credentials come from the standard boto3 chain (environment, `~/.aws/credentials`, SSO,
-  instance role). `fde_rag.bedrock` never accepts a key as an argument.
+  instance role). `nanorag.bedrock` never accepts a key as an argument.
 - `preflight()` is deliberately read-only: it reports what is *configured* and makes no AWS
   calls, so nobody bills an account by hitting Run All.
 - `.gitignore` excludes `.env`, `*.pem`, `credentials*` and `.aws/`.

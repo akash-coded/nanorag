@@ -1,5 +1,5 @@
 """
-The accelerator deck's decision trees, matrices, failure points and interview
+The course's decision trees, matrices, failure points and interview
 bank, as data.
 
 Defining them once means the figure, the table and the executable predicate can
@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from .trees import Branch, DecisionMatrix, DecisionTree
 
-DECK = "FDE Academy · Retrieval, RAG & Evals (Advanced Track)"
+DECK = "Retrieval, RAG and evaluation — the course this toolkit came from"
 
 # ============================================================ decision trees ==
 
@@ -173,7 +173,7 @@ RELEASE_GATE = DecisionTree(
         Branch("Did cost per query or p95 latency move outside its envelope?", "YES",
                "Escalate, do not silently accept. Quality bought with unbudgeted cost is a "
                "decision for whoever owns the budget.", "NO ↓",
-               why="Silently spending someone else's budget is how an FDE loses a renewal.",
+               why="Silently spending someone else's budget is how a team loses a renewal.",
                knobs="k, rerank depth, model routing", owner="Budget owner",
                test=lambda c: (c.get("cost_delta_pct", 0.0) > c.get("cost_envelope_pct", 15.0)
                                or c.get("p95_ms", 0) > c.get("p95_envelope_ms", 10**9))),
@@ -410,7 +410,7 @@ BUILD_RUBRIC = DecisionMatrix(
       "Names the condition under which the decision should be revisited", "15"]],
     source=DECK + " · slide 88",
     note="The weighting is deliberate: the decision record is worth as much as retrieval "
-         "quality. That is the FDE job.")
+         "quality. That is the job.")
 
 SIGNAL_ANTISIGNAL = DecisionMatrix(
     "signal", "Signal and anti-signal in a retrieval interview",

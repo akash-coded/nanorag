@@ -1,6 +1,6 @@
 # Architecture
 
-> **Audience:** anyone about to change `fde_rag/`, and anyone who wants to explain this system
+> **Audience:** anyone about to change `nanorag/`, and anyone who wants to explain this system
 > in an interview. Read [the README's architecture section](../README.md#architecture) first for
 > the context and HLD diagrams; this document is the level below that.
 
@@ -307,7 +307,7 @@ flowchart LR
 
 ## Local → AWS
 
-`fde_rag.bedrock.LOCAL_TO_AWS` holds this mapping in code so it stays honest.
+`nanorag.bedrock.LOCAL_TO_AWS` holds this mapping in code so it stays honest.
 
 | Local | Managed equivalent | What changes when you move |
 |---|---|---|

@@ -47,7 +47,7 @@ flowchart LR
 | **Effort** | Single select | `S <1d` · `M 2–3d` · `L ~1w` · `XL cohort` | Estimated *before* work starts; compare against reality in retro |
 | **Cohort** | Single select | `C1` · `C2` · `faculty` · `open` | Separates student work from platform work on the same board |
 | **Risk** | Single select | `low` · `medium` · `high` | High-risk cards get a design review before they leave Ready |
-| **Needs eval** | Checkbox | — | Set automatically for anything touching `fde_rag/`; the eval gate will run |
+| **Needs eval** | Checkbox | — | Set automatically for anything touching `nanorag/`; the eval gate will run |
 | **Metric moved** | Text | e.g. `full-chain +0.05 [+0.01,+0.09]` | Filled in when the card reaches Done. **This is the field that makes the board worth keeping.** |
 
 ## Views
@@ -56,7 +56,7 @@ flowchart LR
 |---|---|---|
 | **Board** | all open | The daily standup view |
 | **By phase** | grouped by Phase | "Where are we in the delivery?" |
-| **Cohort C1 / C2** | `Cohort` = C1 or C2 | What each cohort is working on |
+| **Cohort** | `Cohort` = a free-text group label | What each cohort or squad is working on |
 | **Needs review** | column = In review | The reviewer's queue |
 | **Blocked** | column = Blocked | Read this one first in a standup |
 | **Shipped with numbers** | column = Done, `Metric moved` not empty | The retro view — and the one to screenshot for a CV |
@@ -69,7 +69,7 @@ Three GitHub Actions keep the board honest so nobody has to remember to update i
 | Trigger | What happens | Workflow |
 |---|---|---|
 | Issue or PR opened | Added to the board, lands in Backlog; a comment explains the entry conditions | `project-automation.yml` |
-| PR opened touching `fde_rag/` | `needs: eval-numbers` label applied; eval gate runs and posts a scorecard | `labeler.yml`, `eval-regression.yml` |
+| PR opened touching `nanorag/` | `needs: eval-numbers` label applied; eval gate runs and posts a scorecard | `labeler.yml`, `eval-regression.yml` |
 | PR merged | Card moves to Done | built-in Projects workflow |
 | No activity for 45 days | Marked stale, then closed, so the board reflects reality | `stale.yml` |
 

@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-31
-- **Deciders:** FDE Academy faculty
+- **Deciders:** Maintainers
 
 ## Context
 
@@ -28,7 +28,7 @@ notebook just computed.
 
 ## Decision
 
-Option C for notebooks (`fde_rag/viz.py`), **and Mermaid for the markdown docs** — where
+Option C for notebooks (`nanorag/viz.py`), **and Mermaid for the markdown docs** — where
 GitHub is the only rendering target and it renders reliably.
 
 ## Consequences

@@ -1,10 +1,10 @@
 """
-Table rendering for the accelerator notebooks.
+Table rendering for the notebooks.
 
 A rule this curriculum takes seriously: every diagram that encodes a decision
 must also exist as a table. A picture is how you remember a rule; a table is
 how you *apply* one at 2am with a failing query in front of you. So the
-decision trees and decision matrices in `fde_rag.trees` render both ways from a
+decision trees and decision matrices in `nanorag.trees` render both ways from a
 single definition, and this module is the table half.
 """
 from __future__ import annotations
@@ -108,7 +108,7 @@ def styled(frame, title="", caption="", source=None, kicker="", label=True,
         f"<div style='font:400 11px/1.5 system-ui,sans-serif;color:{viz.MUTED};"
         f"margin:6px 0 18px'>{foot}</div>" if foot else "<div style='margin-bottom:14px'></div>"
     )
-    sty._fde_head = html_head
+    sty._nanorag_head = html_head
     sty._fde_foot = html_foot
     return sty
 
@@ -125,7 +125,7 @@ def show(frame_or_styler, title="", caption="", source=None, kicker="", **kw):
     sty = frame_or_styler
     if hasattr(sty, "columns"):  # a bare DataFrame
         sty = styled(sty, title=title, caption=caption, source=source, kicker=kicker, **kw)
-    head = getattr(sty, "_fde_head", "")
+    head = getattr(sty, "_nanorag_head", "")
     foot = getattr(sty, "_fde_foot", "")
     display(HTML(head + sty.to_html() + foot))
     return None

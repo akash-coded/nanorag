@@ -1,12 +1,12 @@
 <div align="center">
 
-# Advanced RAG — Hands On
+# nanorag
 
-**A retrieval, RAG and evaluation system you can run, break, measure and defend — entirely in memory, in about ten seconds.**
+**The whole retrieval stack — BM25, dense, ANN, fusion, reranking, evaluation — with no vector database, no framework, and no API key. It runs in memory, in about ten seconds.**
 
-[![CI](https://github.com/fde-academy-lab/adv-rag-hands-on/actions/workflows/ci.yml/badge.svg)](https://github.com/fde-academy-lab/adv-rag-hands-on/actions/workflows/ci.yml)
-[![Notebooks](https://github.com/fde-academy-lab/adv-rag-hands-on/actions/workflows/notebooks.yml/badge.svg)](https://github.com/fde-academy-lab/adv-rag-hands-on/actions/workflows/notebooks.yml)
-[![Eval gate](https://github.com/fde-academy-lab/adv-rag-hands-on/actions/workflows/eval-regression.yml/badge.svg)](https://github.com/fde-academy-lab/adv-rag-hands-on/actions/workflows/eval-regression.yml)
+[![CI](https://github.com/akash-coded/nanorag/actions/workflows/ci.yml/badge.svg)](https://github.com/akash-coded/nanorag/actions/workflows/ci.yml)
+[![Notebooks](https://github.com/akash-coded/nanorag/actions/workflows/notebooks.yml/badge.svg)](https://github.com/akash-coded/nanorag/actions/workflows/notebooks.yml)
+[![Eval gate](https://github.com/akash-coded/nanorag/actions/workflows/eval-regression.yml/badge.svg)](https://github.com/akash-coded/nanorag/actions/workflows/eval-regression.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](pyproject.toml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Discussions](https://img.shields.io/badge/ask-Discussions-8A63D2)](../../discussions)
@@ -29,6 +29,12 @@ There is **no dataset to download, no API key to set, and no service to start.**
 retrieval stack lives inside `sqlite3.connect(":memory:")` and disappears when you stop the
 kernel. Press **Run All**; that is the whole procedure.
 
+The *nano* is the **stack**, not the scope: numpy, matplotlib and the standard library, and
+nothing else is required to run any of it. Every component you would normally import — the
+inverted index, the embedder, the ANN graph, the fusion, the reranker, the judge, the cost
+model — is implemented here, in readable Python, because the point is to see the mechanism
+rather than configure it.
+
 Everything has a documented upgrade path to a real stack — Amazon Bedrock Knowledge Bases,
 Titan embeddings, Bedrock rerank, a model judge — and swapping any of them changes the
 retriever, **not** the harness, the metrics, or the eval set. That property is the lesson.
@@ -43,8 +49,8 @@ retriever, **not** the harness, the metrics, or the eval set. That property is t
 ## Quick start
 
 ```bash
-git clone https://github.com/fde-academy-lab/adv-rag-hands-on.git
-cd adv-rag-hands-on
+git clone https://github.com/akash-coded/nanorag.git
+cd nanorag
 make setup          # or: pip install -e ".[dev]"
 make lab            # opens JupyterLab → start with 00_start_here.ipynb
 ```
@@ -52,8 +58,8 @@ make lab            # opens JupyterLab → start with 00_start_here.ipynb
 Prefer to see it work in one line first?
 
 ```python
-import fde_rag
-bundle, index, pipe = fde_rag.quickstart(**fde_rag.TUNED)
+import nanorag
+bundle, index, pipe = nanorag.quickstart(**nanorag.TUNED)
 trace = pipe.run("Which organization acquired Tessera Analytics?")
 
 print(trace.answer)                 # a cited answer
@@ -115,7 +121,7 @@ graph TB
         R["🔍 Recruiter / interviewer<br/><i>reads the decision records</i>"]
     end
 
-    P["<b>Advanced RAG — Hands On</b><br/>10 notebooks + fde_rag toolkit<br/><i>runs offline, deterministic</i>"]
+    P["<b>Advanced RAG — Hands On</b><br/>10 notebooks + nanorag toolkit<br/><i>runs offline, deterministic</i>"]
 
     subgraph optional["Optional — nothing fails without these"]
         BR["Amazon Bedrock<br/><i>Knowledge Base · Titan · rerank · Converse</i>"]
@@ -452,7 +458,7 @@ export BEDROCK_RERANK_MODEL_ARN=arn:aws:bedrock:...:rerank-model/amazon.rerank-v
 ```
 
 ```python
-from fde_rag.bedrock import BedrockConfig, preflight, BedrockKnowledgeBaseRetriever
+from nanorag.bedrock import BedrockConfig, preflight, BedrockKnowledgeBaseRetriever
 
 preflight()                              # read-only: reports config, makes NO AWS calls
 kb = BedrockKnowledgeBaseRetriever()     # returns the same Hit records as the local index
@@ -460,7 +466,7 @@ hits = kb.search("Which organization acquired Tessera Analytics?", n=25)
 ```
 
 Credentials come from the ordinary boto3 chain. **Nothing in this repository reads or stores a
-key.** `fde_rag.bedrock.LOCAL_TO_AWS` maps every local component to its managed equivalent and
+key.** `nanorag.bedrock.LOCAL_TO_AWS` maps every local component to its managed equivalent and
 names what changes when you move — see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#local--aws).
 
 ---
@@ -514,8 +520,8 @@ flowchart LR
 
 | If you are… | Start here |
 |---|---|
-| A student on the accelerator | [notebooks/00_start_here.ipynb](notebooks/00_start_here.ipynb), then [docs/EXERCISES.md](docs/EXERCISES.md) |
-| Preparing for an FDE / AI-engineer interview | [docs/INTERVIEW-PREP.md](docs/INTERVIEW-PREP.md) — 18 questions with full answers |
+| Working through the course | [notebooks/00_start_here.ipynb](notebooks/00_start_here.ipynb), then [docs/EXERCISES.md](docs/EXERCISES.md) |
+| Preparing for an AI-engineer interview | [docs/INTERVIEW-PREP.md](docs/INTERVIEW-PREP.md) — 18 questions with full answers |
 | Deciding what to build next | [docs/EXTENSION-POINTS.md](docs/EXTENSION-POINTS.md) — 20 techniques with hypotheses and seams |
 | Wanting to understand the code | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — HLD, LLD, every seam |
 | Putting this on a CV or LinkedIn | [docs/PORTFOLIO.md](docs/PORTFOLIO.md) |
@@ -534,6 +540,6 @@ flowchart LR
 ---
 
 <div align="center">
-<sub>Built for the <b>FDE Academy Advanced Track · Accelerator</b>, cohorts C1 &amp; C2.<br/>
+<sub>Ten notebooks, one toolkit, no API keys.<br/>
 Apache-2.0. Corpus and eval set are synthetic and generated from a fact graph — no client data.</sub>
 </div>

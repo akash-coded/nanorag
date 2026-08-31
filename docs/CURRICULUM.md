@@ -57,7 +57,7 @@ graph LR
 
 ## Running it as a cohort
 
-### Two-day accelerator (the format this was built for)
+### Two-day intensive (the format this was built for)
 
 | | Morning | Afternoon |
 |---|---|---|

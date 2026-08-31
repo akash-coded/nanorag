@@ -47,7 +47,7 @@ def request(method: str, path: str, payload=None, accept="application/vnd.github
     req.add_header("Accept", accept)
     req.add_header("X-GitHub-Api-Version", "2022-11-28")
     req.add_header("Content-Type", "application/json")
-    req.add_header("User-Agent", "adv-rag-hands-on-setup")
+    req.add_header("User-Agent", "nanorag-setup")
 
     for attempt in range(retries):
         try:

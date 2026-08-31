@@ -15,8 +15,8 @@ asked for it before review, not after.
 ## Setup
 
 ```bash
-git clone https://github.com/fde-academy-lab/adv-rag-hands-on.git
-cd adv-rag-hands-on
+git clone https://github.com/akash-coded/nanorag.git
+cd nanorag
 make setup
 make test          # ~30 s
 make notebooks     # ~10 min, executes all ten

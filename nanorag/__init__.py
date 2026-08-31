@@ -1,5 +1,5 @@
 """
-fde_rag — the runnable half of the FDE Academy Advanced Track accelerator on
+nanorag — a small, complete, runnable implementation of
 Retrieval, RAG & Evals.
 
 Nothing here needs the network, an API key, or a dataset download. Everything
@@ -8,10 +8,10 @@ Bedrock Titan, the reranker for Bedrock rerank, the store for a Knowledge Base,
 the heuristic judge for a model judge -- the harness, the metrics and the eval
 set do not change. That property is the lesson.
 
-    from fde_rag.bootstrap import bootstrap
+    from nanorag.bootstrap import bootstrap
     env = bootstrap()
 
-    from fde_rag import corpus, chunking, embed, store, retrieve, pipeline
+    from nanorag import corpus, chunking, embed, store, retrieve, pipeline
     bundle = corpus.build_corpus()
 """
 from . import (

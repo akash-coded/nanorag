@@ -40,7 +40,7 @@ where this material is used — and when representing the project publicly.
 
 ## Enforcement
 
-Report unacceptable behaviour to the maintainers at **conduct@fde.academy**. All complaints
+Report unacceptable behaviour to the maintainers at **the address in CODE_OF_CONDUCT.md**. All complaints
 will be reviewed promptly and fairly. Maintainers will respect the privacy and security of the
 reporter.
 

@@ -27,7 +27,7 @@ flowchart TD
 
 ```python
 # notebook 01 §1.6 has this as a runnable function
-from fde_rag import catalog
+from nanorag import catalog
 verdict = catalog.FAULT_ISOLATION.explain(ctx)   # ctx built from the trace
 ```
 
@@ -50,7 +50,7 @@ verdict = catalog.FAULT_ISOLATION.explain(ctx)   # ctx built from the trace
 
 | Looks like | Usually is |
 |---|---|
-| "The notebook gives different numbers than the README" | A stale kernel holding an old `fde_rag`. Restart and Run All. |
+| "The notebook gives different numbers than the README" | A stale kernel holding an old `nanorag`. Restart and Run All. |
 | "My delta disappeared" | It was inside the noise band. Check `paired_bootstrap` before assuming a regression. |
 | "Retrieval broke for one persona" | Working as designed — pre-filtering scopes the candidate pool. Compare against the `counsel` persona. |
 | "The eval gate failed on my docs PR" | It should not run on docs. Check the `paths:` filter in the workflow. |

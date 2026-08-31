@@ -3,13 +3,13 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fde-rag"
+name = "nanorag"
 version = "1.0.0"
 description = "A runnable retrieval / RAG / evaluation teaching toolkit that runs entirely in memory"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
-authors = [{ name = "FDE Academy" }]
+authors = [{ name = "the maintainers" }]
 keywords = ["rag", "retrieval", "evaluation", "bm25", "reranking", "bedrock", "teaching"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -31,13 +31,13 @@ dev     = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6", "nbclient>=0.9", "nbfo
            "jupyterlab>=4.2"]
 
 [project.urls]
-Homepage      = "https://github.com/fde-academy-lab/adv-rag-hands-on"
-Documentation = "https://github.com/fde-academy-lab/adv-rag-hands-on/tree/main/docs"
-Discussions   = "https://github.com/fde-academy-lab/adv-rag-hands-on/discussions"
-Issues        = "https://github.com/fde-academy-lab/adv-rag-hands-on/issues"
+Homepage      = "https://github.com/akash-coded/nanorag"
+Documentation = "https://github.com/akash-coded/nanorag/tree/main/docs"
+Discussions   = "https://github.com/akash-coded/nanorag/discussions"
+Issues        = "https://github.com/akash-coded/nanorag/issues"
 
 [tool.setuptools.packages.find]
-include = ["fde_rag*"]
+include = ["nanorag*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -71,5 +71,5 @@ ignore = [
 "tests/*" = ["E501"]
 
 [tool.coverage.run]
-source = ["fde_rag"]
-omit = ["fde_rag/bedrock.py"]      # network path, exercised only in integration
+source = ["nanorag"]
+omit = ["nanorag/bedrock.py"]      # network path, exercised only in integration

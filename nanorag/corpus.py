@@ -3,7 +3,7 @@ A MultiHop-RAG-shaped corpus that runs offline, plus the evaluation set that
 scores against it.
 
 Why synthesise instead of downloading MultiHop-RAG (Tang & Yang, COLM 2024)?
-Three reasons, and they are the same reasons an FDE builds a client eval set
+Three reasons, and they are the same reasons you build a domain eval set
 rather than reaching for a public benchmark:
 
   1. One click. A notebook that needs a 200 MB download is not a notebook a

@@ -13,7 +13,7 @@ Closes #
 - [ ] Exercise submission (student)
 - [ ] Bug fix
 - [ ] New teaching content (notebook / doc / diagram)
-- [ ] Toolkit change (`fde_rag/`)
+- [ ] Toolkit change (`nanorag/`)
 - [ ] Infrastructure (CI, templates, board)
 
 ---

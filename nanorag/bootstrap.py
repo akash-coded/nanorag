@@ -1,5 +1,5 @@
 """
-One-click environment bootstrap for the FDE Academy Advanced RAG notebooks.
+One-click environment bootstrap for the nanorag notebooks.
 
 Design goals
 ------------
@@ -124,7 +124,7 @@ def bootstrap(verbose: bool = True, allow_install: bool = True) -> Environment:
         # display them inline because IPython captures the figure object.
         if "ipykernel" not in sys.modules:
             matplotlib.use("Agg")
-        from . import viz  # noqa: F401  (applies the FDE Academy style)
+        from . import viz  # noqa: F401  (applies the the maintainers style)
 
         viz.apply_style()
 
@@ -143,11 +143,11 @@ def bootstrap(verbose: bool = True, allow_install: bool = True) -> Environment:
 
 
 def repo_root(start=None):
-    """Locate the directory that holds the fde_rag package, from anywhere."""
+    """Locate the directory that holds the nanorag package, from anywhere."""
     import pathlib
 
     here = pathlib.Path(start or os.getcwd()).resolve()
     for candidate in [here, *here.parents]:
-        if (candidate / "fde_rag" / "__init__.py").exists():
+        if (candidate / "nanorag" / "__init__.py").exists():
             return candidate
     return here

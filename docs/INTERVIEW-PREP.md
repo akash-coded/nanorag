@@ -1,6 +1,6 @@
 # Interview preparation
 
-Eighteen questions FDE, AI-engineer and applied-ML panels actually ask about retrieval, with
+Eighteen questions AI-engineer, applied-ML and forward-deployed-engineer panels actually ask about retrieval, with
 the answer a strong senior candidate gives — not a definition, but the *procedure* they walk,
 the tradeoff they name unprompted, and the number they reach for.
 

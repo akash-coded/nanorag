@@ -6,7 +6,7 @@ seeded issues (open and closed), Discussions with their categories and seeded th
 Projects v2 board with custom fields and items.
 
     export GITHUB_TOKEN=github_pat_...
-    python scripts/setup_github.py --owner fde-academy-lab --repo adv-rag-hands-on
+    python scripts/setup_github.py --owner OWNER --repo nanorag
 
 Idempotent: safe to re-run. Anything that already exists is skipped rather than duplicated.
 
@@ -495,6 +495,13 @@ def main() -> int:
 
     print(f"\n\033[1mProvisioning {args.owner}/{args.repo}\033[0m"
           + ("  \033[33m(dry run)\033[0m" if args.dry_run else ""))
+
+    # Keep the tree's badges, clone URL, CODEOWNERS and packaging metadata in step with the
+    # owner/repo actually being provisioned, so a fork does not ship badges pointing upstream.
+    if not args.dry_run:
+        import subprocess
+        subprocess.run([sys.executable, str(Path(__file__).with_name("retarget.py")),
+                        "--owner", args.owner, "--repo", args.repo], check=False)
 
     if "create" in wanted:
         print("\033[1mRepository\033[0m")

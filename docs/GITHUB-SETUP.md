@@ -6,7 +6,7 @@ history — is provisioned by one script, from your machine.
 
 ```bash
 export GITHUB_TOKEN=github_pat_...
-python scripts/setup_github.py --owner fde-academy-lab --repo adv-rag-hands-on
+python scripts/setup_github.py --owner OWNER --repo nanorag
 ```
 
 Preview it first with `--dry-run`; it prints the full plan and changes nothing. The script is
@@ -23,6 +23,23 @@ step fails independently, so a token without Projects access still gets you the 
 | `discussions` | 17 seeded threads across 7 categories | **GraphQL** |
 | `project` | Projects v2 board, 5 custom fields, every issue placed | **GraphQL** |
 | `push` | Adds `origin`, pushes `main` with its 20 phased commits | git |
+
+### Renaming or forking
+
+Nothing in the tree is hard-bound to an account. A handful of things genuinely cannot be
+relative — CI badge URLs, the clone command, CODEOWNERS handles, `CITATION.cff`, packaging
+metadata — and `scripts/retarget.py` rewrites all of them in one pass:
+
+```bash
+python scripts/retarget.py --owner your-handle                    # fork it
+python scripts/retarget.py --owner your-org --repo my-rag-lab     # rename the repo
+python scripts/retarget.py --owner your-org --repo my-rag-lab --package myrag   # and the package
+```
+
+With no flags it reads `git remote get-url origin` and follows that. The current identity
+lives in `.identity.json`, so the script is idempotent and reversible — a round trip is
+byte-identical. `setup_github.py` runs it for you before pushing, so provisioning under a
+different owner never ships badges pointing at someone else's CI.
 
 ### Recommended order
 
@@ -68,7 +85,7 @@ ordinary PAT and all eight steps work.
 The `create` step does this for you. To do it by hand instead:
 
 ```bash
-gh repo create fde-academy-lab/adv-rag-hands-on \
+gh repo create akash-coded/nanorag \
   --public \
   --description "Runnable retrieval/RAG/evaluation curriculum — 10 notebooks and a toolkit that run entirely in memory, with an eval gate in CI"
 ```
@@ -85,8 +102,8 @@ three, and an initial commit on the remote means a merge before you can push.
 The `push` step does this too. By hand:
 
 ```bash
-cd adv-rag-hands-on
-git remote add origin https://github.com/fde-academy-lab/adv-rag-hands-on.git
+cd nanorag
+git remote add origin https://github.com/akash-coded/nanorag.git
 git push -u origin main
 ```
 

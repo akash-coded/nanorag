@@ -145,7 +145,7 @@ job to our `sufficiency_check` and note what ours cannot do.
 [DOI:10.1145/3498366.3505816](https://doi.org/10.1145/3498366.3505816)
 *Look for:* the argument against replacing search with generated answers. Read it even if — 
 especially if — you disagree. Being able to state the strongest version of the objection to
-your own product is an FDE skill.
+your own product is the skill this whole repository is about.
 
 **Google, "Machine Learning: The High-Interest Credit Card of Technical Debt" (2014)** ·
 [NeurIPS](https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html)
