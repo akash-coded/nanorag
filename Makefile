@@ -35,6 +35,6 @@ eval:            ## Run the release-gate evaluation and print the scorecard
 	$(PY) scripts/run_eval.py
 
 board:           ## One-time GitHub setup: labels, discussions, issues, project board
-	$(PY) scripts/setup_github.py --owner $${OWNER:-fde-academy-learning} --repo $${REPO:-adv-rag-hands-on}
+	$(PY) scripts/setup_github.py --owner $${OWNER:-fde-academy-lab} --repo $${REPO:-adv-rag-hands-on}
 
 .PHONY: help setup lab test test-all lint fmt notebooks strip eval board

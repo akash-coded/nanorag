@@ -1,13 +1,13 @@
 # Every PR gets a reviewer. Faculty own the teaching surface; the toolkit is
 # reviewed by whoever is on rotation.
-*                       @fde-academy-learning
+*                       @fde-academy-lab
 
 # The curriculum. Changing a notebook changes what a cohort is taught.
-/notebooks/             @fde-academy-learning
-/docs/CURRICULUM.md     @fde-academy-learning
-/docs/EXERCISES.md      @fde-academy-learning
+/notebooks/             @fde-academy-lab
+/docs/CURRICULUM.md     @fde-academy-lab
+/docs/EXERCISES.md      @fde-academy-lab
 
 # The measurement. A change here silently changes every number in the repo.
-/fde_rag/metrics.py     @fde-academy-learning
-/fde_rag/corpus.py      @fde-academy-learning
-/.github/eval-baseline.json @fde-academy-learning
+/fde_rag/metrics.py     @fde-academy-lab
+/fde_rag/corpus.py      @fde-academy-lab
+/.github/eval-baseline.json @fde-academy-lab

@@ -15,7 +15,7 @@ asked for it before review, not after.
 ## Setup
 
 ```bash
-git clone https://github.com/fde-academy-learning/adv-rag-hands-on.git
+git clone https://github.com/fde-academy-lab/adv-rag-hands-on.git
 cd adv-rag-hands-on
 make setup
 make test          # ~30 s

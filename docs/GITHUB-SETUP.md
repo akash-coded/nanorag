@@ -1,24 +1,74 @@
 # GitHub setup
 
-Everything in this repository that cannot live in the git tree — settings, labels, milestones,
-seeded issues, Discussions, and the project board — is provisioned by one script.
+Everything this repository needs on GitHub — the repository itself, settings, labels,
+milestones, seeded issues, Discussions, the project board, and the push of the phased
+history — is provisioned by one script, from your machine.
 
 ```bash
 export GITHUB_TOKEN=github_pat_...
-python scripts/setup_github.py --owner fde-academy-learning --repo adv-rag-hands-on
+python scripts/setup_github.py --owner fde-academy-lab --repo adv-rag-hands-on
 ```
 
-It is **idempotent**: anything that already exists is skipped rather than duplicated, so it is
-safe to re-run after a partial failure or when you add new seed content.
+Preview it first with `--dry-run`; it prints the full plan and changes nothing. The script is
+**idempotent** — anything that already exists is skipped rather than duplicated — and every
+step fails independently, so a token without Projects access still gets you the other six.
+
+| Step | What it does | Needs |
+|---|---|---|
+| `create` | Creates the repository, public by default (`--private` to change) | REST |
+| `settings` | Description, homepage, 16 topics, squash-only merges, branch protection | REST |
+| `labels` | 26 labels across type / area / phase / difficulty | REST |
+| `milestones` | P0–P7, the eight delivery phases | REST |
+| `issues` | 15 issues — 8 closed real defects with their fixes, 7 open | REST |
+| `discussions` | 17 seeded threads across 7 categories | **GraphQL** |
+| `project` | Projects v2 board, 5 custom fields, every issue placed | **GraphQL** |
+| `push` | Adds `origin`, pushes `main` with its 20 phased commits | git |
+
+### Recommended order
+
+The three custom Discussion categories cannot be created by any API, and a seeded thread whose
+category is missing is skipped. So run it in two passes with a thirty-second detour through the
+UI in between:
+
+```bash
+# pass 1 — creates the repo, pushes, does everything REST can do
+python scripts/setup_github.py --owner OWNER --repo REPO --skip discussions,project
+
+#  → Settings ▸ Discussions ▸ New category:  Design Reviews · Reading Club · Interview Prep
+#  → set the Q&A category's format to "Question / Answer"
+
+# pass 2 — the two GraphQL steps
+python scripts/setup_github.py --owner OWNER --repo REPO --only discussions,project
+```
+
+Running it in one pass also works; you just re-run `--only discussions` afterwards to backfill
+the threads that had nowhere to go.
+
+---
+
+## Why this has to run from your machine
+
+A Claude Code cloud session is pinned by its egress proxy to the repositories configured on
+that session. Two consequences, both hard limits rather than missing permissions:
+
+- **Repository creation is not a repository-scoped call.** `POST /user/repos` and
+  `POST /orgs/{org}/repos` return `sessions are bound to their configured repositories`.
+  No token changes this — the block is on the URL path, before the request reaches GitHub.
+- **GraphQL is limited to a pinned set of PR-review operations.** Repository Discussions and
+  Projects v2 are GraphQL-only APIs with no REST equivalent, so those two steps cannot run
+  from a cloud session even after the repository is attached.
+
+Your GitHub account connection is fine and irrelevant to this. Run the script locally with an
+ordinary PAT and all eight steps work.
 
 ---
 
 ## 1 · Create the repository
 
-The script provisions an existing repository; it does not create one.
+The `create` step does this for you. To do it by hand instead:
 
 ```bash
-gh repo create fde-academy-learning/adv-rag-hands-on \
+gh repo create fde-academy-lab/adv-rag-hands-on \
   --public \
   --description "Runnable retrieval/RAG/evaluation curriculum — 10 notebooks and a toolkit that run entirely in memory, with an eval gate in CI"
 ```
@@ -32,9 +82,11 @@ three, and an initial commit on the remote means a merge before you can push.
 
 ## 2 · Push
 
+The `push` step does this too. By hand:
+
 ```bash
 cd adv-rag-hands-on
-git remote add origin https://github.com/fde-academy-learning/adv-rag-hands-on.git
+git remote add origin https://github.com/fde-academy-lab/adv-rag-hands-on.git
 git push -u origin main
 ```
 
@@ -70,7 +122,7 @@ python scripts/setup_github.py --owner OWNER --repo REPO --only discussions
 python scripts/setup_github.py --owner OWNER --repo REPO --skip project
 ```
 
-Steps: `settings` · `labels` · `milestones` · `issues` · `discussions` · `project`
+Steps: `create` · `settings` · `labels` · `milestones` · `issues` · `discussions` · `project` · `push`
 
 ### What it creates
 

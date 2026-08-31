@@ -6,12 +6,13 @@ seeded issues (open and closed), Discussions with their categories and seeded th
 Projects v2 board with custom fields and items.
 
     export GITHUB_TOKEN=github_pat_...
-    python scripts/setup_github.py --owner fde-academy-learning --repo adv-rag-hands-on
+    python scripts/setup_github.py --owner fde-academy-lab --repo adv-rag-hands-on
 
 Idempotent: safe to re-run. Anything that already exists is skipped rather than duplicated.
 
     --dry-run     print what would happen, change nothing
-    --only        labels,milestones,settings,issues,discussions,project   (comma separated)
+    --only        create,settings,labels,milestones,issues,discussions,project,push
+    --private     create the repository private (default public)
     --skip        same vocabulary, inverted
 
 Token permissions needed (fine-grained PAT):
@@ -37,7 +38,116 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import seed_content as content  # noqa: E402
 from gh import GitHubError, fail, graphql, ok, request, skip, warn  # noqa: E402
 
-STEPS = ("settings", "labels", "milestones", "issues", "discussions", "project")
+STEPS = ("create", "settings", "labels", "milestones", "issues", "discussions",
+         "project", "push")
+
+
+
+
+def run_step(name, fn, *args):
+    """Run one provisioning step, reporting a failure instead of aborting the rest.
+
+    The steps are independent. A token without Projects access, or a session whose egress
+    proxy serves no GraphQL, should still get labels, milestones, issues and settings.
+    """
+    try:
+        return fn(*args)
+    except GitHubError as exc:
+        fail(name, exc.message[:160])
+        return None
+
+
+def existing_state(path, dry, default):
+    """Read current state, tolerating a repository that does not exist yet under --dry-run.
+
+    A dry run has to work before the repository is created, otherwise the only way to preview
+    the plan is to first do the thing you wanted to preview.
+    """
+    try:
+        return request("GET", path)
+    except GitHubError:
+        if dry:
+            return default
+        raise
+
+
+# ────────────────────────────────────────────────────────────────── creation ──
+def create_repository(owner, repo, private, dry):
+    """Create the repository if it does not exist yet. Returns the repo object or None.
+
+    Repository creation is the one call that is not repository-scoped, so it is also the one
+    call a repo-pinned session cannot make. Run this step from a machine with an ordinary PAT.
+    """
+    try:
+        info = request("GET", f"/repos/{owner}/{repo}")
+        skip(f"{owner}/{repo}", f"already exists · {info['visibility']}")
+        return info
+    except GitHubError:
+        pass
+
+    payload = {
+        "name": repo,
+        "private": bool(private),
+        "description": ("Runnable retrieval / RAG / evaluation curriculum — 10 notebooks and a "
+                        "toolkit that run entirely in memory, with an eval gate in CI"),
+        "homepage": f"https://{owner}.github.io/{repo}/",
+        "has_issues": True,
+        "has_projects": True,
+        "has_wiki": False,
+        "auto_init": False,
+    }
+    if dry:
+        ok(f"{owner}/{repo}", "would create")
+        return None
+
+    # /user/repos when the token's own login owns it, /orgs/{owner}/repos otherwise.
+    try:
+        login = request("GET", "/user")["login"]
+    except GitHubError:
+        login = None
+    path = "/user/repos" if login and login.lower() == owner.lower() else f"/orgs/{owner}/repos"
+    try:
+        info = request("POST", path, payload)
+    except GitHubError as exc:
+        fail(f"{owner}/{repo}", exc.message)
+        print(f"    tried POST {path}")
+        print("    a fine-grained PAT needs Administration: read/write on the target account,")
+        print("    or use:  gh repo create "
+              f"{owner}/{repo} --{'private' if private else 'public'}")
+        return None
+    ok(f"{owner}/{repo}", f"created · {info['visibility']}")
+    return info
+
+
+def push_repository(owner, repo, dry):
+    """Point origin at the new repository and push the full phased history."""
+    import subprocess
+
+    root = Path(__file__).resolve().parent.parent
+    url = f"https://github.com/{owner}/{repo}.git"
+
+    def git(*a, check=True):
+        return subprocess.run(["git", "-C", str(root), *a], check=check,
+                              capture_output=True, text=True)
+
+    branch = git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip()
+    existing = git("remote", "get-url", "origin", check=False)
+    if existing.returncode == 0 and existing.stdout.strip() != url:
+        warn("origin", f"already points at {existing.stdout.strip()} — leaving it alone")
+        return
+    if dry:
+        ok("push", f"would push {branch} to {url}")
+        return
+    if existing.returncode != 0:
+        git("remote", "add", "origin", url)
+        ok("origin", url)
+    res = git("push", "-u", "origin", branch, check=False)
+    if res.returncode != 0:
+        fail("push", (res.stderr or res.stdout).strip().splitlines()[-1] if
+             (res.stderr or res.stdout).strip() else "failed")
+        print(f"    run manually:  git push -u origin {branch}")
+        return
+    ok("push", f"{branch} → {url}")
 
 
 # ────────────────────────────────────────────────────────────────── settings ──
@@ -105,7 +215,8 @@ def configure_repository(owner, repo, dry):
 
 # ──────────────────────────────────────────────────────────────────── labels ──
 def create_labels(owner, repo, dry):
-    existing = {l["name"] for l in request("GET", f"/repos/{owner}/{repo}/labels?per_page=100")}
+    existing = {l["name"] for l in
+                existing_state(f"/repos/{owner}/{repo}/labels?per_page=100", dry, [])}
     created = updated = 0
     for name, color, description in content.LABELS:
         if dry:
@@ -135,7 +246,8 @@ def create_labels(owner, repo, dry):
 # ──────────────────────────────────────────────────────────────── milestones ──
 def create_milestones(owner, repo, dry):
     existing = {m["title"]: m for m in
-                request("GET", f"/repos/{owner}/{repo}/milestones?state=all&per_page=100")}
+                existing_state(f"/repos/{owner}/{repo}/milestones?state=all&per_page=100",
+                               dry, [])}
     mapping = {}
     for title, description, state in content.MILESTONES:
         if title in existing:
@@ -157,7 +269,8 @@ def create_milestones(owner, repo, dry):
 # ──────────────────────────────────────────────────────────────────── issues ──
 def create_issues(owner, repo, milestones, dry):
     existing = {i["title"] for i in
-                request("GET", f"/repos/{owner}/{repo}/issues?state=all&per_page=100")}
+                existing_state(f"/repos/{owner}/{repo}/issues?state=all&per_page=100",
+                               dry, [])}
     created = []
     for spec in content.ISSUES:
         if spec["title"] in existing:
@@ -370,6 +483,8 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--owner", required=True)
     ap.add_argument("--repo", required=True)
+    ap.add_argument("--private", action="store_true",
+                    help="create the repository private (default public)")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--only", default="", help=f"comma separated: {','.join(STEPS)}")
     ap.add_argument("--skip", default="", help="comma separated")
@@ -381,17 +496,23 @@ def main() -> int:
     print(f"\n\033[1mProvisioning {args.owner}/{args.repo}\033[0m"
           + ("  \033[33m(dry run)\033[0m" if args.dry_run else ""))
 
+    if "create" in wanted:
+        print("\033[1mRepository\033[0m")
+        run_step("create", create_repository,
+                 args.owner, args.repo, args.private, args.dry_run)
+
     try:
         repo_info = request("GET", f"/repos/{args.owner}/{args.repo}")
-        print(f"  repository found · {repo_info['visibility']} · "
+        print(f"  {args.owner}/{args.repo} · {repo_info['visibility']} · "
               f"default branch {repo_info['default_branch']}\n")
     except GitHubError as exc:
-        print(f"\n\033[31mCannot reach {args.owner}/{args.repo}: {exc.message}\033[0m")
-        print("\nCreate it first:")
-        print(f"  gh repo create {args.owner}/{args.repo} --public "
-              f"--description 'Runnable retrieval/RAG/evaluation curriculum'")
-        print("  …or at https://github.com/new")
-        return 1
+        if not args.dry_run:
+            print(f"\n\033[31mCannot reach {args.owner}/{args.repo}: {exc.message}\033[0m")
+            print("\nCreate it by hand, then re-run this script:")
+            print(f"  gh repo create {args.owner}/{args.repo} "
+                  f"--{'private' if args.private else 'public'}")
+            print("  …or at https://github.com/new")
+            return 1
 
     milestones, issues = {}, []
     if "settings" in wanted:
@@ -406,19 +527,26 @@ def main() -> int:
     if "issues" in wanted:
         print("\n\033[1mIssues\033[0m")
         if not milestones:
-            milestones = {m["title"]: m["number"] for m in request(
-                "GET", f"/repos/{args.owner}/{args.repo}/milestones?state=all&per_page=100")}
+            milestones = {m["title"]: m["number"] for m in existing_state(
+                f"/repos/{args.owner}/{args.repo}/milestones?state=all&per_page=100",
+                args.dry_run, [])}
         issues = create_issues(args.owner, args.repo, milestones, args.dry_run)
     if "discussions" in wanted:
         print("\n\033[1mDiscussions\033[0m")
-        create_discussions(args.owner, args.repo, args.dry_run)
+        run_step("discussions", create_discussions,
+                 args.owner, args.repo, args.dry_run)
     if "project" in wanted:
         print("\n\033[1mProject board\033[0m")
         if not issues and not args.dry_run:
             issues = [(i["number"], i["title"], i["state"]) for i in request(
                 "GET", f"/repos/{args.owner}/{args.repo}/issues?state=all&per_page=100")
                 if "pull_request" not in i]
-        create_project(args.owner, args.repo, issues, args.dry_run)
+        run_step("project board", create_project,
+                 args.owner, args.repo, issues, args.dry_run)
+
+    if "push" in wanted:
+        print("\n\033[1mPush\033[0m")
+        push_repository(args.owner, args.repo, args.dry_run)
 
     print(f"\n\033[1mDone.\033[0m  https://github.com/{args.owner}/{args.repo}")
     print("\nManual steps the API cannot do:")
