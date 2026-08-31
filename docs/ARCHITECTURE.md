@@ -36,34 +36,34 @@ Five decisions shape everything else. Each has an [ADR](adr/) with the alternati
 ```mermaid
 graph TB
     subgraph data["Data layer"]
-        CO[corpus.py<br/><i>fact graph → docs, chunks, eval set</i>]
-        CH[chunking.py<br/><i>7 strategies, stable ids</i>]
-        EM[embed.py<br/><i>LSA · Hashing · ST · Bedrock</i>]
+        CO["corpus.py<br/><i>fact graph → docs, chunks, eval set</i>"]
+        CH["chunking.py<br/><i>7 strategies, stable ids</i>"]
+        EM["embed.py<br/><i>LSA · Hashing · ST · Bedrock</i>"]
     end
     subgraph store["Storage layer"]
-        ST[store.py<br/><i>sqlite :memory: — FTS5, vectors,<br/>NSW graph, ACL, versions, aliases</i>]
-        TR[trace.py<br/><i>queryable trace store + diff</i>]
+        ST["store.py<br/><i>sqlite :memory: — FTS5, vectors,<br/>NSW graph, ACL, versions, aliases</i>"]
+        TR["trace.py<br/><i>queryable trace store + diff</i>"]
     end
     subgraph retrieval["Retrieval layer"]
-        RE[retrieve.py<br/><i>fusion · rerankers · packing</i>]
-        CX[context.py<br/><i>prompt assembly, volatility order</i>]
-        GE[generate.py<br/><i>extractive · Bedrock · Claude</i>]
+        RE["retrieve.py<br/><i>fusion · rerankers · packing</i>"]
+        CX["context.py<br/><i>prompt assembly, volatility order</i>"]
+        GE["generate.py<br/><i>extractive · Bedrock · Claude</i>"]
     end
     subgraph measure["Measurement layer"]
-        ME[metrics.py<br/><i>recall, nDCG, κ, bootstrap</i>]
-        JU[judge.py<br/><i>rubrics, calibration, bias probes</i>]
-        PI[pipeline.py<br/><i>config object + evaluate()</i>]
-        CS[costs.py<br/><i>tokens, cache, latency, unit economics</i>]
+        ME["metrics.py<br/><i>recall, nDCG, κ, bootstrap</i>"]
+        JU["judge.py<br/><i>rubrics, calibration, bias probes</i>"]
+        PI["pipeline.py<br/><i>config object + evaluate()</i>"]
+        CS["costs.py<br/><i>tokens, cache, latency, unit economics</i>"]
     end
     subgraph teach["Teaching layer"]
-        CA[catalog.py<br/><i>deck trees + matrices as data</i>]
-        TE[trees.py<br/><i>render · tabulate · execute</i>]
-        VI[viz.py]
-        TA[tables.py]
+        CA["catalog.py<br/><i>deck trees + matrices as data</i>"]
+        TE["trees.py<br/><i>render · tabulate · execute</i>"]
+        VI["viz.py"]
+        TA["tables.py"]
     end
-    AG[agent.py<br/><i>decompose → tool → sufficiency → stop</i>]
-    BE[bedrock.py<br/><i>KB retriever + local→AWS map</i>]
-    BO[bootstrap.py<br/><i>one-click env + seeding</i>]
+    AG["agent.py<br/><i>decompose → tool → sufficiency → stop</i>"]
+    BE["bedrock.py<br/><i>KB retriever + local→AWS map</i>"]
+    BO["bootstrap.py<br/><i>one-click env + seeding</i>"]
 
     CO --> CH --> EM --> ST
     ST --> RE --> CX --> GE

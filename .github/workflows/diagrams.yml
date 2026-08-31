@@ -1,0 +1,27 @@
+# Every mermaid block is parsed with the real mermaid parser before it can merge.
+# docs/ARCHITECTURE.md once shipped a diagram that silently failed to render because
+# of an unquoted "()" inside a [] node label; a diff review will not catch that.
+name: Diagrams
+on:
+  push:
+    paths: ["**/*.md", "**/*.mmd", "tools/**", ".github/workflows/diagrams.yml"]
+  pull_request:
+    paths: ["**/*.md", "**/*.mmd", "tools/**"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: diagrams-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  mermaid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install validator dependencies
+        run: npm install --prefix tools --no-audit --no-fund
+      - name: Parse every mermaid block
+        run: node tools/validate-mermaid.mjs

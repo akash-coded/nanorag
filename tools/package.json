@@ -1,0 +1,7 @@
+{
+  "name": "nanorag-tools",
+  "private": true,
+  "type": "module",
+  "description": "Documentation validators run in CI and locally before every push.",
+  "devDependencies": { "jsdom": "^26.0.0", "mermaid": "^11.4.0" }
+}

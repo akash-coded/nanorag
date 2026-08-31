@@ -1,10 +1,11 @@
 cff-version: 1.2.0
-title: "Advanced RAG — Hands On"
+title: "nanorag"
 message: "If you use this material in teaching or research, please cite it."
 type: software
 authors:
-  - name: "the maintainers"
-    website: "https://github.com/akash-coded/nanorag"
+  - given-names: "Akash"
+    alias: "akash-coded"
+    website: "https://github.com/akash-coded"
 repository-code: "https://github.com/akash-coded/nanorag"
 abstract: >-
   A runnable retrieval, RAG and evaluation curriculum. Ten Jupyter notebooks and a Python

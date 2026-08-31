@@ -29,3 +29,7 @@ Thumbs.db
 .idea/
 .vscode/
 !.vscode/settings.json
+
+# doc validator dependencies
+tools/node_modules/
+tools/package-lock.json
