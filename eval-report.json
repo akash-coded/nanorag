@@ -1,0 +1,56 @@
+{
+  "config": "structural/weighted/cross/k=8",
+  "slice": "all",
+  "n": 243,
+  "metrics": {
+    "evidence_recall": 0.7645,
+    "full_chain_recall": 0.4686,
+    "ndcg": 0.4767,
+    "mrr": 0.5053,
+    "context_precision": 0.2433,
+    "answer_correct": 0.4115,
+    "abstention_recall": 0.0,
+    "abstention_f1": 0.0,
+    "false_answers_on_null": 36,
+    "over_refusals": 0,
+    "n": 243,
+    "tokens_in": 884.0494,
+    "tokens_in_p95": 1123,
+    "tokens_out": 82.2058,
+    "tokens_out_p95": 98,
+    "latency_ms": 39.2183,
+    "latency_ms_p95": 54.0,
+    "cost_usd": 0.0039,
+    "cost_usd_p95": 0.0046
+  },
+  "by_question_type": [
+    {
+      "question_type": "comparison",
+      "n": 46,
+      "evidence_recall": 0.748,
+      "full_chain_recall": 0.391,
+      "answer_correct": 0.848
+    },
+    {
+      "question_type": "inference",
+      "n": 95,
+      "evidence_recall": 0.769,
+      "full_chain_recall": 0.621,
+      "answer_correct": 0.579
+    },
+    {
+      "question_type": "null",
+      "n": 36,
+      "evidence_recall": null,
+      "full_chain_recall": null,
+      "answer_correct": 0.0
+    },
+    {
+      "question_type": "temporal",
+      "n": 66,
+      "evidence_recall": 0.769,
+      "full_chain_recall": 0.303,
+      "answer_correct": 0.091
+    }
+  ]
+}
