@@ -81,7 +81,7 @@ jobs:
           echo "::error::A gated metric dropped beyond tolerance. See the scorecard above."
           exit 1
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: eval-reports

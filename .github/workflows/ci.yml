@@ -55,7 +55,7 @@ jobs:
         run: pytest -m "not notebooks" --cov=nanorag --cov-report=term-missing
       - name: Upload coverage
         if: matrix.python == '3.11'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with: { name: coverage, path: .coverage, if-no-files-found: ignore }
 
   one-click-promise:
