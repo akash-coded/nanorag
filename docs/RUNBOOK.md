@@ -9,7 +9,7 @@ Run the fault-isolation procedure before touching any configuration. Four questi
 
 ```mermaid
 flowchart TD
-    Q1{Is any gold evidence<br/>in the packed context?} -->|NO| R1[Retrieval fault<br/>→ continue to Q2<br/><b>do not touch the prompt</b>]
+    Q1{Is any gold evidence<br/>in the packed context?} -->|NO| R1["Retrieval fault<br/>→ continue to Q2<br/><b>do not touch the prompt</b>"]
     Q1 -->|YES| Q2
     R1 --> Q2{Was every gold chunk<br/>in the top-N pool?}
     Q2 -->|NO| F1["<b>First-stage recall</b><br/>chunking · encoder · fusion<br/>weights · ANN params · filters"]

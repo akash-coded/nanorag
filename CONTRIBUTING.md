@@ -95,7 +95,7 @@ Extensions plug into one of the ten [seams](docs/ARCHITECTURE.md#the-seams--wher
 1. Open an issue with a **falsifiable hypothesis** — which metric, on which slice, moving by
    how much, and why.
 2. If it touches more than one seam, post it in
-   [Discussions → Design Reviews](../../discussions/categories/design-reviews) first.
+   [Discussions → Design Reviews](https://github.com/akash-coded/nanorag/discussions/categories/design-reviews) first.
 3. Implement behind the existing interface. Off by default if it costs latency or money.
 4. Add a test. Extensions that cannot be tested cannot be maintained.
 5. Measure on dev, verify on frozen, report both.

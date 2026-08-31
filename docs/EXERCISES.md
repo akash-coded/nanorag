@@ -14,7 +14,7 @@ make test && make strip
 git push -u origin exercise/EX-04-yourname
 ```
 
-Then open an [Exercise submission issue](../../issues/new?template=exercise_submission.yml).
+Then open an [Exercise submission issue](https://github.com/akash-coded/nanorag/issues/new?template=exercise_submission.yml).
 Faculty review the branch; the issue is where the conversation and the grade live.
 
 > **The one rule that matters.** Every claimed improvement carries a 95% interval from
@@ -335,7 +335,7 @@ Run the deck's build brief end to end on a corpus of your choosing: harness firs
 three measured improvements, frozen-slice check, rubric self-assessment, decision record.
 
 Post the decision record in
-[Discussions → Show & Tell](../../discussions/categories/show-and-tell). It is the single most
+[Discussions → Show & Tell](https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell). It is the single most
 useful artefact you will produce here — see [PORTFOLIO.md](PORTFOLIO.md) for why it is also
 the one to put in front of an interviewer.
 

@@ -244,7 +244,7 @@ Being explicit about what is out of scope is part of a good design document.
 2. Comment with **your hypothesis and how you will measure it** before you write code. Faculty
    will push back on the hypothesis, which is the most useful ten minutes of the whole exercise.
 3. Post the design in
-   [Discussions → Design Reviews](../../discussions/categories/design-reviews) if it touches
+   [Discussions → Design Reviews](https://github.com/akash-coded/nanorag/discussions/categories/design-reviews) if it touches
    more than one seam.
 4. Branch, build, measure, PR. The eval gate will post your scorecard.
 

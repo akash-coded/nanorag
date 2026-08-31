@@ -8,28 +8,28 @@ onto each other — and how to run this as a cohort.
 ```mermaid
 graph LR
     subgraph S1["§1 Foundations"]
-        N1[NB 01] --> E1[EX-01..03] --> Q1["Q1 · Q17"]
+        N1["NB 01"] --> E1["EX-01..03"] --> Q1["Q1 · Q17"]
     end
     subgraph S2["§2 The eval set"]
-        N2[NB 02] --> E2[EX-04..06] --> Q2["Q1 · Q16"]
+        N2["NB 02"] --> E2["EX-04..06"] --> Q2["Q1 · Q16"]
     end
     subgraph S3["§3 System design"]
-        N3[NB 03] --> E3[EX-07..10] --> Q3["Q4 · Q10 · Q11 · Q12 · Q13"]
+        N3["NB 03"] --> E3["EX-07..10"] --> Q3["Q4 · Q10 · Q11 · Q12 · Q13"]
     end
     subgraph S4["§4 Retrieval"]
-        N4[NB 04] --> E4[EX-11..15] --> Q4["Q3 · Q7 · Q8 · Q9"]
+        N4["NB 04"] --> E4["EX-11..15"] --> Q4["Q3 · Q7 · Q8 · Q9"]
     end
     subgraph S5["§5 Context"]
-        N5[NB 05] --> E5[EX-16..18] --> Q5["Q14 · Q15 · Q16"]
+        N5["NB 05"] --> E5["EX-16..18"] --> Q5["Q14 · Q15 · Q16"]
     end
     subgraph S6["§6 Evaluation"]
-        N6[NB 06] --> E6[EX-19..20] --> Q6["Q2 · Q6 · Q18"]
+        N6["NB 06"] --> E6["EX-19..20"] --> Q6["Q2 · Q6 · Q18"]
     end
     subgraph S7["§7 Cost"]
-        N7[NB 07] --> E7[EX-21] --> Q7["Q5"]
+        N7["NB 07"] --> E7["EX-21"] --> Q7["Q5"]
     end
     subgraph S8["§8 Agents"]
-        N8[NB 08] --> E8[EX-22] --> Q8["Q5"]
+        N8["NB 08"] --> E8["EX-22"] --> Q8["Q5"]
     end
     S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8
     S8 --> CAP["NB 09 · CAP-01<br/>the build brief"]

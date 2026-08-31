@@ -3,7 +3,7 @@
 How work is tracked here, and why it is set up the way it is. This is the JIRA-shaped half of
 the playground: a board with real columns, real fields, and automation that keeps it honest.
 
-**Board:** [Advanced RAG — Delivery](../../projects) (Projects v2)
+**Board:** [Advanced RAG — Delivery](https://github.com/akash-coded/nanorag/projects) (Projects v2)
 
 ## Columns and what each one means
 

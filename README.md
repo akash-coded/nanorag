@@ -9,7 +9,7 @@
 [![Eval gate](https://github.com/akash-coded/nanorag/actions/workflows/eval-regression.yml/badge.svg)](https://github.com/akash-coded/nanorag/actions/workflows/eval-regression.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](pyproject.toml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Discussions](https://img.shields.io/badge/ask-Discussions-8A63D2)](../../discussions)
+[![Discussions](https://img.shields.io/badge/ask-Discussions-8A63D2)](https://github.com/akash-coded/nanorag/discussions)
 
 [Quick start](#quick-start) · [Architecture](#architecture) · [Curriculum](docs/CURRICULUM.md) · [Exercises](docs/EXERCISES.md) · [Interview prep](docs/INTERVIEW-PREP.md) · [Put it on your CV](docs/PORTFOLIO.md)
 
@@ -159,10 +159,10 @@ path has a p95. The control plane is what lets you change either one without gue
 flowchart LR
     subgraph IDX["🏗 INDEX PATH — offline, versioned, has a deploy"]
         direction LR
-        SRC[Sources<br/>docs · tickets · code] --> NORM[Parse &amp; normalise<br/>layout · tables · OCR]
-        NORM --> CH[Chunk &amp; enrich<br/>7 strategies · heading path · ACL]
-        CH --> EMB[Embed<br/>batched · version pinned]
-        EMB --> PUB[Publish<br/>blue/green alias swap]
+        SRC["Sources<br/>docs · tickets · code"] --> NORM["Parse &amp; normalise<br/>layout · tables · OCR"]
+        NORM --> CH["Chunk &amp; enrich<br/>7 strategies · heading path · ACL"]
+        CH --> EMB["Embed<br/>batched · version pinned"]
+        EMB --> PUB["Publish<br/>blue/green alias swap"]
     end
 
     subgraph ST["💾 STORES — sqlite3 :memory:"]
@@ -175,20 +175,20 @@ flowchart LR
 
     subgraph QRY["⚡ QUERY PATH — online, p95, every request"]
         direction LR
-        Q[Query] --> RT[Route &amp; rewrite]
+        Q["Query"] --> RT["Route &amp; rewrite"]
         RT --> HR["Hybrid retrieve<br/>N≈100"]
         HR --> FU["Fuse<br/>RRF or weighted α"]
         FU --> RR["Rerank<br/>→50"]
         RR --> PK["Pack<br/>k=8 · 6k token cap"]
-        PK --> GEN[Generate]
-        GEN --> VF[Verify &amp; cite]
+        PK --> GEN["Generate"]
+        GEN --> VF["Verify &amp; cite"]
     end
 
     subgraph CTL["🎛 CONTROL PLANE — how you change either path on purpose"]
         direction LR
-        TR[("Trace store<br/>scores · context · latency")] --> EV[Eval harness<br/>retrieval · answer · judge]
+        TR[("Trace store<br/>scores · context · latency")] --> EV["Eval harness<br/>retrieval · answer · judge"]
         EV --> GT{{Release gate<br/>blocks the deploy}}
-        GT --> FB[Feedback<br/>failures rejoin the eval set]
+        GT --> FB["Feedback<br/>failures rejoin the eval set"]
     end
 
     PUB --> ST
@@ -272,7 +272,7 @@ sequenceDiagram
     P->>C: build_prompt(...)
     C-->>P: PackedContext (stable prefix first, question last)
     P->>G: generate(query, packed)
-    G-->>P: Answer(text, citations[S#], sufficient)
+    G-->>P: Answer(text, citations["S#"], sufficient)
     P->>T: put(Trace)
     Note over T: candidates + scores + packed +<br/>answer + per-stage latency<br/>= replayable, diffable
     P-->>U: Trace
@@ -331,16 +331,16 @@ stateDiagram-v2
 flowchart TB
     subgraph WRONG["❌ POST-FILTER"]
         direction TB
-        W1[Retrieve top-k globally] --> W2[Restricted chunks are candidates]
-        W2 --> W3[…and influence every neighbour's rank]
-        W3 --> W4[Drop what the user may not see]
+        W1["Retrieve top-k globally"] --> W2["Restricted chunks are candidates"]
+        W2 --> W3["…and influence every neighbour's rank"]
+        W3 --> W4["Drop what the user may not see"]
         W4 --> W5["<b>k collapses</b><br/>8 → 0 for a narrow persona"]
         W3 --> W6["<b>scores leak</b><br/>existence inferable from<br/>result counts and latency"]
     end
     subgraph RIGHT["✅ PRE-FILTER"]
         direction TB
-        R1[ACL predicate pushed into<br/>the SQL / ANN query] --> R2[Restricted chunks were<br/>never candidates]
-        R2 --> R3[Rank]
+        R1["ACL predicate pushed into<br/>the SQL / ANN query"] --> R2["Restricted chunks were<br/>never candidates"]
+        R2 --> R3["Rank"]
         R3 --> R4["<b>full k, every time</b><br/>provably uninfluenced"]
         R2 -.->|"cost, stated up front"| R5["selective filters degrade<br/>graph traversal — measure<br/>recall <i>with</i> filters on"]
     end
@@ -357,16 +357,16 @@ groups, and post-filtering measurably collapses `k` while pre-filtering does not
 
 ```mermaid
 flowchart TD
-    Q([Question]) --> D[1 · Decompose<br/>sub-questions with a dependency order]
+    Q([Question]) --> D["1 · Decompose<br/>sub-questions with a dependency order"]
     D --> T{2 · Select a tool}
-    T -->|identifier| L[Lexical]
-    T -->|concept| V[Dense]
-    T -->|repository| GR[Grep]
-    T -->|otherwise| HY[Hybrid]
-    L & V & GR & HY --> RD[3 · Retrieve &amp; read<br/>append with provenance, never overwrite]
+    T -->|identifier| L["Lexical"]
+    T -->|concept| V["Dense"]
+    T -->|repository| GR["Grep"]
+    T -->|otherwise| HY["Hybrid"]
+    L & V & GR & HY --> RD["3 · Retrieve &amp; read<br/>append with provenance, never overwrite"]
     RD --> SC{{"4 · Sufficiency check<br/><i>separate, cheap, strict schema —<br/>not a vibe inside the main prompt</i>"}}
     SC -->|"NO — refine and loop"| T
-    SC -->|YES| SY[5 · Synthesise &amp; cite]
+    SC -->|YES| SY["5 · Synthesise &amp; cite"]
     SY --> A([Answer + trace])
 
     SC -.->|turn cap| X[["Stop: exhausted<br/><b>partial answer with a stated gap</b>"]]
@@ -478,20 +478,20 @@ This is the part most teaching repos skip, and the part interviewers actually as
 ```mermaid
 flowchart LR
     subgraph learn["Learn"]
-        N[Notebooks] --> RD[Reading assignments<br/><i>Issues, labelled cohort</i>]
+        N["Notebooks"] --> RD["Reading assignments<br/><i>Issues, labelled cohort</i>"]
     end
     subgraph ask["Ask"]
-        QA[Discussions → Q&amp;A<br/><i>searchable, answered once</i>]
-        DR[Discussions → Design Reviews<br/><i>get the objection now</i>]
+        QA["Discussions → Q&amp;A<br/><i>searchable, answered once</i>"]
+        DR["Discussions → Design Reviews<br/><i>get the objection now</i>"]
     end
     subgraph build["Build"]
-        EX[Exercise issue] --> BR[Branch] --> PR[Pull request]
+        EX["Exercise issue"] --> BR["Branch"] --> PR["Pull request"]
         PR --> EG{{Eval gate<br/><i>blocks on regression</i>}}
-        EG --> RV[Review] --> M[Merge]
+        EG --> RV["Review"] --> M["Merge"]
     end
     subgraph show["Show"]
-        ST[Discussions → Show &amp; Tell]
-        PF[docs/PORTFOLIO.md<br/><i>CV / LinkedIn</i>]
+        ST["Discussions → Show &amp; Tell"]
+        PF["docs/PORTFOLIO.md<br/><i>CV / LinkedIn</i>"]
     end
     N --> QA
     QA --> EX
