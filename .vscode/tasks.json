@@ -1,0 +1,75 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Ctrl/Cmd+Shift+B. Runs the lab whose file is open, so the shortcut means
+      // "check what I am working on" rather than "check a lab I have to name".
+      "label": "Lab: check this one",
+      "type": "shell",
+      "command": "python scripts/lab.py run '${fileDirname}'",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lab: check this one, including hidden",
+      "type": "shell",
+      "command": "python scripts/lab.py run '${fileDirname}' --hidden",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lab: what can I start?",
+      "type": "shell",
+      "command": "python scripts/lab.py next",
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lab: how far am I?",
+      "type": "shell",
+      "command": "python scripts/lab.py status",
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lab: open one",
+      "type": "shell",
+      "command": "python scripts/lab.py open ${input:labId}",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lab: list everything",
+      "type": "shell",
+      "command": "python scripts/lab.py list",
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Notebooks: open JupyterLab",
+      "type": "shell",
+      "command": "jupyter lab --no-browser --ip=0.0.0.0 --port=8888",
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Checks: everything CI runs",
+      "type": "shell",
+      "command": "ruff check nanorag tests scripts labs && python -m pytest -q && python tools/check_links.py && node tools/validate-mermaid.mjs",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "labId",
+      "type": "promptString",
+      "description": "Which lab? (e.g. L03)",
+      "default": "L01"
+    }
+  ]
+}

@@ -48,6 +48,12 @@ retriever, **not** the harness, the metrics, or the eval set. That property is t
 
 ## Quick start
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/akash-coded/nanorag?quickstart=1)
+
+One click, nothing installed — the container builds itself and opens the first lab.
+
+Or locally:
+
 ```bash
 git clone https://github.com/akash-coded/nanorag.git
 cd nanorag

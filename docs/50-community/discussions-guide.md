@@ -21,6 +21,7 @@ Start at the top and stop at the first row that matches.
 | follow a **derivation** I cannot get through | Q&A | `[maths]` |
 | ask anything else that has an answer | Q&A | — |
 | **submit** a finished exercise, with numbers | Show and Tell | `[solution · EX-NN]` |
+| submit a **lab** and get an automatic review | Show and Tell | `[submit · LNN]` |
 | report something I measured **and rejected** | Show and Tell | `[negative result]` |
 | show a finished **capstone** | Show and Tell | `[capstone]` |
 | get a **design torn apart** before I build it | Design Reviews | — |
@@ -51,6 +52,7 @@ filterable, and distinguishable at a glance.
 | `[maths]` | Q&A | `maths` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Amaths) |
 | `[errata]` | Q&A | `errata` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Aerrata) |
 | `[solution · EX-NN]` | Show and Tell | `solution` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Asolution) |
+| `[submit · LNN]` | Show and Tell | `lab` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Alab) |
 | `[negative result]` | Show and Tell | `negative-result` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Anegative-result) |
 | `[capstone]` | Show and Tell | `capstone` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Acapstone) |
 | `[round · shape]` | Interview Prep | `interview-round` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Ainterview-round) |
@@ -100,6 +102,13 @@ metadata to chunks that already carry a heading path did not improve recall on t
 2.4× storage"* is a claim someone can check and reuse.
 
 **`[capstone]`** — an end-to-end build with a decision record.
+
+**`[submit · LNN]`** — a L.A.B. simulator solution. One thread per lab, and **a workflow replies
+automatically** with a static review: do the required functions exist, is anything hardcoded from
+the brief, does the write-up carry an interval. It reads the code with Python's AST and does not
+execute it — a workflow that runs code from a public comment is remote code execution on the
+runner. Real execution happens on a pull request, where somebody with an account had to push a
+branch.
 
 **Reviewers reply with a measurement, not an opinion.** "I'd have done it differently" is not a
 review. "Here is the number that would change your conclusion" is.

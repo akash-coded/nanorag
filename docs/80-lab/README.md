@@ -5,14 +5,28 @@
 Twelve labs, eight tracks, one loop. Each is 15–50 minutes, each ends in code that either passes
 its checks or does not, and each one puts a **decision** in front of you before it lets you type.
 
-**[Start here → `labs/`](https://github.com/akash-coded/nanorag/tree/main/labs)**
+## Run it with nothing installed
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/akash-coded/nanorag?quickstart=1)
+
+One click. The container installs the toolkit, checks your SQLite has FTS5 — the lexical leg *is*
+FTS5, so a Python without it fails three notebooks in — verifies the pathway, and opens the brief
+beside the file you edit.
 
 ```bash
-python scripts/lab.py next          # what you can start right now
+python scripts/lab.py open L01      # brief on one side, starter on the other
 python scripts/lab.py run L01       # public checks
 python scripts/lab.py run L01 --hidden
+python scripts/lab.py next          # what you can start right now
 python scripts/lab.py status        # how far through you are
 ```
+
+**In the editor, `Ctrl/Cmd+Shift+B` runs the lab whose file you have open.** Not a lab you have to
+name — the one you are looking at. Other tasks are on the command palette under *Run Task*.
+
+Prefer local? The same commands work after `make setup`.
+
+**[Or read the labs on GitHub →](https://github.com/akash-coded/nanorag/tree/main/labs)**
 
 ---
 
@@ -118,6 +132,24 @@ There is no progress file. `status` runs the checks and reports what passes.
 Nothing can drift out of sync with your code, nothing can be marked complete that does not
 actually work, and a fresh clone tells you the truth immediately. It is the same argument the
 rest of this repository makes about measurement, applied to the learner.
+
+## Submitting from a discussion
+
+Every lab has a **submission thread** in Show and Tell, prefixed `[submit · LNN]`. Paste your
+solution in a fenced Python block and a workflow replies within about a minute.
+
+**The review reads your code with Python's AST. It does not run it, deliberately.** Anyone can
+comment on a public discussion, and a workflow that executes code from a comment is remote code
+execution on the runner — no amount of permission tightening changes that the code ran. So the
+automatic review checks what static analysis can honestly check:
+
+- the required functions exist, with the right names
+- you have not pasted the starter back
+- nothing is hardcoded from the brief's own examples
+- on the measurement tracks, the write-up carries an **interval**, not a point estimate
+
+That is most of what a first submission needs, and it arrives in seconds. For the real checks —
+including the hidden ones — run them in a Codespace, or open a pull request.
 
 ## Auto-evaluation
 

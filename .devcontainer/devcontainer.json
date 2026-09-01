@@ -1,0 +1,59 @@
+{
+  "name": "nanorag · L.A.B. simulator",
+
+  // Debian-based so SQLite ships with FTS5 compiled in. The lexical retrieval leg
+  // IS FTS5 -- there is no pure-Python fallback -- so postCreate asserts it rather
+  // than letting a learner discover it three notebooks later.
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+
+  "features": {
+    // Node is only for the docs validators (mermaid parser, markdown lint). The
+    // labs and notebooks need nothing but Python.
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "onCreateCommand": "bash .devcontainer/setup.sh",
+  "postAttachCommand": "python scripts/lab.py welcome",
+
+  "forwardPorts": [8888],
+  "portsAttributes": {
+    "8888": { "label": "JupyterLab", "onAutoForward": "notify" }
+  },
+
+  "hostRequirements": { "cpus": 2, "memory": "4gb", "storage": "32gb" },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
+        "bierner.markdown-mermaid",
+        "yzhang.markdown-all-in-one",
+        "GitHub.vscode-pull-request-github"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests", "labs"],
+        "editor.formatOnSave": false,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "markdown.preview.breaks": false,
+        "workbench.startupEditor": "readme",
+        "git.autofetch": true
+      }
+    },
+    "codespaces": {
+      "openFiles": [
+        "docs/80-lab/README.md",
+        "labs/L01-stable-chunk-ids/brief.md"
+      ]
+    }
+  },
+
+  "remoteUser": "vscode"
+}
