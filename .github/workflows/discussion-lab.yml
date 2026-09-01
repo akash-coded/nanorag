@@ -1,0 +1,88 @@
+# Reviews a lab solution posted in a discussion, and replies.
+#
+# SECURITY
+# --------
+# Anyone can comment on a public discussion, so the comment body is UNTRUSTED
+# INPUT. Two things follow, and both are load-bearing:
+#
+#   1. The body is never interpolated into a shell command. It reaches the
+#      script through an environment variable and a file, so a comment
+#      containing backticks or $(...) is text rather than a command.
+#
+#   2. The submission is NEVER EXECUTED. scripts/lab_submission.py reviews it
+#      with Python's AST. A workflow that runs code from a public comment is
+#      remote code execution on the runner, and no `permissions:` tightening
+#      changes the fact that the code ran. Real execution happens on a pull
+#      request, in labs.yml, where somebody with an account had to push a branch.
+#
+# Permissions are the minimum that lets it reply.
+name: Lab submissions
+on:
+  discussion:
+    types: [created]
+  discussion_comment:
+    types: [created]
+permissions:
+  contents: read
+  discussions: write
+concurrency:
+  group: lab-submission-${{ github.event.discussion.number }}-${{ github.event.comment.id || 'root' }}
+  cancel-in-progress: false
+
+jobs:
+  review:
+    # Only on a submission thread, and never on our own reply.
+    if: >
+      startsWith(github.event.discussion.title, '[submit · L') &&
+      github.event.sender.type != 'Bot' &&
+      !contains(github.event.comment.body, 'lab-submission-review')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Identify the lab from the thread title
+        id: lab
+        env:
+          TITLE: ${{ github.event.discussion.title }}
+        run: |
+          LAB=$(printf '%s' "$TITLE" | grep -oE 'L[0-9]{2}' | head -1)
+          if [ -z "$LAB" ]; then
+            echo "no lab id in the title; nothing to do"
+            echo "found=" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=$LAB" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Capture the submission
+        if: steps.lab.outputs.found != ''
+        env:
+          # Untrusted. Passed as an environment variable, never interpolated
+          # into a command line.
+          BODY: ${{ github.event.comment.body || github.event.discussion.body }}
+        run: printenv BODY > submission.md
+
+      - name: Review it, without running it
+        if: steps.lab.outputs.found != ''
+        run: |
+          python scripts/lab_submission.py \
+            --lab "${{ steps.lab.outputs.found }}" \
+            --comment-file submission.md \
+            --out review.md
+
+      - name: Reply in the thread
+        if: steps.lab.outputs.found != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('review.md', 'utf8');
+            const discussionId = context.payload.discussion.node_id;
+            const replyToId = context.payload.comment?.node_id ?? null;
+            await github.graphql(`
+              mutation($d:ID!, $b:String!, $p:ID) {
+                addDiscussionComment(input:{discussionId:$d, body:$b, replyToId:$p}) {
+                  comment { url }
+                }
+              }`, { d: discussionId, b: body, p: replyToId });

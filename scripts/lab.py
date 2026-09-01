@@ -17,6 +17,8 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import pathlib
+import shutil
+import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -41,6 +43,28 @@ def _checks_for(lab: _registry.Lab) -> list[_harness.Check]:
 def _run_one(lab: _registry.Lab, hidden: bool) -> list[_harness.Result]:
     solution = _load_module(lab.path / "starter.py", f"starter_{lab.id}")
     return _harness.run_checks(solution, _checks_for(lab), include_hidden=hidden)
+
+
+def _resolve(labs: dict, token: str) -> _registry.Lab | None:
+    """Accept L01, l01, the directory name, or any path inside a lab.
+
+    The editor tasks pass ${fileDirname}, which is a full path, and a learner
+    types L01. Both should work rather than one being the "real" way.
+    """
+    token = token.strip().rstrip("/")
+    direct = labs.get(token.upper())
+    if direct:
+        return direct
+    tail = pathlib.Path(token).name or token
+    for lab in labs.values():
+        if lab.dirname == tail or lab.id.lower() == tail.lower():
+            return lab
+    # a path deeper inside a lab, e.g. labs/L01-.../starter.py
+    for part in reversed(pathlib.Path(token).parts):
+        for lab in labs.values():
+            if lab.dirname == part:
+                return lab
+    return None
 
 
 def _passing(lab: _registry.Lab) -> bool:
@@ -95,7 +119,7 @@ def cmd_status(args) -> int:
 
 def cmd_run(args) -> int:
     labs = _registry.load()
-    lab = labs.get(args.lab_id.upper())
+    lab = _resolve(labs, args.lab_id)
     if lab is None:
         print(f"No lab {args.lab_id!r}. Try: python scripts/lab.py list")
         return 2
@@ -164,6 +188,71 @@ def cmd_index(args) -> int:
     return 0
 
 
+def cmd_welcome(args) -> int:
+    """The greeting a Codespace shows on attach.
+
+    Deliberately short. A wall of text on first attach is scrolled past, and the
+    only thing a learner needs at that moment is the next command.
+    """
+    labs = _registry.load()
+    done = {i for i, lab in labs.items() if _passing(lab)}
+    ready = sorted(_registry.unlocked(labs, done), key=lambda x: (x.track, x.id))
+
+    print(f"\n  {BOLD}nanorag · L.A.B. simulator{RESET}   "
+          f"{DIM}Look · Attribute · Build{RESET}\n")
+    if done:
+        print(f"  {GREEN}{len(done)}/{len(labs)}{RESET} labs passing.\n")
+    else:
+        print(f"  {len(labs)} labs, {len(_registry.TRACKS)} tracks. "
+              f"{DIM}Nothing passing yet -- that is the starting state.{RESET}\n")
+
+    for lab in ready[:3]:
+        print(f"    {lab.badge} {BOLD}{lab.id}{RESET}  {lab.title}")
+        print(f"       {DIM}{lab.concept}{RESET}")
+    if not ready:
+        print("    Everything unlocked is done.")
+
+    nxt = ready[0].id if ready else "L01"
+    print(f"""
+  {BOLD}open it{RESET}          python scripts/lab.py open {nxt}
+  {BOLD}check your work{RESET}  python scripts/lab.py run {nxt}
+  {BOLD}then{RESET}             python scripts/lab.py run {nxt} --hidden
+  {DIM}everything else  python scripts/lab.py list | status | next{RESET}
+
+  {DIM}In the editor: Ctrl/Cmd+Shift+B runs the lab you are looking at.{RESET}
+""")
+    return 0
+
+
+def cmd_open(args) -> int:
+    """Open a lab's brief and starter side by side.
+
+    Recreates the two-pane shape of a problem site: the brief rendered on the
+    left, the file you edit on the right. Falls back to printing the paths when
+    the `code` CLI is not on PATH, which is the case outside an editor.
+    """
+    labs = _registry.load()
+    lab = _resolve(labs, args.lab_id)
+    if lab is None:
+        print(f"No lab {args.lab_id!r}. Try: python scripts/lab.py list")
+        return 2
+
+    brief, starter = lab.path / "brief.md", lab.path / "starter.py"
+    if shutil.which("code"):
+        subprocess.run(["code", "--reuse-window", str(starter)], check=False)
+        subprocess.run(["code", "--reuse-window", "--command",
+                        "markdown.showPreviewToSide", str(brief)], check=False)
+        # the --command form is not supported by every build; open it either way
+        subprocess.run(["code", "--reuse-window", str(brief)], check=False)
+        print(f"opened {lab.id} -- brief and starter")
+    else:
+        print(f"\n  {BOLD}{lab.id} · {lab.title}{RESET}\n")
+        print(f"  brief    {brief}")
+        print(f"  edit     {starter}")
+        print(f"  check    python scripts/lab.py run {lab.id}\n")
+    return 0
+
+
 def cmd_verify(args) -> int:
     labs = _registry.load()
     problems = _registry.validate(labs)
@@ -182,6 +271,10 @@ def main() -> int:
     sub.add_parser("status").set_defaults(fn=cmd_status)
     sub.add_parser("verify").set_defaults(fn=cmd_verify)
     sub.add_parser("index").set_defaults(fn=cmd_index)
+    sub.add_parser("welcome").set_defaults(fn=cmd_welcome)
+    op = sub.add_parser("open")
+    op.add_argument("lab_id")
+    op.set_defaults(fn=cmd_open)
     run = sub.add_parser("run")
     run.add_argument("lab_id")
     run.add_argument("--hidden", action="store_true", help="include hidden checks")
