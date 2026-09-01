@@ -15,6 +15,7 @@ document grows past about 250 lines it gets split.
 | run, release or operate this | [`40-operations/runbook.md`](40-operations/runbook.md) |
 | take part in Discussions | [`50-community/discussions-guide.md`](50-community/discussions-guide.md) |
 | find a thread that already answered this | [`50-community/discussion-map.md`](50-community/discussion-map.md) |
+| **hit an error and want the fix** | [the wiki](https://github.com/akash-coded/nanorag/wiki/Common-Errors) |
 | **carry one page into a meeting** | [`60-cheatsheets/`](60-cheatsheets/) |
 | **practise, one lab at a time** | [`80-lab/`](80-lab/) — the L.A.B. simulator |
 | see what is being built next | [`70-extension/`](70-extension/) |
@@ -38,3 +39,18 @@ document grows past about 250 lines it gets split.
 | [`70-extension/`](70-extension/) | The follow-on project: does any of this transfer to a real corpus? | Contributors, anyone assessing the work |
 | [`80-lab/`](80-lab/) | The L.A.B. simulator — 12 auto-graded labs on a prerequisite DAG | Learners of every level |
 | [`90-reference/`](90-reference/) | Notation, glossary | Everyone, occasionally |
+
+---
+
+## Docs, or wiki?
+
+|  | `docs/` (here) | [the wiki](https://github.com/akash-coded/nanorag/wiki) |
+|---|---|---|
+| **Changes** | through a reviewed pull request | directly, by anyone with access |
+| **Versioned with the code** | yes | no |
+| **In CI** | links, markdown, mermaid all checked | nothing |
+| **Holds** | decisions, architecture, curriculum, labs | error strings, platform gotchas, session notes, the glossary |
+
+**The test:** if being wrong for a month would mislead somebody making a decision, it belongs here
+where a reviewer sees it. If it is a symptom or a gotcha that will be edited five times this
+month, it belongs in the wiki.

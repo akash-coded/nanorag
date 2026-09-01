@@ -1,0 +1,53 @@
+name: "🧪 Lab feedback"
+description: A L.A.B. simulator check message was unhelpful, or a brief was misleading.
+title: "[lab] "
+labels: ["lab", "type: docs"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **An unhelpful check message is a bug**, not a you problem. The messages are written to tell
+        you what to do next, and when one fails at that the lab is wrong.
+
+        Stuck rather than reporting? The [track threads](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Alab)
+        are the better place — answers accumulate where the next person looks.
+  - type: input
+    id: lab
+    attributes:
+      label: Which lab?
+      placeholder: "L06"
+    validations: { required: true }
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options:
+        - A check message did not tell me what to do
+        - The brief says something the checks do not require
+        - The checks require something the brief does not say
+        - A hidden check felt arbitrary rather than instructive
+        - The reference solution disagrees with the brief
+        - The decision in Attribute has no defensible wrong answer
+        - Something else
+    validations: { required: true }
+  - type: textarea
+    id: message
+    attributes:
+      label: Paste the check output
+      render: text
+      placeholder: "python scripts/lab.py run L06 --hidden"
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect it to tell you?
+      description: >-
+        The gap between what a message said and what you needed it to say is the fix. Be specific —
+        "it was confusing" cannot be actioned.
+    validations: { required: true }
+  - type: input
+    id: minutes
+    attributes:
+      label: Roughly how long were you stuck?
+      description: Helps rank this against other lab feedback.
+      placeholder: "25 minutes"

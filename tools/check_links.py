@@ -10,7 +10,10 @@ from __future__ import annotations
 import pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SKIP = {".git", "node_modules", ".venv", "_site", ".ipynb_checkpoints"}
+# wiki/ is the seed for the GitHub wiki, where links are extensionless page names
+# ([Common Errors](Common-Errors)) rather than file paths. Resolving them as files
+# is wrong, so they are checked by GitHub's own wiki renderer instead.
+SKIP = {".git", "node_modules", ".venv", "_site", ".ipynb_checkpoints", "wiki"}
 LINK = re.compile(r"\[[^\]]*\]\(([^)#]+?)(?:#[^)]*)?\)")
 
 def main() -> int:
@@ -18,8 +21,8 @@ def main() -> int:
     files = [m for m in sorted(ROOT.rglob("*.md")) if not SKIP & set(m.parts)]
     for md in files:
         for target in LINK.findall(md.read_text(encoding="utf-8", errors="ignore")):
-            if target.startswith(("http://", "https://", "mailto:", "<")):
-                continue
+            if target.startswith(("http://", "https://", "mailto:", "<", "?")):
+                continue  # "?" is a GitHub query string, e.g. ?template=docs.md
             if not (md.parent / target).resolve().exists():
                 broken.append(f"{md.relative_to(ROOT)} -> {target}")
     if broken:

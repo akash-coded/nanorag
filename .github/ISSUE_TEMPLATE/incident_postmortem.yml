@@ -1,0 +1,61 @@
+name: "🚨 Incident postmortem"
+description: Something broke in a way a user noticed. Record it so the next person does not rediscover it.
+title: "[postmortem] "
+labels: ["type: docs", "area: ci"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most valuable field on this form is **the detection gap** — not what broke, but why a
+        person found it before a test did. Every postmortem template has "root cause"; almost none
+        have that one, and it is the only field that changes what you build next.
+
+        Blameless. Name systems and decisions, not people.
+  - type: input
+    id: symptom
+    attributes:
+      label: What did somebody see?
+      description: In their words, not yours.
+      placeholder: "Searches for error codes stopped returning the right incident reports"
+    validations: { required: true }
+  - type: input
+    id: window
+    attributes:
+      label: When did it start, and when was it noticed?
+      description: The gap between those two is the number this form exists to shrink.
+      placeholder: "Started 3 Aug (deploy 4a2f), noticed 11 Aug by a cohort member"
+    validations: { required: true }
+  - type: textarea
+    id: wrong-hypothesis
+    attributes:
+      label: What did you think it was first, and why was that wrong?
+      description: >-
+        Required, and the second most useful field. A postmortem that goes straight to the right
+        answer teaches nobody the search, and the wrong hypothesis is usually the reasonable one.
+    validations: { required: true }
+  - type: textarea
+    id: root-cause
+    attributes:
+      label: The mechanism
+      description: What actually happened, at the level of "the analyzer split identifiers into terms present in every document".
+    validations: { required: true }
+  - type: textarea
+    id: detection-gap
+    attributes:
+      label: Why did a person find this before a test did?
+      description: >-
+        The whole point of the form. "We had no test" is an acceptable answer; "we had a test and it
+        passed" is a much more interesting one.
+    validations: { required: true }
+  - type: input
+    id: regression-test
+    attributes:
+      label: The test that now fails against the broken state
+      description: Path and test name. If there is none yet, say so and open the issue for it.
+      placeholder: "tests/test_retrieval.py::test_identifier_tokenization"
+    validations: { required: true }
+  - type: textarea
+    id: not-fixed
+    attributes:
+      label: What did you deliberately NOT fix, and why?
+      description: Scope you chose to leave. Writing it down stops it being rediscovered as a surprise.
