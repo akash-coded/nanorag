@@ -13,8 +13,8 @@ jobs:
     steps:
       - uses: actions/first-interaction@v3
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-message: |
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |
             Welcome to the playground 👋
 
             A few things that will get you a faster answer:
@@ -27,7 +27,7 @@ jobs:
               [docs/30-learning/exercises/README.md](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/README.md).
 
             A maintainer will triage this shortly.
-          pr-message: |
+          pr_message: |
             Thanks for the pull request 🙌
 
             Two things reviewers will look for first:
