@@ -151,12 +151,26 @@ def render(lab: _registry.Lab, passed, problems, notes) -> str:
         out += ["**Worth a look**", ""]
         out += [f"- {n}" for n in notes] + [""]
 
+    # Built as named strings rather than wrapped literals inside the list: implicit
+    # concatenation in a list is the pattern where one missing comma silently merges
+    # two entries, and CodeQL is right to flag it even when it is deliberate.
+    why_not_run = (
+        "**This review did not run your code**, and deliberately so — a workflow that executes"
+        " code from a public comment is remote code execution on the runner. It read your"
+        " submission with Python's AST instead."
+    )
+    labs_yml = "https://github.com/akash-coded/nanorag/blob/main/.github/workflows/labs.yml"
+    pr_route = (
+        f"or push it and open a pull request — [`labs.yml`]({labs_yml}) evaluates the lab and"
+        " comments with a full result table."
+    )
+    brief_url = f"https://github.com/akash-coded/nanorag/blob/main/labs/{lab.dirname}/brief.md"
+    footer = f"<sub>Posted by the lab submission workflow · [brief]({brief_url})</sub>"
+
     out += [
         "---",
         "",
-        "**This review did not run your code**, and deliberately so — a workflow that executes "
-        "code from a public comment is remote code execution on the runner. It read your "
-        "submission with Python's AST instead.",
+        why_not_run,
         "",
         "**To have the real checks run it**, including the hidden ones:",
         "",
@@ -165,13 +179,9 @@ def render(lab: _registry.Lab, passed, problems, notes) -> str:
         f"python scripts/lab.py run {lab.id} --hidden",
         "```",
         "",
-        "or push it and open a pull request — "
-        "[`labs.yml`](https://github.com/akash-coded/nanorag/blob/main/.github/workflows/labs.yml) "
-        "evaluates the lab and comments with a full result table.",
+        pr_route,
         "",
-        f"<sub>Posted by the lab submission workflow · "
-        f"[brief](https://github.com/akash-coded/nanorag/blob/main/labs/{lab.dirname}/brief.md)"
-        f"</sub>",
+        footer,
         "<!-- lab-submission-review -->",
     ]
     return "\n".join(out)
