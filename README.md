@@ -562,6 +562,7 @@ flowchart LR
 | Wanting to understand the code | [docs/10-architecture/overview.md](docs/10-architecture/overview.md) — HLD, LLD, every seam |
 | Putting this on a CV or LinkedIn | [docs/00-orientation/portfolio.md](docs/00-orientation/portfolio.md) |
 | Wanting one page to carry into a meeting | [docs/60-cheatsheets/](docs/60-cheatsheets/) — 8 frameworks, 5 playbooks, 4 interview sheets |
+| Wondering whether any of this transfers | [docs/70-extension/](docs/70-extension/) — the follow-on project that tests it |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Reading the papers behind it | [docs/30-learning/reading-list.md](docs/30-learning/reading-list.md) |
 
