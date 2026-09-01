@@ -1,0 +1,24 @@
+{
+  "title": "[maths] How small can I make my embeddings before retrieval degrades?",
+  "labels": [
+    "maths",
+    "area: retrieval",
+    "casebook"
+  ],
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### The question in one line\n\nI want to cut 1536-dimensional embeddings to something that fits in memory. Johnson\u2013Lindenstrauss\nis supposed to answer this \u2014 but when I plug my numbers in, the bound says I need *more*\ndimensions than I started with. What am I doing wrong?\n\n### The numbers\n\n```text\ncorpus            n = 1,200,000 chunks\ntarget distortion \u03b5 = 0.1\nJL bound          d >= 8 ln(n) / \u03b5^2  ~=  11,200\ncurrent dimension d = 1,536\n```\n\n### Where\n\n`nanorag/embed.py` \u2014 the `dim` parameter\n",
+  "answer": 2,
+  "comments": [
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nYou are not doing anything wrong \u2014 I think you have just found that JL is useless in practice.\nThe bound is famously loose. Everyone ignores it and picks 256 or 768 because those work.\n\nI would just sweep the dimension and stop thinking about the lemma.",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nRight conclusion, wrong reason, and the reason matters because it is the interview question.\n\nThe bound is not \"loose\" in the sense of being badly derived. It is a **worst-case guarantee over\nadversarial point sets** \u2014 it must hold for *any* million points, including a configuration\nconstructed to be maximally hard to project.\n\nReal embeddings are nothing like that. They sit close to a low-dimensional manifold, so their\n**intrinsic** dimension is far below 1,536, and random projection preserves what matters far\nbetter than the bound is allowed to assume.\n\nThat difference is worth being able to state, because \"the bound is loose\" sounds like you do\nnot know why, and \"the bound cannot assume structure my data has\" shows you do."
+        }
+      ]
+    },
+    {
+      "body": "Marking Dana's correction, and adding the three things the lemma does **not** promise \u2014 which is\nwhere this question usually goes next in an interview.\n\n**1 \u00b7 It says nothing about your query.** JL preserves distances *among the projected points*.\nRetrieval computes a similarity between a **query**, which was not in the set the projection was\nchosen for, and the documents. Related results cover that case; the plain lemma does not.\n\n**2 \u00b7 Preserving distance is weaker than preserving rank.** A `(1 \u00b1 \u03b5)` distortion can reorder\ntwo documents whose true distances are within `2\u03b5` of each other. **Retrieval is a ranking\nproblem and near-ties are exactly where the interesting decisions live.**\n\n**3 \u00b7 Random is not learned.** PCA, an autoencoder, or a Matryoshka-trained encoder all beat\nrandom projection at a fixed budget, because they can use the data distribution. JL's advantage\nis needing no training and no data.\n\n**What to actually do**, in order:\n\n1. If your encoder was trained with nested representations, **truncate and renormalise.** The\n   first `k` dimensions are already a usable embedding \u2014 no projection matrix, cheaper and better\n   than JL.\n2. Otherwise sweep `d` against evidence recall on your own corpus and find where the curve bends.\n3. Expect the shape the lemma predicts \u2014 graceful degradation, then a cliff \u2014 and use it to know\n   roughly where not to bother looking.\n\nFull write-up: [Johnson\u2013Lindenstrauss](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/interview-prep/01-mathematical-foundations/johnson-lindenstrauss.md). Worth reading alongside\n[Eckart\u2013Young](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/interview-prep/01-mathematical-foundations/eckart-young-and-svd.md), because the two answer the same practical\nquestion \u2014 how many dimensions \u2014 from completely different directions, and neither optimises for\nretrieval."
+    }
+  ],
+  "category": "q-a"
+}

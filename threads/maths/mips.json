@@ -1,0 +1,24 @@
+{
+  "title": "[maths] Should I normalise my embeddings? What actually breaks if I do not?",
+  "labels": [
+    "maths",
+    "area: retrieval",
+    "casebook"
+  ],
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### The question in one line\n\nEvery tutorial normalises embeddings before storing them and none of them say why. Is it just so\ncosine and dot product agree, or is something else going on?\n\n### What I have already tried\n\nStored both normalised and un-normalised copies. Rankings differ, but I cannot tell which is\n*right*, and I do not know what I would be giving up either way.\n\n### Where\n\n`nanorag/store.py` \u2014 `exact_vector()`\n",
+  "answer": 2,
+  "comments": [
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nThe short answer is that it is only so cosine and dot product agree \u2014 if `\u2016v\u2016 = 1` the\ndenominator in cosine is 1 and the two are identical. Once they agree you can use the cheaper\none, which is dot product, and every ANN library is optimised for it.\n\nSo: normalise, use dot product, move on.",
+      "replies": [
+        {
+          "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nThat is true and it is the half that does not matter much. There is a second half, and it is\nthe one that bites.\n\n**Normalising throws magnitude away, and magnitude is not always noise.** For a lot of encoders\n`\u2016v\u2016` correlates with something real \u2014 document length, or how confidently the model placed the\ntext. Two consequences:\n\n- If magnitude tracks **length**, normalising removes your only length signal in the dense leg.\n  BM25 has `b` for exactly this reason; the dense leg silently has no equivalent.\n- Some encoders emit near-zero-norm vectors for input they cannot represent \u2014 boilerplate,\n  tables, code. **Normalising a near-zero vector amplifies whatever noise it contains to unit\n  length**, and that document now competes on equal terms with everything else.\n\nWorth doing once on your own corpus: histogram `\u2016v\u2016` before normalising and read the bottom\npercentile. It is usually the junk."
+        }
+      ]
+    },
+    {
+      "body": "Marking this because the question underneath \u2014 *what breaks if I do not* \u2014 has a sharper answer\nthan either half so far.\n\n**If you keep magnitude, you are doing MIPS, and MIPS is not a metric space.**\n\nInner product fails the requirements outright: `q\u00b7q = \u2016q\u2016\u00b2` is neither zero nor minimal, and\nthere is **no triangle inequality**. Every tree- and pivot-based index \u2014 ball trees, k-d trees,\nanything that prunes using the triangle inequality \u2014 is **not slower under MIPS, it is wrong.**\nIt prunes branches that contain the answer, and it does so silently.\n\nThe standard escape is a lift that turns MIPS into ordinary nearest-neighbour search by adding\none dimension that absorbs the magnitude difference, so every document lands on a common sphere.\nFull derivation in [Cosine, dot product and MIPS](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/interview-prep/01-mathematical-foundations/cosine-dot-product-and-mips.md).\n\n**The practical answer to your actual question:** normalise, unless you have measured that\nmagnitude carries signal you want. But whichever you choose, **know which one your stack is\ndoing** \u2014 teams routinely do not, and the check is one line: are the stored vectors unit norm?\n\n**And the failure mode to fear.** Normalise at index time and not at query time, or use one\nlibrary's default and not another's, and you get a system that runs, returns plausible results,\nand is quietly mis-ranked. Nothing errors. It is the same shape as a mixed-`embedder_tag` index:\n**cosine returns well-formed numbers for vectors that mean nothing to each other.**"
+    }
+  ],
+  "category": "q-a"
+}

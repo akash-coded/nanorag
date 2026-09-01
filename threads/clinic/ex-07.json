@@ -1,0 +1,10 @@
+{
+  "category": "q-a",
+  "title": "[clinic \u00b7 EX-07] Chunking bake-off on your own corpus",
+  "labels": [
+    "clinic",
+    "type: exercise",
+    "difficulty: 2"
+  ],
+  "body": "> **Exercise clinic.** One long-running thread per exercise. Ask here rather than opening a\n> new thread \u2014 the answers accumulate where the next person will look for them.\n>\n> **Exercise:** [`EX-07` \u2014 Chunking bake-off on your own corpus](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/ex-07-chunking-bake-off-on-your-own-corpus.md) \u00b7 difficulty \ud83d\udfe1\n\n## What this exercise asks\n\nRead the exercise first; this thread is for when you are stuck, not instead of it.\n\n## Three ways people get stuck on this one\n\n**1.** Comparing strategies at different chunk counts. Fewer, larger chunks change the `k` budget's meaning, so the comparison is not like for like.\n\n**2.** Documents too short for the strategies to differ \u2014 the finding in [#5](https://github.com/akash-coded/nanorag/issues/5). If every strategy scores identically, check document length before believing it.\n\n**3.** Reporting the winner without an interval. On this corpus most chunking deltas are inside the band.\n\n## How to ask here\n\nPost the **numbers you got**, the **config that produced them**, and **what you already tried**.\nA question with a measurement in it gets answered in one round trip; a question without one\ntakes three.\n\nIf you have finished it, post the write-up in **Show and Tell** with the\n`[solution \u00b7 EX-07]` prefix rather than here \u2014 this thread stays for people who are stuck.\n"
+}

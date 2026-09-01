@@ -1,0 +1,26 @@
+{
+  "category": "show-and-tell",
+  "labels": [
+    "negative-result",
+    "area: retrieval",
+    "casebook"
+  ],
+  "title": "[negative result] HyDE cost 2 model calls per query and did not clear the band",
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### What I tried\n\nHyDE \u2014 generate a hypothetical answer to the query, embed *that* instead of the query, retrieve\nagainst it. [#9](https://github.com/akash-coded/nanorag/issues/9) proposes it; I wanted to know\nwhether to close that issue.\n\n### The result\n\n```text\n                     evidence_recall   full_chain   latency p95   calls/query\nbaseline (hybrid)          0.807          0.686         310 ms         0\n+ HyDE                     0.821          0.691       1,240 ms         1\ndelta                     +0.0140       +0.0050\n95% CI                [-0.0071, +0.0356]  [-0.031, +0.041]\nverdict            inside the band   inside the band\n```\n\n**Four times the latency and a model call per query, for a delta whose interval crosses zero.**\n\n### Why I think it did not help here\n\n**1 \u00b7 The vocabulary gap it fixes is small on this corpus.** HyDE helps when the query and the\ndocuments use different language \u2014 a short colloquial question against formal prose. Our eval\nquestions are generated from the same fact graph as the documents, so they already share\nvocabulary. **The corpus construction removes the problem HyDE solves.**\n\n**2 \u00b7 The lexical leg was already covering it.** Slicing by class, the only questions where HyDE\nmoved anything were `inference` ones, where the +0.031 was real in isolation but is one class out\nof four and does not survive the multiple-comparison argument.\n\n### What I would tell a client\n\nHyDE is a real technique with a real mechanism, and the mechanism is **vocabulary mismatch\nbetween queries and documents.** Measure that gap before paying for it: sample 30 queries, look\nat whether the terms people use appear in the documents at all. If they do, HyDE has nothing to\nclose.\n\n### What this cost me\n\nTwo hours, and I would rather have this result than the version where I ship it because the\npoint estimate was positive.\n",
+  "comments": [
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nPushing back on closing #9 off this. Your generator for the hypothetical document is the\nextractive one, isn't it? That cannot write a plausible hypothetical answer \u2014 it can only copy\nsentences that are already in the corpus.\n\nIf so, you have not tested HyDE. You have tested \"retrieve with a slightly different query made\nof corpus text\", which is nearly a no-op.",
+      "replies": [
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nChecking the write-up \u2014 it says one model call per query, so it is not the extractive path.\nMarcus's objection would be decisive if it were, though, and it is the first thing I would have\nasked too."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nFair, I misread the calls/query column. Withdrawn \u2014 though it is worth the write-up saying\n*which* generator explicitly, because that is the first thing anyone will check."
+        }
+      ]
+    },
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nEndorsing the finding and the framing, with one addition that makes it more reusable.\n\n**The transferable form is a precondition, not a verdict.** \"HyDE did not help\" is corpus-specific\nand near-useless to the next reader. \"**HyDE closes a vocabulary gap between queries and\ndocuments; measure the gap before paying for it**\" transfers to every corpus.\n\nThe diagnostic in the last section is the valuable part and should be promoted above the numbers:\nsample 30 queries, check whether their terms appear in the documents at all. That is ten minutes\nand it tells you whether the technique has anything to do.\n\n**Not closing [#9](https://github.com/akash-coded/nanorag/issues/9).** It stays open with this\nthread linked and the precondition written into it, because on a corpus with a real vocabulary\ngap the answer would very likely be different \u2014 and that is what the issue is now for."
+    }
+  ]
+}
