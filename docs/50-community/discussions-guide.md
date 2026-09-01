@@ -1,132 +1,289 @@
-# Discussions guide
+# Discussions
 
-Discussions are the internal-Stack-Overflow half of this playground. Issues are *tracked work
-with an owner*; Discussions are *everything else* — and the difference matters, because a
-question filed as an issue either sits open forever or gets closed without being searchable.
+Nine categories, eight title prefixes, one rule underneath all of them:
 
-## Prefixes: the categories GitHub will not let us create
+> **Evidence beats adjectives.** A post with a number in it gets answered in one round trip. A
+> post without one takes three, and usually the first two are people asking what you measured.
 
-This repository has **nine** discussion categories. GitHub provides no API to add more — there
-is no category mutation in the GraphQL schema, and creating one is a manual action in repository
-settings. Rather than leave the structure unbuilt, some kinds of thread carry a **title prefix**
-and a **label**. Together they do what a tenth category would have done: make a set of threads
-findable, filterable, and visually distinct in a list.
+**[Open Discussions →](https://github.com/akash-coded/nanorag/discussions)**
 
-| Prefix | Category | Label | What it is |
+---
+
+## Where does this go?
+
+Start at the top and stop at the first row that matches.
+
+| I want to… | Post in | Prefix |
+|---|---|---|
+| ask about a specific **exercise** I am stuck on | Q&A | `[clinic · EX-NN]` |
+| ask about a specific **lab** | Q&A | `[lab · TN]` |
+| say the **material is wrong** or overconfident | Q&A | `[errata]` |
+| follow a **derivation** I cannot get through | Q&A | `[maths]` |
+| ask anything else that has an answer | Q&A | — |
+| **submit** a finished exercise, with numbers | Show and Tell | `[solution · EX-NN]` |
+| report something I measured **and rejected** | Show and Tell | `[negative result]` |
+| show a finished **capstone** | Show and Tell | `[capstone]` |
+| get a **design torn apart** before I build it | Design Reviews | — |
+| practise an **interview answer** | Interview Prep | — |
+| run or read a full simulated **interview loop** | Interview Prep | `[round · shape]` |
+| argue about a **paper** | Reading Club | — |
+| propose something that does not exist yet | Ideas | — |
+| ask people to **predict** before a reveal | Polls | `[poll]` |
+| announce a release, a cohort, an **office hours** | Announcements | `[office hours · date]` |
+| introduce myself, ask about tooling or careers | General | — |
+
+**When two rows fit, take the higher one.** A question about a paper you are stuck on is Q&A;
+Reading Club is for arguing about a paper you have read.
+
+## Why prefixes exist at all
+
+GitHub has no API for creating discussion categories — there is no category mutation in the
+GraphQL schema, and creating one is a manual settings action. This repository has nine.
+
+Rather than leave the structure unbuilt, some kinds of thread carry a **title prefix and a
+matching label**, which together do what a tenth category would have done: make a set findable,
+filterable, and distinguishable at a glance.
+
+| Prefix | Category | Label | Filter |
 |---|---|---|---|
-| `[clinic · EX-NN]` | Q&A | [`clinic`](https://github.com/akash-coded/nanorag/labels/clinic) | One long-running thread per exercise. Ask here rather than opening a duplicate |
-| `[maths]` | Q&A | [`maths`](https://github.com/akash-coded/nanorag/labels/maths) | A derivation, argued out. Pairs with a page in `01-mathematical-foundations/` |
-| `[errata]` | Q&A | [`errata`](https://github.com/akash-coded/nanorag/labels/errata) | The material is wrong, or more confident than it should be. Confirmed errata become issues |
-| `[solution · EX-NN]` | Show and Tell | [`solution`](https://github.com/akash-coded/nanorag/labels/solution) | A submission, **with numbers**. Reviewers reply with a measurement, not an opinion |
-| `[negative result]` | Show and Tell | [`negative-result`](https://github.com/akash-coded/nanorag/labels/negative-result) | Measured and rejected. Full credit — this is the most useful category here |
-| `[round · <shape>]` | Interview Prep | [`interview-round`](https://github.com/akash-coded/nanorag/labels/interview-round) | A full simulated loop with a scoring rubric, not a single question |
-| `[office hours · <date>]` | Announcements | [`office-hours`](https://github.com/akash-coded/nanorag/labels/office-hours) | One dated session. Agenda before, notes after, thread stays open |
-| `[poll]` | Polls | — | Vote **before** the reveal. The gap between the vote and the measurement is the content |
+| `[clinic · EX-NN]` | Q&A | `clinic` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Aclinic) |
+| `[lab · TN]` | Q&A | `lab` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Alab) |
+| `[maths]` | Q&A | `maths` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Amaths) |
+| `[errata]` | Q&A | `errata` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Aerrata) |
+| `[solution · EX-NN]` | Show and Tell | `solution` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Asolution) |
+| `[negative result]` | Show and Tell | `negative-result` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Anegative-result) |
+| `[capstone]` | Show and Tell | `capstone` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Acapstone) |
+| `[round · shape]` | Interview Prep | `interview-round` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Ainterview-round) |
+| `[office hours · date]` | Announcements | `office-hours` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Aoffice-hours) |
+| `[poll]` | Polls | `poll` | [→](https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Apoll) |
 
-**Filtering.** The label is the reliable filter, because a title can be edited and a label cannot
-be edited by accident. To see every exercise clinic thread:
+**The label is the reliable filter.** A title can be edited by accident; a label cannot.
+
+**A prefix earns its place only when it distinguishes threads *within* a category.** "Design
+review:" inside Design Reviews is noise. `[negative result]` inside Show and Tell is not, because
+that category also holds capstones and solutions.
+
+---
+
+## The nine categories
+
+### Q&A · answerable
+
+The workhorse, and the only category where the **Mark as answer** mechanic applies.
+
+**Belongs here:** anything with a determinate answer. Stuck on an exercise or lab, a derivation
+you cannot follow, a number that disagrees with the docs, a mechanism you cannot explain.
+
+**Does not belong here:** opinions, proposals, and "what do people think about X" — those are
+General or Ideas. A question with no possible answer clutters the answered/unanswered filter,
+which is the only triage signal this category has.
+
+**A good post carries:** the numbers you got, the config that produced them, and what you already
+tried. See [asking well](#asking-a-question-that-gets-answered-once) below.
+
+**The clinic threads are pinned per exercise.** Ask there rather than opening a new thread — the
+answers accumulate where the next person will look. That is the difference between a support
+queue and a knowledge base.
+
+### Show and Tell · open
+
+Finished work, **with numbers**. Three shapes, distinguished by prefix.
+
+**`[solution · EX-NN]`** — an exercise submission. Must include your numbers, your interval, and
+**what you tried that did not work**. The last is not decoration: a submission that reports only
+the winning path teaches nobody the search.
+
+**`[negative result]`** — something you measured and rejected. Full credit, and often the most
+useful thing in the category. State the **mechanism you tested**, not the technique you were
+inspired by: *"contextual chunking does not work"* is unfalsifiable; *"prepending already-present
+metadata to chunks that already carry a heading path did not improve recall on this corpus, at
+2.4× storage"* is a claim someone can check and reuse.
+
+**`[capstone]`** — an end-to-end build with a decision record.
+
+**Reviewers reply with a measurement, not an opinion.** "I'd have done it differently" is not a
+review. "Here is the number that would change your conclusion" is.
+
+### Design Reviews · answerable
+
+Constraints in, design out, critique in the middle. An RFC that has not been built yet.
+
+**A good post carries:** the constraints that make it hard — latency, cost ceiling, residency,
+ACL cardinality, corpus size, team size, timeline — **before** the design. A design posted
+without its constraints cannot be reviewed, only admired.
+
+**Reviewers:** run the [design review checklist](../60-cheatsheets/playbooks/design-review-checklist.md).
+Say explicitly which parts survive review; a review that lists only problems reads as a verdict
+on the person rather than on the design.
+
+**The answer gets marked** when the thread reaches a decision, and the marked answer should
+contain the synthesis — what was accepted, what was rejected, and what is still open.
+
+### Interview Prep · answerable
+
+Two shapes.
+
+**Answer critique** — post an answer you want torn apart. **A self-critique is mandatory.** An
+answer posted without one gets the critique you already knew about, which wastes everyone's turn.
+
+**`[round · shape]`** — a full simulated loop: the prompt as it would be given, the clarifying
+questions that are scored, the trap, a model answer, and a rubric table. Not a single question.
+These are written to be read by someone preparing tomorrow.
+
+### Reading Club · answerable
+
+One paper per thread. The house position:
+
+> **Replicate, do not cite.** A paper we can re-run against this corpus is worth far more argued
+> about with numbers than without.
+
+**A good post carries:** the claim in one paragraph, **how we would test it here** (which
+notebook, which cell, which metric), and two or three things to argue about. If it cannot be
+tested against this corpus, say so — that is a finding about the paper's scope, not a reason to
+skip the thread.
+
+### Ideas · open
+
+Pre-issue. An idea that survives the thread becomes an issue with acceptance criteria; one that
+does not is still a useful record of something considered and rejected.
+
+**A good post carries:** the **problem** first, not the technique. Ideas that begin with a
+technique usually do not survive contact with [The Precondition
+Test](../60-cheatsheets/frameworks/precondition-test.md). Then: which metric moves, and by how
+much would it have to move to be worth the cost.
+
+### Polls · poll format
+
+Calibration. Ask people to **predict before the reveal** — the gap between the vote and the
+measurement is the teaching content, and it evaporates if you post the answer first.
+
+**The reveal protocol**, because a poll with no reveal is a survey:
+
+1. Post the scenario with the numbers people need to decide, and no more.
+2. Leave it open at least a week.
+3. Post the measurement **as a reply**, not by editing the body — editing destroys the record of
+   what people were asked.
+4. Say what the distribution of votes tells you, including when it says nothing.
+
+### Announcements · announcement format
+
+Releases, cohort kickoffs, errata roll-ups, and office hours.
+
+**`[office hours · YYYY-MM-DD]`** — one dated thread per session. Agenda before, notes after, and
+the thread **stays open**, so the answers are findable by whoever hits the same thing in three
+months.
+
+**An announcement that implies an action must name it.** If the answer is "nothing to do", say
+nothing to do.
+
+### General · open
+
+Everything that does not fit and does not have an answer. Introductions, tooling, careers,
+opinions, war stories, link round-ups.
+
+**This is not a dumping ground.** If your post has an answer, it belongs in Q&A, where the
+answered filter can find it later.
+
+---
+
+## Asking a question that gets answered once
+
+The three things that turn three round trips into one:
 
 ```text
-https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Aclinic
+1. THE NUMBERS you got        not "recall got worse" — 0.807 → 0.752
+2. THE CONFIG that produced   k, N, alpha, chunking strategy, slice, encoder
+   them                       print RagConfig next to the metric, always
+3. WHAT YOU ALREADY TRIED     including the thing that seemed obvious and failed
 ```
 
-**Why not just use the categories loosely?** Because Q&A would become a single undifferentiated
-list of eighty threads, and the whole reason a category exists is so a person scanning it can
-tell what kind of thing they are looking at. The prefix restores that in one glance.
+**And the thing most people omit: what you expected.** *"I expected widening N to move full-chain
+recall and it did not"* tells a reader which mental model to correct. *"Full-chain recall did not
+move"* tells them a fact they now have to guess the significance of.
 
-### Where to post what
-
-- **Stuck on an exercise** → the `[clinic · EX-NN]` thread for that exercise. Not a new thread —
-  the answers accumulate where the next person will look for them.
-- **Finished an exercise** → Show and Tell with `[solution · EX-NN]`, including your numbers, your
-  interval, and what you tried that did not work.
-- **A measurement that contradicts the material** → Show and Tell with `[negative result]`, or
-  Q&A with `[errata]` if you think the material is simply wrong.
-- **A derivation you cannot follow** → Q&A with `[maths]`.
-- **Anything else** → the category that fits, no prefix.
-
-## The categories
-
-| Category | Format | Use it for | Do not use it for |
-|---|---|---|---|
-| 📣 **Announcements** | Announcement | Cohort schedules, releases, breaking changes | Questions |
-| 🙋 **Q&A** | Question / answer | "Why does X?", "How do I Y?", errors, confusion | Bug reports with a reproduction (→ issue) |
-| 🏗 **Design Reviews** | Open-ended | An architecture you want challenged **before** you build it | Finished work (→ Show & Tell) |
-| 🎤 **Show & Tell** | Open-ended | Capstones, decision records, surprising results | Work in progress |
-| 📚 **Reading Club** | Open-ended | Discussion of an assigned paper | The assignment itself (→ issue) |
-| 💡 **Ideas** | Open-ended | Half-formed extension ideas | Ideas with a hypothesis (→ extension issue) |
-| 🗳 **Polls** | Poll | Session scheduling, topic prioritisation | Technical decisions — those need a design review |
-| 🎯 **Interview Prep** | Q&A | Practising an answer and getting it critiqued | Real interview questions under NDA |
-
-## Asking a question people can answer
-
-The [Q&A template](../../.github/DISCUSSION_TEMPLATE/q-a.yml) has four fields, and the second one
-is the important one.
-
-1. **The question in one line.** If you cannot, you have two questions.
-2. **What you have already tried.** This is the field that separates a question from a request.
-   It also, more often than not, contains the answer — writing it out is why.
-3. **The numbers or the traceback.** Evidence beats adjectives. "Recall seems low" is not
-   answerable; "Evidence Recall@8 is 0.61 on the temporal slice, 0.79 elsewhere" is.
-4. **Where.** Notebook and section.
-
-**A good title is a sentence someone would search for.**
-`Why does Recall@N go up but full-chain recall stay flat?`
-not `help with retrieval`
+**Before posting, check the clinic thread for your exercise.** Roughly half of new Q&A threads
+are already answered in one.
 
 ## Answering well
 
-- **Answer the question that was asked**, then say what you would have asked instead.
-- **Link the notebook cell.** "Notebook 01 §1.3 measures this" is a better answer than a
-  paragraph, because the asker can then vary it.
-- **Mark the answer.** An unanswered-looking thread gets asked again next cohort.
-- **If you are guessing, say so.** "I think it is X, but I have not measured it" is a useful
-  answer. Confident wrong answers are how a forum dies.
+- **Answer the question that was asked**, then the better question underneath it, in that order.
+  Reversing them reads as a lecture.
+- **Bring a measurement.** "I have seen this fail" beats "I would not do that", and both beat
+  seniority.
+- **Say what is still open.** An answer that resolves everything is usually hiding something.
+- **Be willing to be wrong in public.** The threads worth reading here are the ones where
+  somebody changed their mind on evidence.
 
-## Converting between surfaces
+## Thread lifecycle
 
 ```mermaid
 flowchart LR
-    Q["💬 Q&amp;A question"] -->|"turns out to be a real defect"| I["🐛 Bug issue<br/><i>with a reproduction</i>"]
-    Q -->|"answered, generally useful"| D["📄 Docs PR<br/><i>so nobody asks again</i>"]
-    DR["🏗 Design review"] -->|"design agreed"| E["🚀 Extension issue<br/><i>with a hypothesis</i>"]
-    E --> PR["🔀 Pull request"]
-    PR --> ST["🎤 Show &amp; Tell"]
-    ID["💡 Idea"] -->|"acquires a hypothesis"| E
-    ID -.->|"stays vague"| ID
-    classDef d fill:#EFEDFB,stroke:#6C5CE0,color:#101318
-    classDef i fill:#FBF1E2,stroke:#E9A83C,color:#101318
-    class Q,DR,ID,ST d
-    class I,E,PR,D i
+    A["opened"] --> B{"answerable<br/>category?"}
+    B -->|yes| C["answered<br/><i>marked</i>"]
+    B -->|no| D["runs its course"]
+    C --> E["harvested weekly into<br/>90-reference/faq.md"]
+    C --> F{"needs code?"}
+    D --> F
+    F -->|yes| G["issue with<br/>acceptance criteria"]
+    G --> H["PR with a<br/>measurement"]
+    H --> I["thread updated<br/>with what shipped"]
 ```
 
-**The rule:** a discussion becomes an issue when it acquires an *owner and acceptance
-criteria*. Until then it is a conversation, and conversations belong here.
+**Answered threads are harvested weekly** into [`90-reference/faq.md`](../90-reference/faq.md) by
+the [FAQ workflow](https://github.com/akash-coded/nanorag/blob/main/.github/workflows/faq.yml).
+It links rather than copies: the thread stays the source of truth, because it carries the argument
+that got there, which is usually the more useful half.
 
-The most valuable conversion is the second one: **a Q&A thread that has been answered three
-times is a documentation gap.** Open a docs PR and link the thread in it.
+**Closing the loop is not optional.** If a thread produces an issue, say so *in the thread* with
+the issue number. If the issue produces a PR, say what shipped. A thread that quietly stops is
+indistinguishable from one nobody read.
 
-## For faculty
+## Duplicates, supersession and disagreement
 
-- **Seeded threads are labelled as such.** Several worked examples in Q&A and Design Reviews
-  were written by faculty to model the shape of a good question and a good answer. They are
-  marked `[worked example]` in the title so nobody mistakes them for a real student's
-  question.
-- **Answer in public, always.** A DM answer helps one student; the same answer in Q&A helps
-  every future cohort. If someone asks in a DM, ask them to post it and answer there.
-- **Do not close a thread as "read the docs".** If the docs answered it, they were not
-  findable, and that is a docs issue.
-- **Use polls for scheduling only.** A technical decision made by poll is a decision with no
-  owner.
+**Duplicates** are not deleted. They are linked to the canonical thread and closed with a comment
+naming it — someone searched those words once, and they will again.
 
-## Etiquette
+**Superseded threads** get a comment at the top of the answer explaining what changed and linking
+forward. A thread whose answer is now wrong and says nothing is worse than no thread.
 
-- Search before posting. Three of the top ten most-viewed threads in a healthy cohort are
-  duplicates that got merged.
-- Post code as text in a fenced block, not as a screenshot. Screenshots are not searchable and
-  cannot be copied into a reply.
-- Redact anything from a real client. This repository is public; the corpus in it is
-  synthetic for exactly this reason.
-- Negative results are welcome in Show & Tell and are **not** failures. "I tried HyDE and it
-  did not clear the noise band, here is why I think that is" is one of the more useful things
-  you can post.
+**Disagreement resolves on evidence, never on authority.** The maintainer does not win an argument
+by being the maintainer. If a thread ends with someone deferring rather than measuring, it is a
+bad thread regardless of who was right.
+
+**Moderation** is light and stated: off-topic gets moved, not deleted. Anything that violates the
+[Code of Conduct](https://github.com/akash-coded/nanorag/blob/main/CODE_OF_CONDUCT.md) is removed
+and said so.
+
+## Casebook threads
+
+Some threads are **reconstructed conversations written for teaching**, published by the
+maintainer with illustrative roles. They carry a banner and the `casebook` label.
+
+Every number in one is reproducible from a named cell in this repository. Roles are illustrative;
+results are not. The full convention, including the fixed role vocabulary and why this is done
+openly rather than with additional accounts, is in
+[casebook-convention.md](casebook-convention.md).
+
+## What not to post
+
+- **A question with no numbers**, when you have numbers. It costs everyone two turns.
+- **A technique with no problem.** "Should we use X?" → what failure does it fix, and do we have
+  it?
+- **A benchmark result with no interval.** A point estimate is not a result.
+- **Anything confidential.** Client corpora, real customer questions, internal metrics. Threads
+  here are public and permanent.
+- **A new thread when a clinic thread exists.** Ask there.
+
+## Good first discussion
+
+New and want to contribute something useful in fifteen minutes?
+
+1. Run a lab, and post in its **track thread** what the check messages did not make obvious. Bad
+   check messages are bugs and saying so is a real contribution.
+2. Take a **paper from the reading list** you have actually read, and open a Reading Club thread
+   with a replication plan.
+3. Find a number in the docs you can reproduce, reproduce it, and post `[errata]` if it does not
+   match.
+
+The third is the highest-value thing a newcomer can do here, and it is how
+[#85](https://github.com/akash-coded/nanorag/discussions/85) happened.

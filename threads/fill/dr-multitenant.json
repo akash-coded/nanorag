@@ -1,0 +1,35 @@
+{
+  "category": "design-reviews",
+  "labels": [
+    "rfc",
+    "area: retrieval",
+    "casebook"
+  ],
+  "answer": 2,
+  "title": "Multi-tenant retrieval where two tenants want different encoders",
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### The constraints\n\n- **Tenants:** 40, from 2k to 900k chunks. Long tail\n- **Isolation:** hard. A tenant must never retrieve another's content, nor infer its existence\n- **The awkward one:** two large tenants have domain vocabulary \u2014 one legal, one clinical \u2014 and\n  want a fine-tuned encoder. The other 38 are happy with the shared one\n- **Cost:** the 38 small tenants must not pay for the 2 large ones' infrastructure\n\n### The question\n\nOne index with a tenant predicate, or an index per tenant?\n\n| | Shared + predicate | Per tenant |\n|---|---|---|\n| Isolation | a filter \u2014 one bug from a leak | physical |\n| Small tenants | cheap | 38 near-empty indexes with fixed overhead |\n| Different encoders | **impossible** \u2014 one index, one `embedder_tag` | trivial |\n| Ops | one thing to run | 40 things to run |\n\n### Proposed design: neither, exactly\n\n**Tiered.** The 38 small tenants share one index with an ACL predicate pushed into the query. The 2\nencoder-divergent tenants get their own. A router picks by tenant id, and the `Hit` interface is\nidentical either way so nothing above the router knows which shape it hit.\n\n### What I am least sure about\n\nTwo code paths that must stay behaviourally identical \u2014 and the shared one is exercised constantly\nwhile the dedicated one holds the large accounts.",
+  "comments": [
+    {
+      "body": "> **Noor** \u00b7 cohort peer \u00b7 works in a regulated bank\n\nThe tiering is right, and the isolation argument for it is stronger than the cost argument you led\nwith. I would reorder the write-up.\n\nA shared index with a predicate is one query-construction bug from a cross-tenant leak. In a\nregulated context that is not a quality incident, it is a **reportable breach** \u2014 the difference\nbetween \"we filter\" and \"they are physically separate\" is the difference between a paragraph and a\nregulator.\n\nBut do not let that argue you into 40 indexes. The right frame is: **which tenants have a\ncontractual requirement for physical separation?** That set is usually small, usually known, and\nusually **not the same set** as \"wants a custom encoder\". You may need three tiers, not two.",
+      "replies": [
+        {
+          "body": "Three tiers is right and I had collapsed two orthogonal axes into one. Encoder divergence and\nisolation requirement are different questions and I was treating them as a single tenant list."
+        }
+      ]
+    },
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nWhat will actually hurt is neither of those. It is that you now have **two code paths and one eval\nset.**\n\nThe shared path is exercised by 38 tenants continuously. The dedicated path holds your two largest\naccounts and is exercised rarely. That is backwards from where you want coverage, and it is the\nshape of every \"it worked in staging\" incident I have seen.\n\nBefore this ships:\n\n- **The eval set runs against both paths on every PR.** A path not in CI will drift, and you will\n  find out from the largest customer you have\n- **A contract test asserting behavioural equivalence.** It will fail the first time you run it,\n  and that failure is the point\n- **Per-tenant metric slices** \u2014 an aggregate across 40 tenants of wildly different sizes is\n  dominated by the two large ones and will hide a regression affecting the other 38\n\nThe last is the aggregate-hides-minority-failures problem with tenants as the slice.",
+      "replies": [
+        {
+          "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nEndorsing the contract test with a warning: it cannot assert *identical rankings* once the tenants\nhave different encoders, because the embeddings genuinely differ.\n\nIt can only assert **invariants** \u2014 ACL isolation holds, `k` is respected, no cross-tenant id ever\nappears. Write it as an invariant test, not a golden-output test, or it is permanently red and gets\ndeleted within a month."
+        },
+        {
+          "body": "Correct, and that distinction would have cost me a week. Invariants, not golden outputs."
+        }
+      ]
+    },
+    {
+      "body": "Marking Dana's, because two-paths-one-eval-set is the defect that would cause the outage; the other\ntwo are refinements to a design that would otherwise ship untested.\n\n**Accepted:** three tiers on two orthogonal axes, not two tiers on a conflated one. CI runs the\neval set against both paths. Invariant contract tests. Per-tenant slices.\n\n**Stands:** the router behind a common `Hit` interface, and the shared index for the long tail.\n\n**Open:** what happens when a small tenant grows into the encoder-divergent tier \u2014 a migration\nbetween paths with no downtime. Not designed. Probably its own thread."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "category": "polls",
+  "labels": [
+    "poll",
+    "cohort"
+  ],
+  "title": "[poll] Would you let an LLM judge gate a release?",
+  "body": "> **Calibration poll**, and the one most likely to split the room.\n\nYour judge agrees with human labels at **\u03ba = 0.64** on a 85/15 split, is self-consistent on 97% of\nrepeated inputs, and costs $0.004 per judged answer.\n\n**Do you let it block a merge?**\n\n- **A** \u2014 Yes. 0.64 is substantial and the gate is better than no gate\n- **B** \u2014 Yes, but only as a warning, never a block\n- **C** \u2014 No. Nothing automated should block on a subjective metric\n- **D** \u2014 Only after measuring whether its error correlates with what I am changing\n\n### The distinction the poll is really testing\n\nA judge with **moderate but consistent** error can still rank two systems correctly, because a\nsystematic bias applies to both arms and cancels in a paired comparison. A judge with **high but\nerratic** error cannot.\n\nSo \"is \u03ba high enough\" is the wrong question. The right one is in [The Calibration\nTriangle](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/frameworks/calibration-triangle.md).\n---\n\n**How to vote.** The API cannot create a native poll widget, so vote with a reaction on this post \u2014 \ud83d\udc4d A \u00b7 \ud83c\udf89 B \u00b7 \ud83d\ude04 C \u00b7 \ud83d\ude80 D \u2014 and reply if your answer needs a condition attached. The reveal is posted as a **reply** in about a week, never by editing this body: editing would destroy the record of what you were actually asked.\n"
+}

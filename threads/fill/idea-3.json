@@ -1,0 +1,9 @@
+{
+  "category": "ideas",
+  "labels": [
+    "area: docs",
+    "good first issue"
+  ],
+  "title": "A retrieval postmortem template, and a public incident log",
+  "body": "### The problem\n\n[`docs/40-operations/`](https://github.com/akash-coded/nanorag/tree/main/docs/40-operations) has a runbook for a live incident and\nnothing for afterwards. The\n[incident runbook](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/playbooks/retrieval-incident-runbook.md) ends\nwith *\"write the detection gap down\"* and there is nowhere to write it.\n\n### The proposal\n\nAn issue template and `docs/40-operations/incident-log.md`:\n\n```text\nsymptom            what a user saw, in their words\nfirst hypothesis   including the wrong one, named\nroot cause         the mechanism\ndetection gap      why a user found it before a test did   <- the valuable line\nregression test    the test that now fails against the broken state\nwhat we did NOT fix and why\n```\n\n### Why the detection gap is the point\n\nEvery postmortem template has \"root cause\". Almost none have **\"what measurement would have caught\nthis before a user did\"**, which is the only line that changes what you build next.\n\nThis repository has three ready-made entries: [#1](https://github.com/akash-coded/nanorag/issues/1), [#2](https://github.com/akash-coded/nanorag/issues/2) and\n[#7](https://github.com/akash-coded/nanorag/issues/7). Backfilling them is a good first contribution."
+}

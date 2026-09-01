@@ -1,0 +1,9 @@
+{
+  "category": "general",
+  "labels": [
+    "community",
+    "area: evaluation"
+  ],
+  "title": "The one number you wish you had measured six months earlier",
+  "body": "One reply each. The number, why you did not have it, and what it would have changed.\n\nMine is the **ungrounded baseline** \u2014 what the model scores on the eval set with *no retrieved\ncontext at all*.\n\nIt costs one run. Without it, every `answer_correct` you report is uninterpretable, because you\ncannot tell the system's contribution from the model's prior knowledge. It is the *right by\naccident* floor from [The Four\nVerdicts](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/frameworks/four-verdicts.md), and I have never once\nseen it in a client deck.\n\n### Suggested shape\n\n```text\nthe number        what it is\nwhy you lacked it nobody asked / seemed obvious / no harness\nwhat it changed   the decision you would have made differently\n```\n\nAnswers that are a *category* of number rather than a specific one are fine \u2014 \"anything with an\ninterval\" is a legitimate entry and probably the most common one."
+}

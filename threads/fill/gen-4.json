@@ -1,0 +1,9 @@
+{
+  "category": "general",
+  "labels": [
+    "community",
+    "area: evaluation"
+  ],
+  "title": "A tooling census \u2014 what do you actually use to evaluate?",
+  "body": "Not what you would recommend. What is **actually running** in your repository right now.\n\n```text\neval harness      home-grown / ragas / promptfoo / deepeval / notebook / none\ngold labels       hand-labelled / synthetic / LLM-generated / production feedback / none\njudge             human / model / string match / none\nruns on           every PR / nightly / when someone remembers / never\nblocks a merge    yes / no\neval set size     a number\n```\n\n### Why \"none\" is a fine answer\n\nMore than half of production RAG systems have no eval set at all, and the people who say so\nhonestly are more useful in this thread than the people who describe an aspiration.\n\nIf your answer to **blocks a merge** is no, say what would have to be true for it to become yes.\nThat is usually the interesting constraint, and it is rarely technical."
+}

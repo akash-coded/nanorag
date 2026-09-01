@@ -1,0 +1,8 @@
+{
+  "category": "general",
+  "labels": [
+    "community"
+  ],
+  "title": "The retrieval opinion you hold that most people here would disagree with",
+  "body": "One per reply. Argue for it in a paragraph. **Bring a number if you have one** \u2014 but an opinion\nyou cannot yet support is still worth posting, because someone may have the measurement.\n\nTo start, three of mine, all of which I have been argued with about:\n\n**1 \u00b7 Most reranking is an expensive identity function.** If the reranker's features overlap the\nfirst stage's, it re-sorts by information the pipeline already used. This repo measured one making\nretrieval *worse at every k*. The general rule is in [The Reranker\nMirror](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/frameworks/reranker-mirror.md).\n\n**2 \u00b7 Growing the eval set beats almost every engineering option, and nobody does it.** A day of\ngenerator work moves more decisions than a month of tuning, because it changes what you can *see*.\nEvery argument about whether a 2-point delta is real is an argument about `n`.\n\n**3 \u00b7 Chunking strategy is over-discussed and analyzer configuration is under-discussed.** People\nwill spend a week on semantic chunking and never check whether their tokenizer splits\n`ERR_CONN_RESET` into three terms that appear in every document. One of those is worth a week.\n\n### The rule for this thread\n\nDisagree with the claim, not the person, and **prefer evidence to seniority**. A thread where the\nloudest person wins is a thread nobody learns from."
+}

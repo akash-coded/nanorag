@@ -1,0 +1,9 @@
+{
+  "category": "ideas",
+  "labels": [
+    "lab",
+    "help wanted"
+  ],
+  "title": "A public leaderboard for the L.A.B. simulator \u2014 and why it might be a bad idea",
+  "body": "### The problem\n\n12 labs, auto-graded, and no way for a learner to see progress except locally. There is no signal\nthat anyone else is doing this, which for a solo learner is most of the motivation.\n\n### The proposal\n\nCI already evaluates a submission on a pull request. It could append `(user, lab, timestamp)` to a\nJSON file and Pages could render a table \u2014 labs completed, tracks finished, first-to-solve.\n\n### The argument against, which I think is stronger\n\n**A leaderboard optimises for completion, and these labs are not about completion.** The hidden\nchecks exist so you fail once and learn what the brief left out. A leaderboard rewards passing\nfast, which rewards reading `reference.py` \u2014 and the debrief, which is where the actual teaching\nis, becomes the thing you skip.\n\n### The version I would build instead\n\nA **progress wall**, not a ranking: who has completed which tracks, no times, no order, no\nfirst-to-solve. Cohort visibility without a race.\n\nArgue me out of the stronger version if you think I am wrong \u2014 I am not confident."
+}

@@ -1,0 +1,9 @@
+{
+  "category": "ideas",
+  "labels": [
+    "lab",
+    "help wanted"
+  ],
+  "title": "Generate a lab from a notebook section",
+  "body": "### The problem\n\n12 labs, ten notebooks, and roughly forty distinct mechanisms taught across them. The\n[pathway](https://github.com/akash-coded/nanorag/blob/main/docs/80-lab/README.md) has obvious gaps \u2014 nothing on ANN parameters,\nnothing on prompt assembly, nothing on agent stopping rules beyond L11's neighbourhood.\n\nWriting a lab is five files and, honestly, most of a day.\n\n### The proposal\n\nA scaffolder: `python scripts/new_lab.py --track T3 --title \"...\"` writes the five files with the\nbrief's four beats stubbed, a starter with a `NotImplementedError`, and a checks file with one\npublic and one hidden check already wired up.\n\n### What it must NOT do\n\n**Generate the content.** The value of a lab is the decision in the Attribute section, and a\ngenerated decision whose alternatives are obviously bad is a quiz, not a decision. The scaffolder\nshould refuse to leave the Attribute section empty \u2014 a lab with no real choice in it should fail\n`test_labs.py`, and that check is worth writing first.\n\n### The harder question underneath\n\n**Which mechanisms deserve a lab at all?** Not everything does. A lab is worth it when there is a\n*decision* with defensible wrong answers. Where there is one right way, a docs page is better and\ncheaper. That triage is the actual work here."
+}
