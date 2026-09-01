@@ -1,0 +1,13 @@
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For anything that does not fit another category. If you are stuck on something
+        specific, [Q&A](https://github.com/akash-coded/nanorag/discussions/categories/q-a)
+        will get you a better answer.
+  - type: textarea
+    id: body
+    attributes:
+      label: What is on your mind?
+    validations: { required: true }

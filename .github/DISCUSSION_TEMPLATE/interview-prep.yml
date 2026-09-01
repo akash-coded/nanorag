@@ -1,0 +1,35 @@
+title: "[interview] "
+labels: ["cohort"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Post an answer you want torn apart, or a question you were asked and fumbled.
+        The bank is in [docs/30-learning/interview-prep/](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/interview-prep/README.md).
+  - type: textarea
+    id: question
+    attributes:
+      label: The question
+      description: Verbatim if you were asked it. Say which company shape it came from if you can.
+      placeholder: "How would you separate a retrieval failure from a generation failure?"
+    validations: { required: true }
+  - type: textarea
+    id: answer
+    attributes:
+      label: Your answer
+      description: What you actually said, or would say. Not the polished version.
+    validations: { required: true }
+  - type: textarea
+    id: self-critique
+    attributes:
+      label: What you already think is weak about it
+      description: >-
+        Required, and it is the most useful part. An answer posted without a self-critique
+        usually gets the critique you already knew about.
+    validations: { required: true }
+  - type: dropdown
+    id: round
+    attributes:
+      label: Round type
+      options: [Screen, Technical depth, System design, Case / take-home, Behavioural, Not sure]
+    validations: { required: true }

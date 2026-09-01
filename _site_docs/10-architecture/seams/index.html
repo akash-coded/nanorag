@@ -1,0 +1,2441 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The whole retrieval stack — BM25, dense, ANN, fusion, reranking, evaluation — with no vector database, no framework and no API key.">
+      
+      
+      
+        <link rel="canonical" href="https://akash-coded.github.io/nanorag/10-architecture/seams/">
+      
+      
+        <link rel="prev" href="../overview/">
+      
+      
+        <link rel="next" href="../../20-decisions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>The seams - nanorag</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#extension-points" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="nanorag" class="md-header__button md-logo" aria-label="nanorag" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            nanorag
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              The seams
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/akash-coded/nanorag" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    akash-coded/nanorag
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="nanorag" class="md-nav__button md-logo" aria-label="nanorag" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    nanorag
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/akash-coded/nanorag" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    akash-coded/nanorag
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orientation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Orientation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-orientation/start-here/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start here
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-orientation/curriculum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Curriculum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-orientation/portfolio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Put it on your CV
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The seams
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tier-1-high-value-well-understood-sm-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 — high value, well understood, S/M effort
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 1 — high value, well understood, S/M effort">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-hyde-hypothetical-document-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. HyDE — hypothetical document embeddings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-query-decomposition-that-actually-pays" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Query decomposition that actually pays
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-reciprocal-rank-fusion-with-learned-per-class-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Reciprocal rank fusion with learned per-class weights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-cross-encoder-distillation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cross-encoder distillation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-semantic-answer-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Semantic answer caching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-query-rewriting-with-conversation-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Query rewriting with conversation state
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-2-structural-changes-worth-a-cohort-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 2 — structural changes worth a cohort project
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 2 — structural changes worth a cohort project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7-graphrag-knowledge-graph-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GraphRAG / knowledge-graph retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-raptor-recursive-summarisation-trees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. RAPTOR — recursive summarisation trees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-colbert-true-late-interaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. ColBERT / true late interaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-self-rag-corrective-rag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Self-RAG / corrective RAG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-multi-vector-document-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Multi-vector document representation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-learned-sparse-retrieval-splade-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Learned sparse retrieval (SPLADE-style)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-3-evaluation-and-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 3 — evaluation and operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 3 — evaluation and operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#13-a-real-judge-calibrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. A real judge, calibrated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-position-sensitivity-measured-on-a-real-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Position sensitivity, measured on a real model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-multi-turn-conversational-eval-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Multi-turn conversational eval set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-per-tenant-metric-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Per-tenant metric dashboards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-adversarial-robustness-eval-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Adversarial / robustness eval set
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-4-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 4 — infrastructure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 4 — infrastructure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#18-real-ann-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Real ANN backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-streaming-generation-and-time-to-first-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. Streaming generation and time-to-first-token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#20-incremental-index-with-a-real-cdc-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Incremental index with a real CDC source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-deliberately-not-implemented-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts deliberately not implemented, and why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claiming-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claiming one
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../20-decisions/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Template
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0001-in-memory-sqlite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 In-memory SQLite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0002-synthetic-corpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0002 Synthetic corpus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0003-lsa-default-encoder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0003 LSA default encoder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0004-stable-chunk-ids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0004 Stable chunk ids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0005-learned-reranker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0005 Learned reranker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0006-matplotlib-diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0006 Matplotlib diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0007-report-negative-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0007 Report negative results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../20-decisions/0008-eval-gate-in-ci/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0008 Eval gate in CI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../30-learning/exercises/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../30-learning/interview-prep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interview prep
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../30-learning/reading-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading list
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../40-operations/runbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../40-operations/project-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../40-operations/github-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Community
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Community
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../50-community/discussions-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discussions guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../50-community/casebook-convention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Casebook convention
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../90-reference/notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tier-1-high-value-well-understood-sm-effort" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 — high value, well understood, S/M effort
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 1 — high value, well understood, S/M effort">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-hyde-hypothetical-document-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. HyDE — hypothetical document embeddings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-query-decomposition-that-actually-pays" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Query decomposition that actually pays
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-reciprocal-rank-fusion-with-learned-per-class-weights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Reciprocal rank fusion with learned per-class weights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-cross-encoder-distillation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Cross-encoder distillation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-semantic-answer-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Semantic answer caching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-query-rewriting-with-conversation-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Query rewriting with conversation state
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-2-structural-changes-worth-a-cohort-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 2 — structural changes worth a cohort project
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 2 — structural changes worth a cohort project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7-graphrag-knowledge-graph-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. GraphRAG / knowledge-graph retrieval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-raptor-recursive-summarisation-trees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. RAPTOR — recursive summarisation trees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-colbert-true-late-interaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. ColBERT / true late interaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-self-rag-corrective-rag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Self-RAG / corrective RAG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-multi-vector-document-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Multi-vector document representation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-learned-sparse-retrieval-splade-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Learned sparse retrieval (SPLADE-style)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-3-evaluation-and-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 3 — evaluation and operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 3 — evaluation and operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#13-a-real-judge-calibrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. A real judge, calibrated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-position-sensitivity-measured-on-a-real-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Position sensitivity, measured on a real model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-multi-turn-conversational-eval-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Multi-turn conversational eval set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-per-tenant-metric-dashboards" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Per-tenant metric dashboards
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-adversarial-robustness-eval-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Adversarial / robustness eval set
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-4-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 4 — infrastructure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tier 4 — infrastructure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#18-real-ann-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Real ANN backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#19-streaming-generation-and-time-to-first-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19. Streaming generation and time-to-first-token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#20-incremental-index-with-a-real-cdc-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Incremental index with a real CDC source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-deliberately-not-implemented-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts deliberately not implemented, and why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claiming-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claiming one
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/akash-coded/nanorag/edit/main/docs/10-architecture/seams.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="extension-points">Extension points<a class="headerlink" href="#extension-points" title="Permanent link">&para;</a></h1>
+<p>Twenty techniques you can add, each with a falsifiable hypothesis, the seam it plugs into, what
+it costs, and how you would know it worked. <strong>Open items are labelled <code>type: extension</code> and
+<code>good first issue</code> in the tracker</strong> — claim one by commenting on its issue.</p>
+<p>The <a href="../overview/#the-seams--where-to-plug-things-in">seams</a> are numbered ①–⑩. If your idea
+does not fit exactly one, it is probably two ideas.</p>
+<blockquote>
+<p><strong>Every entry here is written as a hypothesis, not a feature.</strong> "Improves quality" is not a
+hypothesis. "Full-chain recall on the comparison slice rises ≥5 points at unchanged k,
+because both hops become retrievable from a single decomposed query" is.</p>
+</blockquote>
+<hr />
+<h2 id="tier-1-high-value-well-understood-sm-effort">Tier 1 — high value, well understood, S/M effort<a class="headerlink" href="#tier-1-high-value-well-understood-sm-effort" title="Permanent link">&para;</a></h2>
+<h3 id="1-hyde-hypothetical-document-embeddings">1. HyDE — hypothetical document embeddings<a class="headerlink" href="#1-hyde-hypothetical-document-embeddings" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ③</strong> · effort M · <em>Gao et al., 2022</em></p>
+<p>Generate a hypothetical answer to the query, embed <em>that</em> instead of the query, and search.
+The generated answer lives in document-space rather than question-space, which closes part of
+the asymmetry a bi-encoder has to bridge.</p>
+<ul>
+<li><strong>Hypothesis:</strong> dense-leg evidence recall on the descriptor/paraphrase slice rises ≥8 points;
+  no change on the identifier slice.</li>
+<li><strong>Costs:</strong> one generation per query on the critical path (~300–800 ms, real money). Fails
+  loudly when the model hallucinates a plausible answer in the wrong domain.</li>
+<li><strong>Measure:</strong> slice by query class — this should help exactly one class and it is a red flag
+  if it helps all of them equally.</li>
+<li><strong>Offline path:</strong> template-generated pseudo-answers from the fact graph, clearly labelled.</li>
+</ul>
+<h3 id="2-query-decomposition-that-actually-pays">2. Query decomposition that actually pays<a class="headerlink" href="#2-query-decomposition-that-actually-pays" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑩</strong> · effort M</p>
+<p>Notebook 09 finds routed decomposition adds candidates that never win a slot — because at
+N=100 the pool already contained them. Make it pay by <em>narrowing</em> N and decomposing, so each
+sub-question gets its own small pool.</p>
+<ul>
+<li><strong>Hypothesis:</strong> at N=30 per sub-question (90 total), full-chain recall beats N=100 single-query
+  at equal total candidates.</li>
+<li><strong>Costs:</strong> more retrieval calls; a router you must evaluate separately.</li>
+<li><strong>Measure:</strong> hold total candidates constant. That is the only fair comparison.</li>
+</ul>
+<h3 id="3-reciprocal-rank-fusion-with-learned-per-class-weights">3. Reciprocal rank fusion with learned per-class weights<a class="headerlink" href="#3-reciprocal-rank-fusion-with-learned-per-class-weights" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ④</strong> · effort S · builds on EX-13</p>
+<p>Notebook 04 shows a single global α is a compromise. Learn α per query class from the dev set.</p>
+<ul>
+<li><strong>Hypothesis:</strong> routed α beats the best global α by ≥3 points evidence recall, and the gain
+  holds on frozen.</li>
+<li><strong>Costs:</strong> a classifier that is a second system with its own precision/recall.</li>
+<li><strong>Watch for:</strong> the router's errors concentrating on exactly the queries that needed help.</li>
+</ul>
+<h3 id="4-cross-encoder-distillation">4. Cross-encoder distillation<a class="headerlink" href="#4-cross-encoder-distillation" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑤</strong> · effort M</p>
+<p>Use the (expensive) reranker to label pairs, then train a cheaper model — or better features
+for the existing one — on those labels.</p>
+<ul>
+<li><strong>Hypothesis:</strong> matches cross-encoder nDCG within 2 points at &lt;20% of the latency.</li>
+<li><strong>Costs:</strong> an offline labelling run; a model that inherits the teacher's biases.</li>
+</ul>
+<h3 id="5-semantic-answer-caching">5. Semantic answer caching<a class="headerlink" href="#5-semantic-answer-caching" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑧</strong> · effort S</p>
+<p>Cache full answers keyed on a query embedding, serve on a near-match.</p>
+<ul>
+<li><strong>Hypothesis:</strong> ≥25% hit rate on a realistic traffic mix at a similarity threshold that keeps
+  false-hit rate under 1%.</li>
+<li><strong>Costs:</strong> <em>"varies wildly"</em> in the deck's cost table, and for a reason — a near-miss cache hit
+  serves a confidently wrong answer. <strong>This is the one extension that can make quality worse
+  while every dashboard improves.</strong></li>
+<li><strong>Measure:</strong> you must measure the false-hit rate, not just the hit rate. Most implementations
+  do not.</li>
+</ul>
+<h3 id="6-query-rewriting-with-conversation-state">6. Query rewriting with conversation state<a class="headerlink" href="#6-query-rewriting-with-conversation-state" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ③</strong> · effort M</p>
+<p>Resolve pronouns and ellipsis against conversation history before retrieving.</p>
+<ul>
+<li><strong>Hypothesis:</strong> on a multi-turn variant of the eval set, evidence recall on follow-up turns
+  rises ≥15 points.</li>
+<li><strong>Costs:</strong> requires building the multi-turn eval set first — which is most of the work, and
+  the more valuable half.</li>
+</ul>
+<hr />
+<h2 id="tier-2-structural-changes-worth-a-cohort-project">Tier 2 — structural changes worth a cohort project<a class="headerlink" href="#tier-2-structural-changes-worth-a-cohort-project" title="Permanent link">&para;</a></h2>
+<h3 id="7-graphrag-knowledge-graph-retrieval">7. GraphRAG / knowledge-graph retrieval<a class="headerlink" href="#7-graphrag-knowledge-graph-retrieval" title="Permanent link">&para;</a></h3>
+<p><strong>Seams ①③</strong> · effort L · <em>the LinkedIn case study in notebook 03</em></p>
+<p>Parse documents into entities and relations; retrieve over sub-graphs so the unit returned is a
+coherent case rather than a fragment.</p>
+<ul>
+<li><strong>Hypothesis:</strong> on the incident+KB question class, full-chain recall rises ≥10 points because
+  both halves of a case arrive together.</li>
+<li><strong>Costs:</strong> a parser per source system, a graph store to operate, a schema to maintain as
+  templates change. Worth it for highly structured, high-volume corpora and rarely otherwise.</li>
+<li><strong>Start from:</strong> notebook 03's crude case-level pairing, which already moves the number.</li>
+</ul>
+<h3 id="8-raptor-recursive-summarisation-trees">8. RAPTOR — recursive summarisation trees<a class="headerlink" href="#8-raptor-recursive-summarisation-trees" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ①</strong> · effort L · <em>Sarthi et al., 2024</em></p>
+<p>Cluster chunks, summarise clusters, recurse. Retrieve at whichever level of abstraction the
+query needs.</p>
+<ul>
+<li><strong>Hypothesis:</strong> on "what changed across the quarter" style questions, evidence recall rises
+  where flat chunking cannot help at all.</li>
+<li><strong>Costs:</strong> index-time model calls that must be re-paid on every corpus refresh; a tree to
+  keep fresh.</li>
+<li><strong>Watch for:</strong> summaries that are retrievable but not <em>citable</em> — provenance gets harder.</li>
+</ul>
+<h3 id="9-colbert-true-late-interaction">9. ColBERT / true late interaction<a class="headerlink" href="#9-colbert-true-late-interaction" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑤</strong> · effort L</p>
+<p>The toolkit has MaxSim over LSA term vectors. Do it properly with a trained late-interaction
+model.</p>
+<ul>
+<li><strong>Hypothesis:</strong> within 3 points of cross-encoder quality at ~⅕ the latency.</li>
+<li><strong>Costs:</strong> 10–100× storage for token-level vectors. Measure the storage, not just the latency.</li>
+</ul>
+<h3 id="10-self-rag-corrective-rag">10. Self-RAG / corrective RAG<a class="headerlink" href="#10-self-rag-corrective-rag" title="Permanent link">&para;</a></h3>
+<p><strong>Seams ⑧⑩</strong> · effort L · <em>Asai et al., 2023; Yan et al., 2024</em></p>
+<p>The model critiques its own retrieval and decides to re-retrieve, use the evidence, or abstain.</p>
+<ul>
+<li><strong>Hypothesis:</strong> <strong>abstention F1 rises above 0.38</strong> — the open problem in this repo (EX-18).</li>
+<li><strong>Costs:</strong> extra model calls per query; a critique step that is itself a component that can
+  regress.</li>
+<li><strong>This is the highest-value open item in the repo.</strong> See EX-18.</li>
+</ul>
+<h3 id="11-multi-vector-document-representation">11. Multi-vector document representation<a class="headerlink" href="#11-multi-vector-document-representation" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ②</strong> · effort M</p>
+<p>Represent a document by several vectors (per section, per claim) rather than one per chunk.</p>
+<ul>
+<li><strong>Hypothesis:</strong> on documents where the answer is a small part of a long text, evidence recall
+  rises without shrinking chunks.</li>
+<li><strong>Costs:</strong> index size; a merge rule for per-document scores.</li>
+</ul>
+<h3 id="12-learned-sparse-retrieval-splade-style">12. Learned sparse retrieval (SPLADE-style)<a class="headerlink" href="#12-learned-sparse-retrieval-splade-style" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ③</strong> · effort L</p>
+<p>Term-weighted sparse vectors learned by a model — lexical matching with learned expansion.</p>
+<ul>
+<li><strong>Hypothesis:</strong> closes most of the gap between BM25 and dense on the paraphrase slice while
+  keeping identifier performance.</li>
+<li><strong>Costs:</strong> a model at index time; an inverted index that no longer holds the original terms,
+  which makes debugging harder.</li>
+</ul>
+<hr />
+<h2 id="tier-3-evaluation-and-operations">Tier 3 — evaluation and operations<a class="headerlink" href="#tier-3-evaluation-and-operations" title="Permanent link">&para;</a></h2>
+<h3 id="13-a-real-judge-calibrated">13. A real judge, calibrated<a class="headerlink" href="#13-a-real-judge-calibrated" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑨</strong> · effort M</p>
+<p>Replace <code>HeuristicJudge</code> with <code>BedrockJudge</code> and run the full calibration loop against human
+labels (EX-19).</p>
+<ul>
+<li><strong>Hypothesis:</strong> κ against humans ≥0.6, and judge–human agreement ≥ human–human agreement.</li>
+<li><strong>Costs:</strong> real money per evaluation run; a judge that can drift.</li>
+</ul>
+<h3 id="14-position-sensitivity-measured-on-a-real-model">14. Position sensitivity, measured on a real model<a class="headerlink" href="#14-position-sensitivity-measured-on-a-real-model" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑦</strong> · effort S · EX-17</p>
+<ul>
+<li><strong>Hypothesis:</strong> the U-curve exists and the spread is ≥5 points on this eval set.</li>
+<li><strong>Costs:</strong> one API run. Cheap, and almost nobody does it.</li>
+</ul>
+<h3 id="15-multi-turn-conversational-eval-set">15. Multi-turn conversational eval set<a class="headerlink" href="#15-multi-turn-conversational-eval-set" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑨</strong> · effort L</p>
+<ul>
+<li><strong>Hypothesis:</strong> single-turn metrics overstate multi-turn performance by ≥10 points.</li>
+<li><strong>Costs:</strong> building the set is the work. It is also the deliverable.</li>
+</ul>
+<h3 id="16-per-tenant-metric-dashboards">16. Per-tenant metric dashboards<a class="headerlink" href="#16-per-tenant-metric-dashboards" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑨</strong> · effort S</p>
+<p>Slice every metric by tenant and alert when one drops while the average holds.</p>
+<ul>
+<li><strong>Hypothesis:</strong> catches at least one regression that the global average hides.</li>
+<li><strong>Costs:</strong> almost nothing. This is the highest value-per-hour item on the page.</li>
+</ul>
+<h3 id="17-adversarial-robustness-eval-set">17. Adversarial / robustness eval set<a class="headerlink" href="#17-adversarial-robustness-eval-set" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑨</strong> · effort M</p>
+<p>Typos, wrong entity names, leading questions, prompt injection in retrieved documents.</p>
+<ul>
+<li><strong>Hypothesis:</strong> answer correctness degrades gracefully on typos but the <strong>injection cases
+  reveal a real vulnerability</strong> — retrieved content is untrusted input and the current prompt
+  contract does not treat it that way.</li>
+<li><strong>Costs:</strong> none. This one is nearly free and has a security dimension worth a section of its
+  own.</li>
+</ul>
+<hr />
+<h2 id="tier-4-infrastructure">Tier 4 — infrastructure<a class="headerlink" href="#tier-4-infrastructure" title="Permanent link">&para;</a></h2>
+<h3 id="18-real-ann-backend">18. Real ANN backend<a class="headerlink" href="#18-real-ann-backend" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ③</strong> · effort M</p>
+<p>Swap the in-process NSW graph for FAISS, hnswlib, or pgvector behind the same <code>Hit</code> interface.</p>
+<ul>
+<li><strong>Hypothesis:</strong> at 10× corpus size, recall/latency beats the in-process graph; below that it
+  does not justify the operational cost.</li>
+<li><strong>Costs:</strong> a dependency, and a second thing to keep in sync.</li>
+</ul>
+<h3 id="19-streaming-generation-and-time-to-first-token">19. Streaming generation and time-to-first-token<a class="headerlink" href="#19-streaming-generation-and-time-to-first-token" title="Permanent link">&para;</a></h3>
+<p><strong>Seam ⑧</strong> · effort M</p>
+<ul>
+<li><strong>Hypothesis:</strong> TTFT drops below 400 ms while total latency is unchanged — and the perceived
+  budget changes completely.</li>
+<li><strong>Costs:</strong> the guardrail has to become streaming-aware, or it stops being able to block.</li>
+</ul>
+<h3 id="20-incremental-index-with-a-real-cdc-source">20. Incremental index with a real CDC source<a class="headerlink" href="#20-incremental-index-with-a-real-cdc-source" title="Permanent link">&para;</a></h3>
+<p><strong>Seams ①</strong> · effort L</p>
+<p>Wire the freshness path to an actual change stream rather than a simulated one.</p>
+<ul>
+<li><strong>Hypothesis:</strong> p95 index lag under five minutes at a realistic edit rate.</li>
+<li><strong>Costs:</strong> a queue, a dead-letter path, and an on-call rotation.</li>
+</ul>
+<hr />
+<h2 id="concepts-deliberately-not-implemented-and-why">Concepts deliberately <em>not</em> implemented, and why<a class="headerlink" href="#concepts-deliberately-not-implemented-and-why" title="Permanent link">&para;</a></h2>
+<p>Being explicit about what is out of scope is part of a good design document.</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Why it is absent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A production vector database</td>
+<td>The lesson is that the choice is an ops and residency decision, not a recall one — <code>docs</code> covers it; running one teaches infrastructure, not retrieval</td>
+</tr>
+<tr>
+<td>Fine-tuning an embedding model</td>
+<td>Needs GPU and hours; the <em>decision</em> (when it is worth it) is covered in the embedding-model tree</td>
+</tr>
+<tr>
+<td>Multimodal retrieval</td>
+<td>A whole curriculum of its own; the seams would support it</td>
+</tr>
+<tr>
+<td>Reinforcement learning from feedback</td>
+<td>The feedback loop is modelled (production failures → eval set); the RL is not the teaching point</td>
+</tr>
+<tr>
+<td>A UI</td>
+<td>Every failure this curriculum cares about is invisible in a UI</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="claiming-one">Claiming one<a class="headerlink" href="#claiming-one" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Find or open the issue (<code>type: extension</code>).</li>
+<li>Comment with <strong>your hypothesis and how you will measure it</strong> before you write code. Faculty
+   will push back on the hypothesis, which is the most useful ten minutes of the whole exercise.</li>
+<li>Post the design in
+   <a href="https://github.com/akash-coded/nanorag/discussions/categories/design-reviews">Discussions → Design Reviews</a> if it touches
+   more than one seam.</li>
+<li>Branch, build, measure, PR. The eval gate will post your scorecard.</li>
+</ol>
+<p><strong>A rejected extension with a clean negative result is a full-credit contribution here</strong>, and
+it is worth more on your CV than a feature that shipped without evidence.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/akash-coded/nanorag" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.indexes", "navigation.top", "navigation.tracking", "content.code.copy", "content.action.edit", "search.suggest", "search.highlight", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

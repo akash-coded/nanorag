@@ -1,0 +1,20 @@
+title: "[poll] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Calibration polls: ask what people would do **before** the reveal. The gap between
+        the vote and the measurement is the teaching content.
+  - type: textarea
+    id: scenario
+    attributes:
+      label: The scenario
+      description: Give the numbers people need to decide, and no more.
+    validations: { required: true }
+  - type: textarea
+    id: reveal
+    attributes:
+      label: What the measurement actually said
+      description: >-
+        Write it now, post it later. Fill this in when the vote closes so the thread carries
+        both the prediction and the outcome.

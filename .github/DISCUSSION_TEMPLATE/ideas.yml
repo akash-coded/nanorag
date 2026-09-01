@@ -1,0 +1,31 @@
+title: "[idea] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Pre-issue. An idea that survives this thread becomes an issue with acceptance criteria;
+        one that does not is still a useful record of something considered and rejected.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Start with the problem, not the technique. Ideas that begin with a technique usually do not survive.
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes:
+      label: The proposal
+    validations: { required: true }
+  - type: textarea
+    id: measurement
+    attributes:
+      label: How would we know it worked?
+      description: >-
+        Which metric moves, and by how much would it have to move to be worth the cost?
+        "It would be better" is not an answer.
+    validations: { required: true }
+  - type: textarea
+    id: cost
+    attributes:
+      label: What does it cost?
+      description: Latency, tokens, storage, complexity, or somebody's week.
