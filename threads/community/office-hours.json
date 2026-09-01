@@ -1,0 +1,19 @@
+{
+  "category": "announcements",
+  "labels": [
+    "office-hours",
+    "cohort"
+  ],
+  "title": "[office hours \u00b7 2026-09-08] Eval sets, noise bands, and why your delta is not real",
+  "body": "> **Office hours.** One thread per session. Agenda goes up before, notes go up after, and the\n> thread stays open \u2014 so the answers are findable by whoever hits the same thing in three months.\n\n**When:** Monday 8 September 2026 \u00b7 async, all week. Post questions in this thread at any time.\n\n## Agenda\n\nThree things, in order of how often they come up.\n\n**1 \u00b7 \"My change improved the metric \u2014 is it real?\"**\nWalking through [#29](https://github.com/akash-coded/nanorag/discussions/29) end to end: why two\nmetrics can give opposite verdicts on the same change, why `n_boot` is not `n`, and the\narithmetic for how many eval questions a 2-point delta actually needs. Bring your own numbers.\n\n**2 \u00b7 \"How do I build an eval set when the client has no labels?\"**\nThe most common real blocker. Notebook 02 is the method;\n[EX-04](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/ex-04-manufacture-an-eval-set-for-a-new-domain.md)\nis the practice. The part people skip is null questions, and skipping them means you cannot\nmeasure abstention at all.\n\n**3 \u00b7 Open floor.**\n\n## How to get a useful answer\n\nPost the **numbers**, the **config that produced them**, and **what you already tried**. A\nquestion with a measurement in it gets answered in one round trip.\n\n## Notes\n\nAdded after the session, in a reply to this thread.\n",
+  "comments": [
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nQuestion for slot 1, posting early so it is in the queue.\n\nI have a change that clears the band on `evidence_recall` and not on `full_chain_recall`, which\nis exactly the #29 case. But my eval set is 96 questions, not 207. Does the ~380 figure from that\nthread scale, or does something else break at that size?",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nIt scales, and something else does break \u2014 worth taking as the first question on the day.\n\nThe scaling is `n \u00d7 (half-width / point-estimate)\u00b2`, so run it with your own numbers rather than\nborrowing 380.\n\nWhat breaks at 96 is more interesting: **the bootstrap itself becomes unreliable, not just\nwide.** Percentile intervals assume the resampled distribution is a decent stand-in for the\nsampling distribution, and at `n < ~100` on a binary metric that assumption gets thin \u2014 you are\nresampling from very few distinct outcomes. The interval is not merely wide, its *coverage* is\noff, so it may not be a true 95% interval at all.\n\nBring the raw per-question rows and we can look at the resampled distribution directly."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "category": "polls",
+  "labels": [
+    "area: evaluation",
+    "cohort"
+  ],
+  "title": "[poll] Your change clears the band on one metric and not the other. Do you ship it?",
+  "body": "> **Calibration poll.** Vote before reading [#29](https://github.com/akash-coded/nanorag/discussions/29),\n> then read it. The gap between what people vote and what the measurement says is the teaching\n> content \u2014 that is the whole point of asking first.\n\n## The situation\n\nYou have changed the reranker. Same eval set, same config, 207 questions:\n\n```text\nevidence_recall     delta +0.0334   CI [+0.0101, +0.0584]   -> real\nfull_chain_recall   delta +0.0338   CI [-0.0097, +0.0821]   -> inside the noise band\n```\n\nThe point estimates are nearly identical. The verdicts are not.\n\n## What do you do?\n\n- **Ship it.** The primary metric cleared; report both.\n- **Do not ship.** Two metrics, one failed, that is a no.\n- **Ship, but only after growing the eval set** and re-measuring.\n- **Cannot decide without knowing which metric was named first.**\n\n## After you vote\n\nRead the thread. Then ask yourself whether your answer would have changed if the *verdicts* had\nbeen swapped \u2014 full-chain cleared, evidence did not. If it would, you were reasoning about the\nnumbers. If it would not, you were reasoning about the process, and the process is the answer.\n",
+  "comments": [
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nAdding the thing the poll is really testing, for anyone reading after voting.\n\nThree of the four options are defensible. The one that is not is **\"do not ship\"** on the\ngrounds that one metric failed \u2014 because that treats *inside the noise band* as equivalent to\n*regressed*, and it is not. It means **not measurable at this eval-set size**, which is a\nstatement about your instrument, not about your change.\n\nThe option most people skip is the fourth. If you do not know which metric was named as primary\n*before* the numbers existed, you cannot tell shipping-on-the-primary-metric from\npicking-the-one-that-agreed-with-you \u2014 and neither can a reviewer."
+    }
+  ]
+}

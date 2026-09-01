@@ -4,6 +4,47 @@ Discussions are the internal-Stack-Overflow half of this playground. Issues are 
 with an owner*; Discussions are *everything else* — and the difference matters, because a
 question filed as an issue either sits open forever or gets closed without being searchable.
 
+## Prefixes: the categories GitHub will not let us create
+
+This repository has **nine** discussion categories. GitHub provides no API to add more — there
+is no category mutation in the GraphQL schema, and creating one is a manual action in repository
+settings. Rather than leave the structure unbuilt, some kinds of thread carry a **title prefix**
+and a **label**. Together they do what a tenth category would have done: make a set of threads
+findable, filterable, and visually distinct in a list.
+
+| Prefix | Category | Label | What it is |
+|---|---|---|---|
+| `[clinic · EX-NN]` | Q&A | [`clinic`](https://github.com/akash-coded/nanorag/labels/clinic) | One long-running thread per exercise. Ask here rather than opening a duplicate |
+| `[maths]` | Q&A | [`maths`](https://github.com/akash-coded/nanorag/labels/maths) | A derivation, argued out. Pairs with a page in `01-mathematical-foundations/` |
+| `[errata]` | Q&A | [`errata`](https://github.com/akash-coded/nanorag/labels/errata) | The material is wrong, or more confident than it should be. Confirmed errata become issues |
+| `[solution · EX-NN]` | Show and Tell | [`solution`](https://github.com/akash-coded/nanorag/labels/solution) | A submission, **with numbers**. Reviewers reply with a measurement, not an opinion |
+| `[negative result]` | Show and Tell | [`negative-result`](https://github.com/akash-coded/nanorag/labels/negative-result) | Measured and rejected. Full credit — this is the most useful category here |
+| `[round · <shape>]` | Interview Prep | [`interview-round`](https://github.com/akash-coded/nanorag/labels/interview-round) | A full simulated loop with a scoring rubric, not a single question |
+| `[office hours · <date>]` | Announcements | [`office-hours`](https://github.com/akash-coded/nanorag/labels/office-hours) | One dated session. Agenda before, notes after, thread stays open |
+| `[poll]` | Polls | — | Vote **before** the reveal. The gap between the vote and the measurement is the content |
+
+**Filtering.** The label is the reliable filter, because a title can be edited and a label cannot
+be edited by accident. To see every exercise clinic thread:
+
+```text
+https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Aclinic
+```
+
+**Why not just use the categories loosely?** Because Q&A would become a single undifferentiated
+list of eighty threads, and the whole reason a category exists is so a person scanning it can
+tell what kind of thing they are looking at. The prefix restores that in one glance.
+
+### Where to post what
+
+- **Stuck on an exercise** → the `[clinic · EX-NN]` thread for that exercise. Not a new thread —
+  the answers accumulate where the next person will look for them.
+- **Finished an exercise** → Show and Tell with `[solution · EX-NN]`, including your numbers, your
+  interval, and what you tried that did not work.
+- **A measurement that contradicts the material** → Show and Tell with `[negative result]`, or
+  Q&A with `[errata]` if you think the material is simply wrong.
+- **A derivation you cannot follow** → Q&A with `[maths]`.
+- **Anything else** → the category that fits, no prefix.
+
 ## The categories
 
 | Category | Format | Use it for | Do not use it for |

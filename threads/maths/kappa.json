@@ -1,0 +1,32 @@
+{
+  "title": "[maths] My judge agrees with me 94% of the time. Why is that not good enough?",
+  "labels": [
+    "maths",
+    "area: evaluation",
+    "casebook"
+  ],
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### The question in one line\n\nI hand-labelled 200 answers, ran the judge on the same 200, and they agree on 188 of them. That\nis 94%. Notebook 06 then tells me the judge is not usable. Why?\n\n### The numbers\n\n```text\njudge says correct    181 / 200   (90.5%)\nhuman says correct    179 / 200   (89.5%)\nraw agreement         188 / 200   (94.0%)\n```\n\n### Where\n\nNotebook 06, judge calibration\n",
+  "answer": 3,
+  "comments": [
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nMy first read is that 94% is fine and the notebook is being conservative. If I had a junior\nanalyst who agreed with me on 94% of judgements I would let them work unsupervised.\n\nWhat is the argument that this is not enough?",
+      "replies": [
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nThe analyst comparison is where it goes wrong, and it took me a while to see why.\n\nYou would trust the analyst because you assume they are agreeing *for the right reasons*. The\n94% here is compatible with the judge having no reasons at all \u2014 it says \"correct\" 90.5% of the\ntime, and if it said \"correct\" **every** time it would agree with you on 89.5% of the set.\n\nSo most of that 94% was available for free."
+        }
+      ]
+    },
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nPriya has it, and \u03ba is the arithmetic that makes it precise.\n\n$$\np_e = (0.905)(0.895) + (0.095)(0.105) = 0.810 + 0.010 = 0.820\n$$\n$$\n\\kappa = \\frac{0.940 - 0.820}{1 - 0.820} = \\frac{0.120}{0.180} \\approx 0.67\n$$\n\n**\u03ba \u2248 0.67.** That is \"substantial\" on the Landis\u2013Koch bands and genuinely usable \u2014 better than\nI expected from the raw number, and better than the notebook's default corpus gives.\n\nThe reason the notebook still warns you: **\u03ba moves fast in this region.** Push the class balance\nto 95/5 with the same 94% raw agreement and `p_e` rises to 0.905, giving \u03ba \u2248 0.37 \u2014 the same\njudge, the same agreement rate, \"fair\" instead of \"substantial\". Your \u03ba is a property of your\n*label distribution* as much as of your judge.\n\nPractical consequence: **quote \u03ba with the base rate next to it, always.** A \u03ba without its class\nbalance is not comparable to anyone else's.",
+      "replies": [
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nThe 95/5 recomputation is the thing that lands it. Same judge, same 94%, and the verdict moves\ntwo whole bands purely because the labels got more lopsided."
+        }
+      ]
+    },
+    {
+      "body": "Marking this because the thread has arrived somewhere better than the question started.\n\n**Three things to take from it.**\n\n**1 \u00b7 Raw agreement is uninterpretable without the marginals.** The full derivation, including\nwhy \u03ba has that particular denominator, is in\n[Cohen's \u03ba](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/interview-prep/01-mathematical-foundations/cohens-kappa.md). The short version: `1 \u2212 p\u2091` is the agreement that was\n*available* to be earned beyond chance, so \u03ba is the share of it you actually earned.\n\n**2 \u00b7 \u03ba \u2248 0.67 here is genuinely usable**, and I want to be clear the notebook is not saying\notherwise. What it warns about is treating any single \u03ba as a stable property of the judge.\n\n**3 \u00b7 The question that matters more than the number.** A judge with **moderate but consistent**\nerror can still rank two systems correctly, because a systematic bias applies to both arms and\ncancels in the paired comparison. A judge with **high but erratic** error cannot. So the useful\nfollow-up is not *\"is \u03ba high enough\"* but **\"is the judge's error correlated with the thing I am\ntrying to measure?\"** \u2014 which is what the bias probes in `judge.py` exist to test, and what\n[EX-20](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/ex-20-build-a-third-bias-probe.md)\nasks you to extend.\n\nIf you are labelling more than 200, or with more than two raters, switch to Krippendorff's \u03b1 \u2014\nit handles missing labels and ordinal rubrics, and degenerates to \u03ba in this simple case."
+    }
+  ],
+  "category": "q-a"
+}

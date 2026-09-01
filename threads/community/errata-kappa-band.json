@@ -1,0 +1,14 @@
+{
+  "category": "q-a",
+  "labels": [
+    "errata",
+    "area: docs"
+  ],
+  "title": "[errata] The \u03ba bands in the reading list are quoted as if they were a standard",
+  "body": "> **Errata.** The material is wrong, or says something more confidently than it should.\n> Confirmed errata become issues.\n\n### What the material says\n\nThe judge-calibration section presents the Landis\u2013Koch \u03ba bands \u2014 slight / fair / moderate /\nsubstantial / almost perfect \u2014 as though they were an established threshold, with 0.6 as a pass\nmark.\n\n### Why I think that is wrong\n\nLandis and Koch (1977) proposed those labels for **biomedical inter-rater studies** and said\nthemselves that the divisions were arbitrary. They are a convention, not a standard, and they are\nwidely criticised for exactly the reason this repository cares about: **\u03ba is sensitive to\nprevalence**, so a fixed band means different things at different class balances.\n\nQuoting 0.6 as a pass mark is the same category of mistake as quoting a recall number without its\ncorpus \u2014 which the README's own third column exists to prevent.\n\n### What I think it should say\n\nReport \u03ba **with the class balance next to it**, use the bands as rough language rather than a\ngate, and where a threshold is actually needed, derive it from the decision the judge is feeding\nrather than from a 1977 convention.\n\n### Where\n\n`docs/30-learning/interview-prep/01-mathematical-foundations/cohens-kappa.md`, and the notebook 06\ncallout.\n",
+  "comments": [
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nConfirmed, and this is a fair hit on our own standard.\n\nThe derivation page already says *\"Landis and Koch's bands are conventions, not theorems. Say so\nif you quote them\"* \u2014 so the page is fine. **The notebook 06 callout is not**; it presents 0.6 as\na gate without that qualification, which is the inconsistency you have found.\n\nTwo changes, and one non-change:\n\n- Notebook 06 callout gets the prevalence caveat and stops naming 0.6 as a pass mark.\n- Wherever \u03ba is reported, the class balance is reported beside it.\n- **Not** removing the bands. They are useful shared language for talking about a \u03ba out loud;\n  what is wrong is treating them as a threshold.\n\nOpening this as a docs issue with the thread linked. Good catch \u2014 the failure mode here is\nexactly the one the repository exists to warn about, applied to itself."
+    }
+  ]
+}
