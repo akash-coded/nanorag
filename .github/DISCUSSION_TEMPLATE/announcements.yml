@@ -1,0 +1,12 @@
+title: ""
+body:
+  - type: textarea
+    id: body
+    attributes:
+      label: Announcement
+    validations: { required: true }
+  - type: textarea
+    id: action
+    attributes:
+      label: What, if anything, do readers need to do?
+      description: If the answer is nothing, say nothing — an announcement that implies an action it does not name wastes everyone's time.
