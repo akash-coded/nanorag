@@ -134,6 +134,8 @@ nav:
           - The question decoder: 60-cheatsheets/interviews/question-decoder.md
           - Red flags: 60-cheatsheets/interviews/red-flags.md
           - Numbers to know: 60-cheatsheets/interviews/numbers-to-know.md
+  - Extension project:
+      - 70-extension/README.md
   - Community:
       - Discussions guide: 50-community/discussions-guide.md
       - Casebook convention: 50-community/casebook-convention.md
