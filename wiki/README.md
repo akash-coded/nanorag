@@ -17,12 +17,17 @@ Keeping the seed here means it is versioned, reviewable, and not lost in the mea
 One manual step, then one command:
 
 1. Open <https://github.com/akash-coded/nanorag/wiki> and **create any page** — the title and body
-   do not matter, `scripts/sync_wiki.py` overwrites them.
+   do not matter. The script overwrites GitHub's placeholder text and deletes any throwaway page
+   whose only job was to create the repository.
 2. Then:
 
 ```bash
 python scripts/sync_wiki.py
 ```
+
+**Already done.** The wiki was seeded on 1 September 2026 and is live at
+<https://github.com/akash-coded/nanorag/wiki>. This directory is kept as the recoverable origin,
+not as a mirror — see below.
 
 ## After that, the wiki is authoritative
 
