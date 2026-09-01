@@ -1,0 +1,32 @@
+{
+  "category": "show-and-tell",
+  "labels": [
+    "solution",
+    "type: exercise",
+    "area: retrieval",
+    "casebook"
+  ],
+  "title": "[solution \u00b7 EX-12] The analyzer audit \u2014 I found three more separators past the one in #1",
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\nSubmission for\n[EX-12](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/ex-12-the-analyzer-audit.md).\n\n### What I did\n\n[#1](https://github.com/akash-coded/nanorag/issues/1) fixed `_` by adding it to `tokenchars`. The\nexercise asks what *else* the analyzer splits, so I enumerated every non-alphanumeric character\nin the corpus and counted affected chunks rather than guessing.\n\n```python\nimport re, collections\nseps = collections.Counter()\nfor c in chunks:\n    for ch in set(re.findall(r\"[^a-zA-Z0-9\\s]\", c[\"text\"])):\n        seps[ch] += 1\n```\n\n### The numbers\n\n```text\nsep   chunks   example                     currently split?\n_      1,842   ERR_CONN_RESET, acl_group_id      no (fixed in #1)\n-        311   post-mortem, non-blocking         no (fixed in #1)\n.        208   v2.1.4, nanorag.store             YES\n/         96   docs/adr, ops/runbook             YES\n:         74   12:04:31, key:value               YES\n@         12   synthetic addresses               YES\n```\n\n### The retrieval impact, measured\n\nI built a 40-question slice whose answers require matching a version string, a path, or a\ntimestamp, and ran it before and after adding each separator:\n\n```text\n                          evidence_recall@8   delta        CI\nbaseline (_ and - only)         0.475           \u2014           \u2014\n+ '/'                           0.650        +0.175   [+0.081, +0.271]   real\n+ ':'                           0.700        +0.050   [-0.019, +0.121]   band\n+ '.'                           0.575        -0.125   [-0.208, -0.041]   REGRESSION\n```\n\n### The finding\n\n**Adding `.` to `tokenchars` makes things worse**, and it took me a while to see why.\n\nOnce `.` is a token character, a sentence-ending period stops separating tokens \u2014 so\n`...the interval. Engineering will...` indexes as `interval.engineering`, a term that appears\nnowhere else and matches nothing. I gained version strings and lost sentence boundaries across\nthe entire corpus. The 208 chunks containing versions are swamped by the ~2,400 containing full\nstops.\n\n`/` is the clear win. `:` is inside the band on this slice.\n\n### What I would ship\n\n`tokenize = \"unicode61 remove_diacritics 2 tokenchars '_-/'\"` \u2014 and I would **not** chase `.`\nthrough a custom tokenizer unless version-string search were a named requirement, because the\nright fix is a separate analyzer for identifier fields rather than one global compromise.\n",
+  "comments": [
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nGood result. One thing though \u2014 a 40-question slice is small, and you are reporting three deltas\noff it. Isn't the `:` result just the multiple-comparison problem? You tested three separators and\none landed inside the band; that is roughly what you would expect by chance.",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nThe instinct is right and the application is not quite, which is worth separating because the\ndistinction comes up constantly.\n\nMultiple comparisons inflate the false-positive rate for **significant** results. The `:` result\nis *not* significant \u2014 it is inside the band \u2014 so the concern does not apply to it. If anything\nthe correction would make it even less significant.\n\nWhere it **does** apply is `/`, at `+0.175` with an interval well clear of zero. With three tests\nat \u03b1=0.05, a Bonferroni-corrected threshold is \u03b1=0.0167, and that interval still excludes zero\ncomfortably. So the finding survives the correction, which is the check worth doing rather than\nassuming either way.\n\nThe real limitation is the one Marcus is circling: **40 questions is a small slice**, so every\ninterval here is wide. The `/` effect is large enough to survive that; a smaller effect would not\nhave been measurable at all, and the honest reading is that this slice can detect big wins and is\nblind to modest ones."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nThat is the distinction I was missing \u2014 corrections apply to the significant results, not the\nnull ones. Filing that away."
+        }
+      ]
+    },
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nThe `.` regression is the best part of this and I want to make sure it does not get lost under\nthe recommendation.\n\nIt is a **negative result with a mechanism**, and the mechanism generalises past this repo: any\ncharacter you add to `tokenchars` stops being a separator *everywhere*, not just where you wanted\nit. You are trading a rare gain against a global loss, and the arithmetic is chunk counts \u2014\n208 chunks with versions against ~2,400 with full stops.\n\nThat is a rule I can carry to a real corpus, which is more than I can say for most exercise\nwrite-ups.",
+      "replies": [
+        {
+          "body": "Agreed, and adopting it. The `/` addition is going in with this thread linked as the\njustification, and the `.` finding is going into the analyzer section of notebook 04 as a worked\nwarning rather than a footnote \u2014 it is a better teaching example than the one currently there,\nbecause the reader can see the trade in chunk counts.\n\nWorth noting what made this submission good, since [EX-12](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/ex-12-the-analyzer-audit.md)\ndoes not require it: **it measured a change it then recommended against.** Most submissions report\nthe option that won."
+        }
+      ]
+    }
+  ]
+}

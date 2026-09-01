@@ -1,7 +1,10 @@
 # EX-19 · Calibrate a judge against humans
 
 > **Difficulty:** 🟡 · label [`difficulty: 2`](https://github.com/akash-coded/nanorag/labels/difficulty:%202)
-> **Submit:** open a thread in [Solutions & Peer Review](https://github.com/akash-coded/nanorag/discussions) with your numbers, or a PR linking to it.
+> **Stuck?** Ask in the [clinic thread for EX-19](https://github.com/akash-coded/nanorag/discussions/81) — one long-running
+> thread per exercise, so the answers accumulate where the next person will look.
+> **Submit:** post it in [Show and Tell](https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell) titled
+> `[solution · EX-19] ...`, with your numbers and your interval.
 
 **Notebook 06** · ~2 h (needs two people) · *Skill: interview Q6*
 

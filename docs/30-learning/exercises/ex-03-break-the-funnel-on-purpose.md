@@ -1,7 +1,10 @@
 # EX-03 · Break the funnel on purpose
 
 > **Difficulty:** 🔴 · label [`difficulty: 3`](https://github.com/akash-coded/nanorag/labels/difficulty:%203)
-> **Submit:** open a thread in [Solutions & Peer Review](https://github.com/akash-coded/nanorag/discussions) with your numbers, or a PR linking to it.
+> **Stuck?** Ask in the [clinic thread for EX-03](https://github.com/akash-coded/nanorag/discussions/64) — one long-running
+> thread per exercise, so the answers accumulate where the next person will look.
+> **Submit:** post it in [Show and Tell](https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell) titled
+> `[solution · EX-03] ...`, with your numbers and your interval.
 
 **Notebook 01** · ~1 h · *Skill: knowing what each metric is blind to*
 

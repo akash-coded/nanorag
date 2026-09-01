@@ -1,7 +1,10 @@
 # EX-22 · Fix evidence retention
 
 > **Difficulty:** ⚫ · label [`difficulty: 4`](https://github.com/akash-coded/nanorag/labels/difficulty:%204)
-> **Submit:** open a thread in [Solutions & Peer Review](https://github.com/akash-coded/nanorag/discussions) with your numbers, or a PR linking to it.
+> **Stuck?** Ask in the [clinic thread for EX-22](https://github.com/akash-coded/nanorag/discussions/84) — one long-running
+> thread per exercise, so the answers accumulate where the next person will look.
+> **Submit:** post it in [Show and Tell](https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell) titled
+> `[solution · EX-22] ...`, with your numbers and your interval.
 
 **Notebook 08** · open-ended · Seam ⑥⑩ · *Skill: the metric almost nobody instruments*
 
