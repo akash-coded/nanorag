@@ -1,0 +1,3 @@
+{"id":"L05","slug":"rank-fusion","title":"Fuse two rankings without comparing their scores","track":"T3",
+ "difficulty":"easy","minutes":20,"prereqs":["L03"],"tags":["fusion","rrf","ranking"],
+ "concept":"Two retrievers' scores are not interpersonally comparable. Ranks are."}

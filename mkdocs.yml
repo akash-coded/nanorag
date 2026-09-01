@@ -134,6 +134,8 @@ nav:
           - The question decoder: 60-cheatsheets/interviews/question-decoder.md
           - Red flags: 60-cheatsheets/interviews/red-flags.md
           - Numbers to know: 60-cheatsheets/interviews/numbers-to-know.md
+  - L.A.B. simulator:
+      - 80-lab/README.md
   - Extension project:
       - 70-extension/README.md
   - Community:

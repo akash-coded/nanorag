@@ -1,0 +1,3 @@
+{"id":"L08","slug":"paired-bootstrap","title":"Decide whether a delta is real","track":"T4",
+ "difficulty":"medium","minutes":30,"prereqs":["L07"],"tags":["statistics","bootstrap","noise-band"],
+ "concept":"n is how much uncertainty there is. n_boot is how carefully you measure it. Only one is under your control."}

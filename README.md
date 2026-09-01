@@ -557,6 +557,7 @@ flowchart LR
 | If you are… | Start here |
 |---|---|
 | Working through the course | [notebooks/00_start_here.ipynb](notebooks/00_start_here.ipynb), then [docs/30-learning/exercises/](docs/30-learning/exercises/README.md) |
+| Wanting bite-sized, auto-graded practice | [docs/80-lab/](docs/80-lab/README.md) — the **L.A.B. simulator**, 12 labs on a prerequisite DAG |
 | Preparing for an AI-engineer interview | [docs/30-learning/interview-prep/](docs/30-learning/interview-prep/README.md) — 18 questions with full answers |
 | Deciding what to build next | [docs/10-architecture/seams.md](docs/10-architecture/seams.md) — 20 techniques with hypotheses and seams |
 | Wanting to understand the code | [docs/10-architecture/overview.md](docs/10-architecture/overview.md) — HLD, LLD, every seam |

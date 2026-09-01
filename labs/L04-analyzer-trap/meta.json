@@ -1,0 +1,3 @@
+{"id":"L04","slug":"analyzer-trap","title":"Stop the tokenizer shredding your identifiers","track":"T2",
+ "difficulty":"medium","minutes":25,"prereqs":["L03"],"tags":["analyzer","tokenizer","bm25"],
+ "concept":"The scoring function was flawless and the results were wrong. Nothing errored."}

@@ -35,3 +35,4 @@ tools/node_modules/
 tools/package-lock.json
 _site_docs/
 _site/
+labs/**/__pycache__/

@@ -1,0 +1,3 @@
+{"id":"L06","slug":"pack-to-budget","title":"Pack a prompt to a hard token budget","track":"T3",
+ "difficulty":"medium","minutes":25,"prereqs":["L05"],"tags":["context","packing","budget"],
+ "concept":"Never truncate mid-chunk. A half-quoted passage still gets cited, and the citation is wrong."}

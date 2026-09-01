@@ -1,0 +1,3 @@
+{"id":"L07","slug":"two-recalls","title":"The two recalls, and the gap between them","track":"T4",
+ "difficulty":"easy","minutes":20,"prereqs":["L06"],"tags":["metrics","recall","multi-hop"],
+ "concept":"Recall@N and full-chain recall measure different stages. The gap between them is where the work is."}
