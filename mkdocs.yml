@@ -94,7 +94,15 @@ nav:
       - 0008 Eval gate in CI: 20-decisions/0008-eval-gate-in-ci.md
   - Learning:
       - Exercises: 30-learning/exercises/README.md
-      - Interview prep: 30-learning/interview-prep/README.md
+      - Interview prep:
+          - 30-learning/interview-prep/README.md
+          - Mathematical foundations:
+              - 30-learning/interview-prep/01-mathematical-foundations/README.md
+              - BM25 from first principles: 30-learning/interview-prep/01-mathematical-foundations/bm25-from-first-principles.md
+              - Reciprocal rank fusion: 30-learning/interview-prep/01-mathematical-foundations/reciprocal-rank-fusion.md
+              - Multi-hop recall: 30-learning/interview-prep/01-mathematical-foundations/multi-hop-recall.md
+              - Cohen's kappa: 30-learning/interview-prep/01-mathematical-foundations/cohens-kappa.md
+              - Paired bootstrap and power: 30-learning/interview-prep/01-mathematical-foundations/paired-bootstrap-and-power.md
       - Reading list: 30-learning/reading-list.md
   - Operations:
       - Runbook: 40-operations/runbook.md
