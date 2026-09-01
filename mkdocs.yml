@@ -112,6 +112,28 @@ nav:
       - Runbook: 40-operations/runbook.md
       - Project board: 40-operations/project-board.md
       - GitHub setup: 40-operations/github-setup.md
+  - Cheat sheets:
+      - 60-cheatsheets/README.md
+      - Frameworks:
+          - The Four Verdicts: 60-cheatsheets/frameworks/four-verdicts.md
+          - The Precondition Test: 60-cheatsheets/frameworks/precondition-test.md
+          - The Noise Band Ladder: 60-cheatsheets/frameworks/noise-band-ladder.md
+          - The Stage Gradient: 60-cheatsheets/frameworks/stage-gradient.md
+          - The Cost Iceberg: 60-cheatsheets/frameworks/cost-iceberg.md
+          - The Inference Channel Audit: 60-cheatsheets/frameworks/inference-channel-audit.md
+          - The Calibration Triangle: 60-cheatsheets/frameworks/calibration-triangle.md
+          - The Reranker Mirror: 60-cheatsheets/frameworks/reranker-mirror.md
+      - Playbooks:
+          - Retrieval incident runbook: 60-cheatsheets/playbooks/retrieval-incident-runbook.md
+          - First 30 days: 60-cheatsheets/playbooks/first-30-days.md
+          - Design review checklist: 60-cheatsheets/playbooks/design-review-checklist.md
+          - Release gate playbook: 60-cheatsheets/playbooks/release-gate-playbook.md
+          - Encoder migration: 60-cheatsheets/playbooks/encoder-migration.md
+      - Interviews:
+          - Navigating the loop: 60-cheatsheets/interviews/navigating-the-loop.md
+          - The question decoder: 60-cheatsheets/interviews/question-decoder.md
+          - Red flags: 60-cheatsheets/interviews/red-flags.md
+          - Numbers to know: 60-cheatsheets/interviews/numbers-to-know.md
   - Community:
       - Discussions guide: 50-community/discussions-guide.md
       - Casebook convention: 50-community/casebook-convention.md
