@@ -1,0 +1,69 @@
+# Auto-evaluates L.A.B. simulator submissions.
+#
+# A learner forks, fills in a lab's starter.py, and opens a pull request. This
+# runs that lab's checks -- public AND hidden, because at pull-request time the
+# attempt is already submitted -- and posts the result as a single comment that
+# it edits in place on every push, rather than a new comment each time.
+#
+# It never fails the build on a learner's red checks. A red X on someone's first
+# contribution is a bad way to teach, and the comment already says what failed.
+name: Labs
+on:
+  pull_request:
+    paths: ["labs/**", "scripts/lab*.py", ".github/workflows/labs.yml"]
+  workflow_dispatch:
+    inputs:
+      labs:
+        description: "Lab ids to run, space separated (blank = all)"
+        required: false
+permissions:
+  contents: read
+  pull-requests: write
+concurrency:
+  group: labs-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: The pathway is still a valid DAG
+        run: python scripts/lab.py verify
+
+      - name: Every reference solution passes its own checks
+        run: pip install pytest && python -m pytest labs/test_labs.py -q
+
+      - name: Evaluate the changed labs
+        id: evaluate
+        run: |
+          if [ -n "${{ inputs.labs }}" ]; then
+            python scripts/lab_report.py ${{ inputs.labs }} --out report.md
+          else
+            git fetch origin main --depth=50
+            python scripts/lab_report.py --changed --out report.md
+          fi
+
+      - name: Post the result on the pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('report.md', 'utf8') +
+              '\n<sub>Posted by the Labs workflow. Run locally with ' +
+              '`python scripts/lab.py run <id>`.</sub>\n<!-- lab-report -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const existing = (await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100 }))
+              .data.find(c => c.body.includes('<!-- lab-report -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }

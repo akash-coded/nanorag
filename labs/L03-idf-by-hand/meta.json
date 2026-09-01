@@ -1,0 +1,3 @@
+{"id":"L03","slug":"idf-by-hand","title":"Compute BM25's IDF, and find where it goes negative","track":"T2",
+ "difficulty":"easy","minutes":15,"prereqs":[],"tags":["bm25","idf","scoring"],
+ "concept":"IDF is a log-odds ratio, not a frequency penalty. It goes negative, and that is the design."}

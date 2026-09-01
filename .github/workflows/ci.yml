@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.11", cache: pip }
       - run: pip install ruff
-      - run: ruff check nanorag tests scripts
+      - run: ruff check nanorag tests scripts labs
       - name: Notebook outputs must be stripped
         run: |
           python - <<'PY'

@@ -40,7 +40,10 @@ Issues        = "https://github.com/akash-coded/nanorag/issues"
 include = ["nanorag*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+# labs/ carries its own meta-tests: every reference solution must pass its own
+# checks, and every starter must fail. A lab that cannot be completed, or one
+# with nothing to do, is worse than no lab.
+testpaths = ["tests", "labs"]
 addopts = "-q --strict-markers"
 markers = [
   "slow: takes more than a few seconds (deselect with '-m \"not slow\"')",
@@ -69,6 +72,15 @@ ignore = [
 "scripts/seed_content.py" = ["E501"]
 # Tests name things for legibility, not brevity.
 "tests/*" = ["E501"]
+# Lab check messages are prose written for a learner mid-problem. Wrapping them to
+# 100 columns breaks the sentence a person reads when their solution fails, which is
+# the one place in this repository where the message matters more than the layout.
+"labs/*/checks.py" = ["E501"]
+# Lab briefs and starters are read as much as run; the starter docstrings carry the
+# spec and reflowing them to fit a linter makes the task harder to read. F401 is
+# deliberate too: an unused `import hashlib` in a starter is the hint that the
+# solution needs hashing, and removing it removes the hint.
+"labs/*/starter.py" = ["E501", "F401"]
 
 [tool.coverage.run]
 source = ["nanorag"]

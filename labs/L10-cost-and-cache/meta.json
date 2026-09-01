@@ -1,0 +1,3 @@
+{"id":"L10","slug":"cost-and-cache","title":"Price the 69% of the bill that is not generation","track":"T6",
+ "difficulty":"medium","minutes":25,"prereqs":["L06"],"tags":["cost","cache","tco"],
+ "concept":"A cache with a 4% false-hit rate is not a saving. It is a quality regression with a discount."}

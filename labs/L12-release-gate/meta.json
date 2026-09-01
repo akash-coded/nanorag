@@ -1,0 +1,3 @@
+{"id":"L12","slug":"release-gate","title":"Decide whether it ships","track":"T8",
+ "difficulty":"boss","minutes":50,"prereqs":["L08","L09","L10","L11"],"tags":["gate","release","pdlc"],
+ "concept":"A gate that blocks correct changes gets disabled. A disabled gate is worse than none, because it still looks like a control."}

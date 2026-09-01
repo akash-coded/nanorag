@@ -15,6 +15,7 @@ document grows past about 250 lines it gets split.
 | run, release or operate this | [`40-operations/runbook.md`](40-operations/runbook.md) |
 | take part in Discussions | [`50-community/discussions-guide.md`](50-community/discussions-guide.md) |
 | **carry one page into a meeting** | [`60-cheatsheets/`](60-cheatsheets/) |
+| **practise, one lab at a time** | [`80-lab/`](80-lab/) — the L.A.B. simulator |
 | see what is being built next | [`70-extension/`](70-extension/) |
 | understand the casebook threads | [`50-community/casebook-convention.md`](50-community/casebook-convention.md) |
 | look up notation or a term | [`90-reference/notation.md`](90-reference/notation.md) |
@@ -34,4 +35,5 @@ document grows past about 250 lines it gets split.
 | [`50-community/`](50-community/) | How Discussions work here, and the casebook convention | Contributors |
 | [`60-cheatsheets/`](60-cheatsheets/) | Frameworks, playbooks, interview sheets — one page each | Learners and practitioners |
 | [`70-extension/`](70-extension/) | The follow-on project: does any of this transfer to a real corpus? | Contributors, anyone assessing the work |
+| [`80-lab/`](80-lab/) | The L.A.B. simulator — 12 auto-graded labs on a prerequisite DAG | Learners of every level |
 | [`90-reference/`](90-reference/) | Notation, glossary | Everyone, occasionally |

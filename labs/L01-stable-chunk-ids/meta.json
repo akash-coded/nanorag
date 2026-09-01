@@ -1,0 +1,11 @@
+{
+  "id": "L01",
+  "slug": "stable-chunk-ids",
+  "title": "Give a chunk an id that survives an edit",
+  "track": "T1",
+  "difficulty": "easy",
+  "minutes": 15,
+  "prereqs": [],
+  "tags": ["chunking", "identity", "incremental-index"],
+  "concept": "An id is a contract with your incremental update path. Choose it wrong and re-ingest becomes a rebuild."
+}

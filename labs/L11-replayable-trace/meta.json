@@ -1,0 +1,3 @@
+{"id":"L11","slug":"replayable-trace","title":"Make a failure reproducible after the fact","track":"T7",
+ "difficulty":"hard","minutes":35,"prereqs":["L07","L06"],"tags":["trace","observability","agent"],
+ "concept":"A trace that records the answer is a log. A trace that records the decisions is evidence."}
