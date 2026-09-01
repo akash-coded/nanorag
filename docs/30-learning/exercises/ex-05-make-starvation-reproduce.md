@@ -10,6 +10,7 @@ reproduce by deliberately unbalancing the corpus, then show the per-entity quota
 recovering the loss.
 
 **Acceptance criteria**
+
 - The prevalence ratio you engineered, and the starvation it produced
 - Full-chain recall before/after the quota packer, with an interval
 - A statement of the condition under which a client corpus would show this

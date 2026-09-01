@@ -13,6 +13,7 @@ checking; a trained classifier over pair features; an NLI-style entailment check
 two-stage contract where the model must name the evidence span before asserting.
 
 **Acceptance criteria**
+
 - Abstention precision/recall on the full null set with the real base rate
 - The cost per query of your approach
 - What it does to over-refusal on answerable questions — the failure nobody measures

@@ -1,6 +1,5 @@
 # Q12 · How would you design a RAG pipeline for documents that change daily?
 
-
 Two paths, and mixing them is the classic outage.
 
 The **incremental path** runs in minutes and is triggered by content. Change capture emits

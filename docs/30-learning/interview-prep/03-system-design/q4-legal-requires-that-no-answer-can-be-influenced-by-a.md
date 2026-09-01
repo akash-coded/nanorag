@@ -1,5 +1,4 @@
-# Q4 · Legal requires that no answer can be influenced by a document the user is not allowed to read. Design for that.
-
+# Q4 · Legal requires that no answer can be influenced by a document the user is not allowed to read. Design for that
 
 **Testing:** whether you hear "influenced" and realise post-filtering does not satisfy it;
 whether caches, logs and traces are part of your security boundary; whether you name the
@@ -29,6 +28,7 @@ recall with the real filters on**, not without them. A benchmark that reports 0.
 unfiltered tells you nothing about production.
 
 **Close the side channels**, because the index is not the whole boundary:
+
 - Prompt caches keyed per tenant. A shared prefix cache across tenants is a data-leak class of
   bug, not a performance issue.
 - Traces store retrieved text, so the trace store inherits the corpus's compliance boundary —

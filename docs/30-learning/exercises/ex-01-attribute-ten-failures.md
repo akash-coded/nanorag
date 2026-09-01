@@ -9,6 +9,7 @@ Take ten questions the baseline gets wrong. For each, run the fault-isolation tr
 the owning stage. Produce the distribution.
 
 **Acceptance criteria**
+
 - A table of ten rows: qid, owning stage, the trace evidence that decided it
 - The distribution as a chart
 - One paragraph: given this distribution, what would you do in week one, and what would you

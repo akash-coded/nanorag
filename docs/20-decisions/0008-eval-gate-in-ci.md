@@ -12,11 +12,13 @@ that teaches that while merging changes without measuring them is not credible.
 ## Options considered
 
 ### Option A — trust the PR template
+
 Ask for a measurement table and rely on reviewers.
 **Costs:** reviewers do not run evaluations. The table gets filled in with a point estimate and
 no interval, or left empty, and after three months nobody notices.
 
 ### Option B — report only, never block
+
 Post a scorecard, let humans decide.
 **Costs:** a warning everyone learns to scroll past. Also teaches that a gate is advisory,
 which is the opposite of the section-6 lesson.

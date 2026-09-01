@@ -13,12 +13,14 @@ identifier.
 ## Options considered
 
 ### Option A — sequential integers
+
 `chunk_0`, `chunk_1`, …
 **Costs:** re-chunking a document shifts every subsequent id, so a one-paragraph edit
 invalidates the whole document's vectors. It also makes an upsert impossible: you cannot tell
 whether `chunk_7` is the same chunk it was yesterday.
 
 ### Option B — a hash of the content alone
+
 **Costs:** loses provenance — you cannot tell which document or which position a chunk came
 from without a lookup, and two identical boilerplate paragraphs in different documents collide.
 

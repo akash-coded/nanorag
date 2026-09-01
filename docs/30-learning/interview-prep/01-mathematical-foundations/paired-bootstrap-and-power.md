@@ -33,7 +33,7 @@ There are two errors, and only one of them is under your control after the eval 
 Raising `n_boot` from 2,000 to 100,000 makes the endpoints you print more **stable** — the digits
 stop moving — and does **not** narrow the interval:
 
-```
+```text
 n_boot=  2,000  [-0.0097, +0.0821]  width=0.0918
 n_boot= 10,000  [-0.0094, +0.0818]  width=0.0918
 n_boot=100,000  [-0.0095, +0.0817]  width=0.0917

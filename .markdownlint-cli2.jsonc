@@ -1,0 +1,25 @@
+{
+  // Each disabled rule is a deliberate house style, not a rule we could not satisfy.
+  //
+  //   MD013 line-length        tables and mermaid blocks legitimately exceed any limit
+  //   MD033 inline HTML        the README uses <div align="center"> and <table> on purpose
+  //   MD041 first-line-heading discussion templates and ADRs open with front matter
+  //   MD060 table-column-style compact pipes (|---|---|) are idiomatic GitHub markdown and
+  //                            are what every table in this repository already uses
+  //   MD036 emphasis-as-heading  bold run-in leads inside a section are intentional; making
+  //                            them headings would put them in the docs-site table of contents
+  //   MD024 duplicate-heading  "What would change this" repeats across eight ADRs by design
+  "config": {
+    "MD013": false,
+    "MD033": false,
+    "MD041": false,
+    "MD060": false,
+    "MD036": false,
+    "MD024": { "siblings_only": true }
+  },
+  "ignores": [
+    "tools/node_modules/**",
+    "_site_docs/**",
+    "**/node_modules/**"
+  ]
+}

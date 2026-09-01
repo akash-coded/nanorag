@@ -1,6 +1,5 @@
 # Q13 · Which metadata belongs in the index, and which belongs in the prompt?
 
-
 In the index: anything you filter or scope on — source, publication date, tenant, ACL,
 document type, language. A field you did not index is a filter you cannot apply, and the
 failure looks like poor recall rather than like a schema bug.

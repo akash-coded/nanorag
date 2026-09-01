@@ -8,6 +8,7 @@
 Write 15 null questions for a corpus you actually work with. Not this one.
 
 **Acceptance criteria**
+
 - The 15 questions, each with one line on *why* the corpus cannot answer it
 - Which of the four null-generation patterns each uses (absent entity, absent relation,
   absent time period, absent identifier)

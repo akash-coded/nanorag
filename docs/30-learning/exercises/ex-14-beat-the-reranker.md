@@ -9,6 +9,7 @@ Improve `ProxyCrossEncoder`. Add features, change the model class, or replace it
 cross-encoder if you have the dependency.
 
 **Acceptance criteria**
+
 - Fitted on **dev only**; frozen slice looked at once
 - Evidence recall *and* full-chain recall, each with an interval
 - Added latency measured, not estimated

@@ -1,6 +1,5 @@
 # Q14 · How would you tune top-k when answer quality improves but latency and cost rise?
 
-
 I would ask what the latency and cost envelope is before answering, because k is a purchase
 and I need to know the budget.
 

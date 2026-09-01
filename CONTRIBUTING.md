@@ -48,7 +48,7 @@ chmod +x .git/hooks/pre-commit
 [Conventional Commits](https://www.conventionalcommits.org/). The scope is the module or the
 notebook.
 
-```
+```text
 feat(retrieve): add HyDE query expansion behind seam ③
 
 Generates a hypothetical answer and embeds that instead of the query.

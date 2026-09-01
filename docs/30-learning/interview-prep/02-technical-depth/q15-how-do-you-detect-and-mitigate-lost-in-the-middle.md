@@ -1,6 +1,5 @@
 # Q15 · How do you detect and mitigate "lost in the middle"?
 
-
 Detect by measuring it on your own eval set rather than citing the paper: hold the evidence set
 constant and force the gold chunk into position 1, the middle, and last. The spread is your
 position sensitivity. It varies by model and by task, so somebody else's U-curve is a

@@ -1,6 +1,5 @@
 # Q1 · Your client's assistant answers correctly about 80% of the time. They want 95%. You have four weeks. What do you do in week one?
 
-
 **Testing:** whether you interrogate the number before acting on it; whether your instinct is
 to build or to measure; whether you can tell a client that 95% may not be achievable.
 

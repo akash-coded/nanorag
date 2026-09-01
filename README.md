@@ -67,7 +67,7 @@ print(trace.stage_ms)               # per-stage latency
 print(len(trace.candidates), "→", len(trace.packed))   # the recall funnel, measured
 ```
 
-```
+```text
 corpus     484 documents · 2,430 chunks (structural)
 index      in-memory sqlite · FTS5 lexical + lsa@1.0:d96 vectors
 eval set   243 questions (36 frozen)

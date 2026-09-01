@@ -16,6 +16,7 @@ does not fit exactly one, it is probably two ideas.
 ## Tier 1 — high value, well understood, S/M effort
 
 ### 1. HyDE — hypothetical document embeddings
+
 **Seam ③** · effort M · *Gao et al., 2022*
 
 Generate a hypothetical answer to the query, embed *that* instead of the query, and search.
@@ -31,6 +32,7 @@ the asymmetry a bi-encoder has to bridge.
 - **Offline path:** template-generated pseudo-answers from the fact graph, clearly labelled.
 
 ### 2. Query decomposition that actually pays
+
 **Seam ⑩** · effort M
 
 Notebook 09 finds routed decomposition adds candidates that never win a slot — because at
@@ -43,6 +45,7 @@ sub-question gets its own small pool.
 - **Measure:** hold total candidates constant. That is the only fair comparison.
 
 ### 3. Reciprocal rank fusion with learned per-class weights
+
 **Seam ④** · effort S · builds on EX-13
 
 Notebook 04 shows a single global α is a compromise. Learn α per query class from the dev set.
@@ -53,6 +56,7 @@ Notebook 04 shows a single global α is a compromise. Learn α per query class f
 - **Watch for:** the router's errors concentrating on exactly the queries that needed help.
 
 ### 4. Cross-encoder distillation
+
 **Seam ⑤** · effort M
 
 Use the (expensive) reranker to label pairs, then train a cheaper model — or better features
@@ -62,6 +66,7 @@ for the existing one — on those labels.
 - **Costs:** an offline labelling run; a model that inherits the teacher's biases.
 
 ### 5. Semantic answer caching
+
 **Seam ⑧** · effort S
 
 Cache full answers keyed on a query embedding, serve on a near-match.
@@ -75,6 +80,7 @@ Cache full answers keyed on a query embedding, serve on a near-match.
   do not.
 
 ### 6. Query rewriting with conversation state
+
 **Seam ③** · effort M
 
 Resolve pronouns and ellipsis against conversation history before retrieving.
@@ -89,6 +95,7 @@ Resolve pronouns and ellipsis against conversation history before retrieving.
 ## Tier 2 — structural changes worth a cohort project
 
 ### 7. GraphRAG / knowledge-graph retrieval
+
 **Seams ①③** · effort L · *the LinkedIn case study in notebook 03*
 
 Parse documents into entities and relations; retrieve over sub-graphs so the unit returned is a
@@ -101,6 +108,7 @@ coherent case rather than a fragment.
 - **Start from:** notebook 03's crude case-level pairing, which already moves the number.
 
 ### 8. RAPTOR — recursive summarisation trees
+
 **Seam ①** · effort L · *Sarthi et al., 2024*
 
 Cluster chunks, summarise clusters, recurse. Retrieve at whichever level of abstraction the
@@ -113,6 +121,7 @@ query needs.
 - **Watch for:** summaries that are retrievable but not *citable* — provenance gets harder.
 
 ### 9. ColBERT / true late interaction
+
 **Seam ⑤** · effort L
 
 The toolkit has MaxSim over LSA term vectors. Do it properly with a trained late-interaction
@@ -122,6 +131,7 @@ model.
 - **Costs:** 10–100× storage for token-level vectors. Measure the storage, not just the latency.
 
 ### 10. Self-RAG / corrective RAG
+
 **Seams ⑧⑩** · effort L · *Asai et al., 2023; Yan et al., 2024*
 
 The model critiques its own retrieval and decides to re-retrieve, use the evidence, or abstain.
@@ -132,6 +142,7 @@ The model critiques its own retrieval and decides to re-retrieve, use the eviden
 - **This is the highest-value open item in the repo.** See EX-18.
 
 ### 11. Multi-vector document representation
+
 **Seam ②** · effort M
 
 Represent a document by several vectors (per section, per claim) rather than one per chunk.
@@ -141,6 +152,7 @@ Represent a document by several vectors (per section, per claim) rather than one
 - **Costs:** index size; a merge rule for per-document scores.
 
 ### 12. Learned sparse retrieval (SPLADE-style)
+
 **Seam ③** · effort L
 
 Term-weighted sparse vectors learned by a model — lexical matching with learned expansion.
@@ -155,6 +167,7 @@ Term-weighted sparse vectors learned by a model — lexical matching with learne
 ## Tier 3 — evaluation and operations
 
 ### 13. A real judge, calibrated
+
 **Seam ⑨** · effort M
 
 Replace `HeuristicJudge` with `BedrockJudge` and run the full calibration loop against human
@@ -164,18 +177,21 @@ labels (EX-19).
 - **Costs:** real money per evaluation run; a judge that can drift.
 
 ### 14. Position sensitivity, measured on a real model
+
 **Seam ⑦** · effort S · EX-17
 
 - **Hypothesis:** the U-curve exists and the spread is ≥5 points on this eval set.
 - **Costs:** one API run. Cheap, and almost nobody does it.
 
 ### 15. Multi-turn conversational eval set
+
 **Seam ⑨** · effort L
 
 - **Hypothesis:** single-turn metrics overstate multi-turn performance by ≥10 points.
 - **Costs:** building the set is the work. It is also the deliverable.
 
 ### 16. Per-tenant metric dashboards
+
 **Seam ⑨** · effort S
 
 Slice every metric by tenant and alert when one drops while the average holds.
@@ -184,6 +200,7 @@ Slice every metric by tenant and alert when one drops while the average holds.
 - **Costs:** almost nothing. This is the highest value-per-hour item on the page.
 
 ### 17. Adversarial / robustness eval set
+
 **Seam ⑨** · effort M
 
 Typos, wrong entity names, leading questions, prompt injection in retrieved documents.
@@ -199,6 +216,7 @@ Typos, wrong entity names, leading questions, prompt injection in retrieved docu
 ## Tier 4 — infrastructure
 
 ### 18. Real ANN backend
+
 **Seam ③** · effort M
 
 Swap the in-process NSW graph for FAISS, hnswlib, or pgvector behind the same `Hit` interface.
@@ -208,6 +226,7 @@ Swap the in-process NSW graph for FAISS, hnswlib, or pgvector behind the same `H
 - **Costs:** a dependency, and a second thing to keep in sync.
 
 ### 19. Streaming generation and time-to-first-token
+
 **Seam ⑧** · effort M
 
 - **Hypothesis:** TTFT drops below 400 ms while total latency is unchanged — and the perceived
@@ -215,6 +234,7 @@ Swap the in-process NSW graph for FAISS, hnswlib, or pgvector behind the same `H
 - **Costs:** the guardrail has to become streaming-aware, or it stops being able to block.
 
 ### 20. Incremental index with a real CDC source
+
 **Seams ①** · effort L
 
 Wire the freshness path to an actual change stream rather than a simulated one.

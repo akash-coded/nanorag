@@ -24,7 +24,7 @@ step fails independently, so a token without Projects access still gets you the 
 | `project` | Projects v2 board, 5 custom fields, every issue placed | **GraphQL** |
 | `push` | Adds `origin`, pushes `main` with its 20 phased commits | git |
 
-### Renaming or forking
+## Renaming or forking
 
 Nothing in the tree is hard-bound to an account. A handful of things genuinely cannot be
 relative — CI badge URLs, the clone command, CODEOWNERS handles, `CITATION.cff`, packaging

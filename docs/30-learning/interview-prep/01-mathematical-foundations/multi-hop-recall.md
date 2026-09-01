@@ -44,7 +44,7 @@ pair. It looks like a retrieval quality problem and is a packing policy problem.
 
 Two different metrics get called "recall" and they have different denominators:
 
-```
+```text
 full_chain_recall_at_N   over the candidate pool (N=100)    0.871
 full_chain_recall        over the packed context (k=8)      0.469
 ```
@@ -71,7 +71,7 @@ slot.
 
 Measured, same reranker, same corpus:
 
-```
+```text
                           full_chain   context_precision   tokens
 k=8, no constraint            0.469          0.52           4,090
 k=16                          0.548          0.31           7,910   (+93% tokens)

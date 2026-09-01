@@ -9,6 +9,7 @@ Run all seven strategies against a corpus of your own (or an unbalanced variant 
 Report recall, storage multiplier, index cost, and unresolvable gold spans.
 
 **Acceptance criteria**
+
 - The seven-row table
 - The corpus profile that drove the decision tree, derived from measurement
 - A one-paragraph recommendation naming what it costs

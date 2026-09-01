@@ -1,6 +1,5 @@
 # Q16 · When should a RAG system abstain instead of answering?
 
-
 When the evidence does not entail an answer. That sounds obvious and the important part is
 what it rules out: **it is an entailment judgment, not a similarity score.**
 

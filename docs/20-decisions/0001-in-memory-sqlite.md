@@ -17,18 +17,21 @@ service; every serious lexical index is a service.
 ## Options considered
 
 ### Option A — a real vector database in Docker
+
 Qdrant, Weaviate or OpenSearch via docker-compose. Genuinely production-shaped.
 **Costs:** Docker on every student laptop, an image pull over conference wifi, a service that
 can be in a bad state at 9am, and a full class period lost to environment debugging. It also
 teaches the *operation* of a specific product rather than the mechanics of retrieval.
 
 ### Option B — pure Python data structures
+
 Dictionaries and NumPy arrays. Trivially portable.
 **Costs:** it stops being a database. No SQL, no real BM25, no filters, no transactions —
 and the moment a student asks "how would the ACL filter work here", the honest answer is
 "differently from anywhere you will ever work".
 
 ### Option C — SQLite in memory
+
 `sqlite3.connect(":memory:")` with FTS5 for the lexical index, a table for vectors, and an
 ACL column. Ships with Python.
 

@@ -12,9 +12,11 @@ constraint, this does not need an ADR.
 ## Options considered
 
 ### Option A — <name>
+
 What it is. What it costs.
 
 ### Option B — <name>
+
 What it is. What it costs.
 
 ## Decision

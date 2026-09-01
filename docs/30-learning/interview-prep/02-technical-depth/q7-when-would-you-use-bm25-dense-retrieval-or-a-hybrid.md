@@ -1,6 +1,5 @@
 # Q7 · When would you use BM25, dense retrieval, or a hybrid?
 
-
 BM25 when the query carries identifiers, error codes, API names, SKUs, dates or exact
 terminology — anything where the user typed the literal string that is in the document. It is
 deterministic, explainable, cheap, easy to filter by metadata, and it benefits from domain

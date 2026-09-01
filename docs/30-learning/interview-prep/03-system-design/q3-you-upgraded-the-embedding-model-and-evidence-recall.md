@@ -1,5 +1,4 @@
-# Q3 · You upgraded the embedding model and Evidence Recall@10 fell from 0.86 to 0.71. Walk me through the diagnosis.
-
+# Q3 · You upgraded the embedding model and Evidence Recall@10 fell from 0.86 to 0.71. Walk me through the diagnosis
 
 **Testing:** whether you check operational causes before model-quality causes; whether you
 bisect rather than guess.

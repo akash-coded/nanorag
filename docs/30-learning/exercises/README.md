@@ -3,7 +3,7 @@
 One file per exercise. Every exercise that touches `nanorag/` must ship with a
 measurement and an interval — a point estimate is not a result.
 
-| | Exercise | | 
+| | Exercise | |
 |---|---|---|
 | 🟢 | [`EX-01`](ex-01-attribute-ten-failures.md) | Attribute ten failures |
 | 🟡 | [`EX-02`](ex-02-find-the-n-where-the-ceiling-stops-moving.md) | Find the N where the ceiling stops moving |

@@ -16,6 +16,7 @@ document grows past about 250 lines it gets split.
 | take part in Discussions | [`50-community/discussions-guide.md`](50-community/discussions-guide.md) |
 | understand the casebook threads | [`50-community/casebook-convention.md`](50-community/casebook-convention.md) |
 | look up notation or a term | [`90-reference/notation.md`](90-reference/notation.md) |
+| see what has already been answered | [`90-reference/faq.md`](90-reference/faq.md) |
 
 ---
 

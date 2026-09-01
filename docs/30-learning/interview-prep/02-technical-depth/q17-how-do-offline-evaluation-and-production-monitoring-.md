@@ -1,6 +1,5 @@
 # Q17 · How do offline evaluation and production monitoring complement each other?
 
-
 Offline gates the release: deterministic, fast, runs on every change, and blocks a merge on a
 regression. It cannot tell you about terminology your users started using last week.
 

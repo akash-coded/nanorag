@@ -9,6 +9,7 @@ Construct a configuration where **answer correctness stays flat while Evidence R
 by more than 10 points.** Then construct the reverse.
 
 **Acceptance criteria**
+
 - Both configurations, with numbers
 - An explanation of the mechanism in each direction
 - Which production symptom each corresponds to in the metric-selection matrix

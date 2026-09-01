@@ -10,6 +10,7 @@ neural model: better vocabulary, n-grams, term weighting, dimension routing, or 
 augmentation.
 
 **Acceptance criteria**
+
 - Dense-only evidence recall, before and after, sliced by query class
 - An explanation of the mechanism — *why* your change helped
 - Whether the hybrid improves once the dense leg does
