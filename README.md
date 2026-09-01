@@ -561,6 +561,7 @@ flowchart LR
 | Deciding what to build next | [docs/10-architecture/seams.md](docs/10-architecture/seams.md) — 20 techniques with hypotheses and seams |
 | Wanting to understand the code | [docs/10-architecture/overview.md](docs/10-architecture/overview.md) — HLD, LLD, every seam |
 | Putting this on a CV or LinkedIn | [docs/00-orientation/portfolio.md](docs/00-orientation/portfolio.md) |
+| Wanting one page to carry into a meeting | [docs/60-cheatsheets/](docs/60-cheatsheets/) — 8 frameworks, 5 playbooks, 4 interview sheets |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Reading the papers behind it | [docs/30-learning/reading-list.md](docs/30-learning/reading-list.md) |
 

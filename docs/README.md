@@ -14,6 +14,7 @@ document grows past about 250 lines it gets split.
 | read the papers behind it | [`30-learning/reading-list.md`](30-learning/reading-list.md) |
 | run, release or operate this | [`40-operations/runbook.md`](40-operations/runbook.md) |
 | take part in Discussions | [`50-community/discussions-guide.md`](50-community/discussions-guide.md) |
+| **carry one page into a meeting** | [`60-cheatsheets/`](60-cheatsheets/) |
 | understand the casebook threads | [`50-community/casebook-convention.md`](50-community/casebook-convention.md) |
 | look up notation or a term | [`90-reference/notation.md`](90-reference/notation.md) |
 | see what has already been answered | [`90-reference/faq.md`](90-reference/faq.md) |
@@ -30,4 +31,5 @@ document grows past about 250 lines it gets split.
 | [`30-learning/`](30-learning/) | 22 exercises, 18 interview questions, the reading list | Students |
 | [`40-operations/`](40-operations/) | Runbook, release process, board, GitHub setup | Maintainers |
 | [`50-community/`](50-community/) | How Discussions work here, and the casebook convention | Contributors |
+| [`60-cheatsheets/`](60-cheatsheets/) | Frameworks, playbooks, interview sheets — one page each | Learners and practitioners |
 | [`90-reference/`](90-reference/) | Notation, glossary | Everyone, occasionally |
