@@ -14,6 +14,7 @@ document grows past about 250 lines it gets split.
 | read the papers behind it | [`30-learning/reading-list.md`](30-learning/reading-list.md) |
 | run, release or operate this | [`40-operations/runbook.md`](40-operations/runbook.md) |
 | take part in Discussions | [`50-community/discussions-guide.md`](50-community/discussions-guide.md) |
+| find a thread that already answered this | [`50-community/discussion-map.md`](50-community/discussion-map.md) |
 | **carry one page into a meeting** | [`60-cheatsheets/`](60-cheatsheets/) |
 | **practise, one lab at a time** | [`80-lab/`](80-lab/) — the L.A.B. simulator |
 | see what is being built next | [`70-extension/`](70-extension/) |

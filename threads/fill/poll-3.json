@@ -1,0 +1,9 @@
+{
+  "category": "polls",
+  "labels": [
+    "poll",
+    "cohort"
+  ],
+  "title": "[poll] Your reranker is 40ms slower and 1.5 points better. Ship it?",
+  "body": "> **Calibration poll.** No trick \u2014 the information you are given is the information you would\n> have.\n\n```text\nevidence_recall   +0.015   CI [+0.004, +0.026]   real\np95 latency       310ms -> 350ms\ncost              +9% (rerank inference)\n```\n\n**Do you ship it?**\n\n- **A** \u2014 Yes. It cleared the band and 40ms is nothing\n- **B** \u2014 No. 13% latency for 1.5 points is a bad trade\n- **C** \u2014 Not enough information \u2014 I need the latency budget\n- **D** \u2014 Not enough information \u2014 I need the per-class breakdown\n\n### After you vote\n\nAsk yourself whether your answer would change if the latency budget were 3 seconds versus 400ms.\nIf it would, **C was the right answer and you answered something else** \u2014 which is the most common\nfailure in a system design round.\n---\n\n**How to vote.** The API cannot create a native poll widget, so vote with a reaction on this post \u2014 \ud83d\udc4d A \u00b7 \ud83c\udf89 B \u00b7 \ud83d\ude04 C \u00b7 \ud83d\ude80 D \u2014 and reply if your answer needs a condition attached. The reveal is posted as a **reply** in about a week, never by editing this body: editing would destroy the record of what you were actually asked.\n"
+}

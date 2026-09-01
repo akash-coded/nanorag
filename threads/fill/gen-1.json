@@ -1,0 +1,9 @@
+{
+  "category": "general",
+  "labels": [
+    "community",
+    "cohort"
+  ],
+  "title": "Introduce yourself \u2014 and say what you are actually trying to retrieve",
+  "body": "The most useful thing you can say here is **what your corpus looks like**, because almost every\nanswer in this repository is conditional on that and people rarely volunteer it.\n\nA useful introduction:\n\n```text\nwho        one line. Optional\ncorpus     what the documents are, roughly how many, how often they change\nqueries    who asks them, and in what words\nstuck on   the thing you would fix first if you knew how\n```\n\n### Why the corpus, and not the stack\n\nHalf the questions here have a different answer for a 40-page policy document than for a 200-word\nsupport ticket. \"Should I use contextual chunking?\" depends entirely on whether your chunks are\nreadable in isolation \u2014 which is a property of your documents, not of your framework.\n\nIf you tell us your stack we can be polite. If you tell us your corpus we can be useful.\n\n### If you are here to learn rather than to ship\n\nSay that too. The [L.A.B. simulator](https://github.com/akash-coded/nanorag/blob/main/docs/80-lab/README.md) and the\n[exercises](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/README.md) are different doors and it is\nworth being pointed at the right one."
+}

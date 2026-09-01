@@ -1,0 +1,28 @@
+{
+  "category": "show-and-tell",
+  "labels": [
+    "negative-result",
+    "area: retrieval",
+    "casebook"
+  ],
+  "title": "[negative result] Query decomposition changed 47 of 60 candidate pools and moved nothing",
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### What I tried\n\nRouted multi-hop questions through a decomposition step \u2014 split into sub-questions, retrieve for\neach, union the pools \u2014 then measured.\n\n### The result\n\n```text\n                    full_chain_recall   delta      95% CI              verdict\nbaseline                  0.686           \u2014          \u2014                  \u2014\n+ decomposition           0.686        +0.0000   [+0.000, +0.000]   inside the band\n```\n\nAn **exactly zero** delta. Not small. Zero, with a zero-width interval.\n\n### Why I did not stop there\n\n`+0.0000` looks like a bug, so my first instinct was that the routing was not firing. I\ninstrumented it instead of assuming:\n\n```text\nof 60 routed questions:\n  routing fired                     60\n  candidate pool changed            47\n  extra retrieval calls issued     297\n  packed context changed             1\n  packed context gained gold         0\n```\n\n**Decomposition worked.** It changed the pool for 47 of 60 questions and issued 297 extra retrieval\ncalls. The reranker then put **the same chunks on top anyway**.\n\n### The finding\n\nThis is not \"decomposition does not work\". It is:\n\n> **On a corpus where `N=100` already contains what the sub-questions go looking for, decomposition\n> is redundant with the first stage.** The extra candidates were real, and none of them won a slot.\n\n### The diagnostic that made this a finding instead of a null\n\n`full_chain_recall_at_N` was already **0.871** at baseline. The pool was not the bottleneck \u2014\npacking was. Decomposition widens the pool, which is the stage that was already fine.\n\n### What I would tell a client\n\nBefore paying for decomposition, check `full_chain_recall_at_N`. If it is already high, the second\nhop is in your pool and decomposition has nothing to find. **The precondition is a pool that is\nmissing the second hop**, and it is one number away from being checked.",
+  "comments": [
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nThe instrumentation is the part worth copying. `+0.0000` is the kind of result people report as \"no\neffect\" and move on from, and \"no effect\" and \"worked and was redundant\" are completely different\nfindings with different next actions.\n\nTen minutes of counting turned a null into a precondition.",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nEndorsing, and naming the general form because it comes up constantly:\n\n**An exactly-zero delta with a zero-width interval is not a null result. It is a signal that your\nchange did not reach the metric.** Either it did not fire, or it fired and was absorbed by a later\nstage. Both are worth knowing and neither is \"no effect\".\n\nThe instrumentation that distinguishes them is always counting at the intermediate stage, and it is\nalways cheaper than the debate about whether to keep the feature."
+        }
+      ]
+    },
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nOne caveat for anyone reusing this: the result is conditional on `N=100` **and** on this corpus's\nfact-graph construction, where questions and documents share vocabulary by design.\n\nOn a corpus with real vocabulary mismatch, sub-questions phrase things differently and would\nplausibly reach documents the original query does not. That is the case where decomposition earns\nits keep, and this corpus structurally cannot show it.\n\nWorth stating in the write-up, because someone will otherwise cite this as evidence against\ndecomposition in general.",
+      "replies": [
+        {
+          "body": "Correct, and added to the finding. It is the same limitation [#37](https://github.com/akash-coded/nanorag/discussions/37) has and\nthe same one the whole synthetic corpus has \u2014 which is precisely what\n[the extension project](https://github.com/akash-coded/nanorag/blob/main/docs/70-extension/README.md) exists to test."
+        }
+      ]
+    }
+  ]
+}

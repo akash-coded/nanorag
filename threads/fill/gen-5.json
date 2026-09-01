@@ -1,0 +1,8 @@
+{
+  "category": "general",
+  "labels": [
+    "community"
+  ],
+  "title": "FDE, ML engineer, research engineer, platform \u2014 what actually differs day to day?",
+  "body": "These titles overlap heavily and the job postings are near-identical, which makes it hard to tell\nwhat you are actually interviewing for.\n\nMy read, from the shape of the interview loops rather than the postings:\n\n| Role | The loop tests | The day is mostly |\n|---|---|---|\n| **Forward-deployed / deployment engineer** | ambiguity, stakeholders, sequencing \u2014 *\"what is week one?\"* | figuring out what the client actually needs, then building the smallest thing that proves it |\n| **ML engineer** | the mechanism, and whether you can measure it | pipelines, evaluation, and the gap between offline and online |\n| **Research engineer** | falsification \u2014 *\"design the experiment that would disprove this\"* | making somebody else's result reproduce, and finding out why it does not |\n| **Platform / infra** | scale, failure modes, cost | the 69% of the bill that is not tokens |\n\nThe [interview sheets](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/interviews/navigating-the-loop.md) go\nfurther on what each round scores.\n\n### What I want from this thread\n\n**Correct me.** If you hold one of these titles, what does the table get wrong? The most useful\nreply is the boring detail \u2014 what you spend Tuesday morning on."
+}

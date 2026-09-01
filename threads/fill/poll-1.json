@@ -1,0 +1,9 @@
+{
+  "category": "polls",
+  "labels": [
+    "poll",
+    "cohort"
+  ],
+  "title": "[poll] How much of a RAG monthly bill is generation tokens?",
+  "body": "> **Calibration poll.** Guess before you read [The Cost Iceberg](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/frameworks/cost-iceberg.md).\n\nA mid-size deployment: 2M chunks, 300k queries a month, self-hosted encoder, corpus churns 15% a\nmonth, an in-VPC OpenSearch cluster.\n\n**What share of the monthly bill is generation tokens?**\n\n- **A** \u2014 about 80%. It is the expensive model call\n- **B** \u2014 about 55%\n- **C** \u2014 about 30%\n- **D** \u2014 under 15%. The cluster dominates\n\n### Why this is worth guessing first\n\nAlmost everyone quotes a per-query token cost when a client asks what the system costs. If your\nguess is A or B, you would describe a minority of the bill with high confidence and imply the\nrest is rounding \u2014 and that conversation goes badly in month three *because* your number was\naccurate.\n---\n\n**How to vote.** The API cannot create a native poll widget, so vote with a reaction on this post \u2014 \ud83d\udc4d A \u00b7 \ud83c\udf89 B \u00b7 \ud83d\ude04 C \u00b7 \ud83d\ude80 D \u2014 and reply if your answer needs a condition attached. The reveal is posted as a **reply** in about a week, never by editing this body: editing would destroy the record of what you were actually asked.\n"
+}

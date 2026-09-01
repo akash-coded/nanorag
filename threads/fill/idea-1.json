@@ -1,0 +1,9 @@
+{
+  "category": "ideas",
+  "labels": [
+    "area: evaluation",
+    "help wanted"
+  ],
+  "title": "One command that turns a client corpus into an eval set",
+  "body": "### The problem\n\nThe first real blocker on every engagement is the same: **the client has no labelled data**, and\nuntil they do, nothing anyone changes can be shown to have worked.\n[Week 2 of the first-30-days playbook](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/playbooks/first-30-days.md)\nis entirely this, and it is a week because the work is manual.\n\n`notebooks/02` teaches the method. Nothing automates it.\n\n### The proposal\n\n```bash\npython -m nanorag.evalgen ./their_docs --out eval.jsonl --n 200 --nulls 0.15\n```\n\nExtract entities and relations, generate multi-hop questions whose evidence is *known by\nconstruction*, include null questions at a stated base rate, and emit records conforming to the\neval schema.\n\n### How we would know it worked\n\nNot \"it produces questions\". **Do the questions discriminate?** Run two configurations known to\ndiffer \u2014 say hybrid against dense-only \u2014 and check the generated set separates them with an\ninterval. A generated eval set on which every configuration scores identically is worse than no\neval set, because it looks like evidence.\n\n### What it costs\n\nThe generated questions inherit the generator's biases, exactly as this repo's synthetic corpus\ndoes. That is a real limitation and it should be printed in the output header, not buried in\ndocs."
+}

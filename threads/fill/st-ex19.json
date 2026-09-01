@@ -1,0 +1,29 @@
+{
+  "category": "show-and-tell",
+  "labels": [
+    "solution",
+    "type: exercise",
+    "area: evaluation",
+    "casebook"
+  ],
+  "title": "[solution \u00b7 EX-19] I hand-labelled 200 answers and my judge scored \u03ba 0.31",
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\nSubmission for [EX-19](https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/exercises/ex-19-calibrate-a-judge-against-humans.md).\n\n### What I did\n\nLabelled 200 answers by hand before looking at the judge's verdicts, then computed agreement.\n\n### The numbers\n\n```text\n                judge: correct   judge: wrong\nhuman: correct        168              7\nhuman: wrong           18              7\n\nraw agreement    175/200 = 87.5%\nbase rate        human positive 87.5%\np_e              0.7856\nkappa            0.417\n```\n\n**87.5% raw agreement, \u03ba 0.417.** On the Landis\u2013Koch bands that is \"moderate\", and it is nowhere\nnear good enough to gate a release on.\n\n### The part that took me longest\n\nI labelled 50, got bored, and started skimming. When I re-labelled those 50 blind two days later I\ndisagreed with **myself** on 6 of them.\n\nThat is a **self-consistency of 88%**, which caps the \u03ba I can possibly measure against the judge \u2014\nI am one of the two raters and I am noisy. I threw the first 50 away and redid them properly.\n\n### What I would do differently\n\n**Write the rubric before labelling, not during.** My disagreements with myself were almost all\n\"partially correct\" cases where I had not decided in advance whether partial credit existed. That\nis not a judgement problem, it is a spec problem, and the judge inherits it.\n\n### The uncomfortable conclusion\n\nMy judge is not the weak link. **My labels are.** A \u03ba of 0.417 against a rater who agrees with\nherself 88% of the time is close to the ceiling that noise permits.",
+  "comments": [
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nThis is the best submission on this exercise so far, and it is because of the part you nearly did\nnot report.\n\n**Measuring your own self-consistency is the step nobody takes**, and without it \u03ba is\nuninterpretable. You are one of two raters. If you are noisy, the ceiling on measurable agreement\ndrops and you will spend weeks improving a judge that is already at the limit your labels permit.\n\nThe arithmetic worth adding to your write-up: with rater self-consistency around 0.88, the\nattainable \u03ba between two raters is bounded well below 1 even if the judge were perfect. **You are\nnot measuring the judge. You are measuring the judge through a noisy instrument.**",
+      "replies": [
+        {
+          "body": "> **the original poster** \u00b7 cohort\n\nThat framing \u2014 measuring through a noisy instrument \u2014 is what I was circling and could not name.\nAdding it."
+        }
+      ]
+    },
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nThe rubric point generalises past judging and is the more transferable half.\n\n\"Partially correct\" is not a labelling edge case. It is an **unspecified requirement**. You\ndiscovered mid-labelling that your rubric had a hole, which means the hole was in the product\ndefinition before it was in the eval set.\n\nI would go further than \"write the rubric first\": **label 20 examples, find the disagreements with\nyourself, and let those disagreements rewrite the rubric.** Then throw those 20 away and start.\nThe first 20 are for finding the spec, not for measuring.",
+      "replies": [
+        {
+          "body": "Adopting this into EX-19 as an explicit step. \"Label 20 to find the holes in your rubric, discard\nthem, then label for real\" is better instruction than the exercise currently gives, and it came out\nof a submission rather than out of me."
+        }
+      ]
+    }
+  ]
+}

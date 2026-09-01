@@ -1,0 +1,8 @@
+{
+  "category": "general",
+  "labels": [
+    "community"
+  ],
+  "title": "What did you get wrong that took longest to find?",
+  "body": "War stories, specifically the ones where the **system was working perfectly and the results were\nwrong**. Those are the expensive ones, because nothing errors and no alert fires.\n\nThree from this repository, all real, all in the tracker:\n\n| | What happened | How long it hid |\n|---|---|---|\n| [#1](https://github.com/akash-coded/nanorag/issues/1) | The FTS5 tokenizer split `ERR_CONN_RESET` into three terms present in every document. Query matched everything, ranked nothing. **Zero errors.** | Only caught by a by-class slice; the aggregate barely moved |\n| [#2](https://github.com/akash-coded/nanorag/issues/2) | A pure k-NN graph with no long-range links. `recall@20 = 0.00` at `ef=64` \u2014 not degraded, structurally impossible | Looked like an embedding problem |\n| [#7](https://github.com/akash-coded/nanorag/issues/7) | A subsample taken for speed moved the null base rate from 15% to 33%, and abstention precision is base-rate sensitive. The chart contradicted the prose above it | The prose was right the whole time |\n\n### What to include\n\nThe **detection gap** is the valuable part. Not \"what broke\" but **\"why did we find out the way we\ndid, and what measurement would have caught it sooner?\"** That is the last line of every\npostmortem in the [incident runbook](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/playbooks/retrieval-incident-runbook.md),\nand it is the one people skip."
+}

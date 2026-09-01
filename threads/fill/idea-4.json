@@ -1,0 +1,9 @@
+{
+  "category": "ideas",
+  "labels": [
+    "area: evaluation",
+    "help wanted"
+  ],
+  "title": "Paste a trace, get a verdict \u2014 a tiny diagnostic page on Pages",
+  "body": "### The problem\n\n[The Four Verdicts](https://github.com/akash-coded/nanorag/blob/main/docs/60-cheatsheets/frameworks/four-verdicts.md) is three\nbooleans and a lookup table, and people still get it wrong \u2014 usually by classifying from the\nanswer rather than from the trace.\n\n### The proposal\n\nA static page on the docs site. Paste a trace JSON, get the verdict, the reasoning, and a link to\nthe fix. No server, no data leaving the browser \u2014 which matters, because traces contain queries.\n\nExtend it to a list of traces and it renders the **distribution**, which is the thing that\nactually decides where the month goes.\n\n### Why this earns a slot\n\nThe framework is already written and the logic is already implemented in\n[L11](https://github.com/akash-coded/nanorag/blob/main/labs/L11-replayable-trace/brief.md). This is a rendering job over code that\nexists and is tested, and it makes a mental model usable by someone who has not read the docs.\n\n### The bit that needs a decision\n\nTrace shapes differ per stack. Do we define a minimal schema and ask people to map onto it, or try\nto sniff common shapes? I would define the schema and be strict, but that is the bit worth\narguing."
+}

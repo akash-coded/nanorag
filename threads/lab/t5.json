@@ -1,0 +1,9 @@
+{
+  "category": "q-a",
+  "title": "[lab \u00b7 T5] Judgement \u2014 track thread",
+  "labels": [
+    "lab",
+    "clinic"
+  ],
+  "body": "> **L.A.B. track thread.** One per track. Ask here rather than opening a new thread \u2014 the\n> answers accumulate where the next person will look.\n>\n> **Labs:** L09 \u00b7 **Lifecycle stage:** Quality \u00b7 [the method](https://github.com/akash-coded/nanorag/blob/main/docs/80-lab/README.md)\n\n## What this track is about\n\n94% agreement sounds like a working judge. Work the arithmetic and most of it was available for free.\n\n## Where people get stuck\n\nRun the class-balance check and watch the verdict move two bands on the *same* judge and the *same* raw agreement. Then remember the conclusion that matters: a judge with moderate but **consistent** error can still rank two systems correctly; a high but erratic one cannot.\n\n## How to ask here\n\nPaste **the check that failed and its message**. The messages are written to be actionable \u2014 if\none is not, that is a bug in the lab and saying so is a useful contribution.\n\n```bash\npython scripts/lab.py run <id>            # public checks\npython scripts/lab.py run <id> --hidden   # everything\n```\n\n## Submitting\n\nFork, fill in `starter.py`, open a pull request. The\n[Labs workflow](https://github.com/akash-coded/nanorag/blob/main/.github/workflows/labs.yml) posts your results as a comment and\nedits it in place on each push. **It will not fail the build on red checks** \u2014 the comment says\nwhat failed.\n\n## What this track hands to the next one\n\nQuality produces the artefact the following stage needs. If you finish L09 and cannot say what\nthat artefact is for your own corpus, the track is not done \u2014 that is the point of the lifecycle\nrunning underneath the pathway rather than beside it.\n"
+}

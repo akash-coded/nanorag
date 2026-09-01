@@ -1,0 +1,35 @@
+{
+  "category": "design-reviews",
+  "labels": [
+    "rfc",
+    "area: retrieval",
+    "casebook"
+  ],
+  "answer": 2,
+  "title": "A support desk where a document edited five minutes ago must be findable",
+  "body": "> **Casebook thread.** A reconstructed conversation, written for teaching. The people in it\n> are illustrative; **every number is real** and reproducible from the notebook cited below.\n> Replies are welcome \u2014 if you hit this yourself, add your numbers.\n\n### The constraints\n\n- **Freshness:** an agent edits a KB article mid-call. It must be retrievable within **60 seconds**\n- **Corpus:** 180k articles, ~400 edits/day, bursty \u2014 a product incident causes 200 edits in an hour\n- **Latency:** 800ms p95 end to end\n- **Team:** two engineers, no dedicated infra\n\n### The tension\n\nEverything about a fresh index is cheap except the **embedding**. A 60-second SLA on edits means\nre-embedding on the write path, and the encoder is the slowest thing in the system.\n\n### Proposed design\n\n```mermaid\nflowchart LR\n    E[\"article edited\"] --> Q[\"write queue\"]\n    Q --> C[\"re-chunk, stable ids\"]\n    C --> H{\"content hash changed?\"}\n    H -->|no| S[\"skip \u2014 no re-embed\"]\n    H -->|yes| B[\"embed, 2s batch window\"]\n    B --> U[\"upsert into live version\"]\n    U --> L[\"lexical index updated synchronously\"]\n```\n\n**Key choices:**\n\n1. **Lexical updates synchronously, dense asynchronously.** BM25 insert is microseconds; the\n   article is findable by its own words immediately, semantically within ~10s.\n2. **Content-hash gate before embedding.** Most \"edits\" are metadata or whitespace. Stable chunk\n   ids make this free.\n3. **Upsert into the live version rather than building a new one.** Freshness beats the safety of\n   version aliasing here, and I am not comfortable about it.\n\n### What I am least sure about\n\nPoint 3. Every other design in this repository says *build alongside, then swap the alias*. A\n60-second SLA does not permit that. Am I trading away the wrong thing?",
+  "comments": [
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nPoint 3 is the right trade and you are right to be uncomfortable, but not for the reason you think.\n\nUpserting into the live version is fine for **content** edits. It is not fine for **encoder**\nchanges, and the design does not distinguish them. Same operation, completely different blast\nradius: a content edit touches one chunk; an encoder change invalidates every vector in the index\nand there is nothing to compare against because you overwrote it.\n\nAdd one guard: **the write path refuses any upsert whose `embedder_tag` differs from the live\nversion's.** Encoder changes go down the build-alongside-and-swap path; content edits go straight\nin. One line, and it keeps the fast path fast without letting it eat the safe path.\n\nWithout it, a partially-completed migration leaves a mixed index that returns well-formed numbers\nfor vectors that mean nothing to each other, and **nothing errors**.",
+      "replies": [
+        {
+          "body": "Accepted, and it is the change I would not have found. The two operations look identical at the API\nand have completely different recovery stories.\n\nMoving `mixed_version_check()` onto the write path, not only before an alias swap."
+        }
+      ]
+    },
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nThe design is sound. What is missing is what is missing from most freshness designs: **how do you\nknow the SLA is being met?**\n\n\"Retrievable within 60 seconds\" is a claim about a distribution and nothing measures it. Before\nthis ships:\n\n- **A canary write.** Every 5 minutes, write a document containing a unique nonce, then poll for\n  it. Record time-to-findable for the lexical and dense legs **separately**\n- **p50 and p99, not a mean.** The bursty case is exactly where a mean lies to you\n- **Alert on queue depth, not on latency.** By the time time-to-findable degrades you are already\n  outside the SLA; queue depth is the leading indicator\n\nThe canary is about twenty lines and it turns \"we think it is fast\" into a number somebody can be\nwoken up by.",
+      "replies": [
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nAdding to the canary: reporting the two legs separately is not just diagnostics, it is the\n**client-facing sentence**.\n\nIf lexical is 200ms and dense is 12s, the honest statement is *\"findable by its own words in under\na second, semantically within fifteen\"* \u2014 far more useful to a support manager than one number\nthat averages two mechanisms with different guarantees."
+        },
+        {
+          "body": "Both in. The two-leg sentence is what I would actually put in front of the client and I would not\nhave written it without this."
+        }
+      ]
+    },
+    {
+      "body": "Marking Dana's, because a freshness design with no freshness measurement is a promise, and this\nthread turned it into a system.\n\n| Critique | Verdict | Change |\n|---|---|---|\n| Write path must refuse encoder-tag mismatches | **Accepted** | `mixed_version_check()` on the write path |\n| No measurement of the SLA | **Accepted** | Canary every 5 min, p50/p99, alert on queue depth |\n| Report both legs separately | **Accepted** | And it becomes the client-facing sentence |\n\n**Stands:** synchronous lexical, asynchronous dense, content-hash gate. Nobody challenged those and\nthey are the load-bearing parts.\n\n**Open:** the 200-edits-in-an-hour burst. The queue absorbs it, but the dense leg falls behind\nexactly when those articles are most needed. Shedding? Priority by article popularity? I have no\ngood answer and it deserves its own thread."
+    }
+  ]
+}

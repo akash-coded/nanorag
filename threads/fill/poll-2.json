@@ -1,0 +1,9 @@
+{
+  "category": "polls",
+  "labels": [
+    "poll",
+    "cohort"
+  ],
+  "title": "[poll] Chunk size: what do you actually use, and did you measure it?",
+  "body": "> **Calibration poll**, and the second question matters more than the first.\n\n**What chunk size do you use in production?**\n\n- **A** \u2014 256 tokens or under\n- **B** \u2014 around 512\n- **C** \u2014 around 1024\n- **D** \u2014 variable, structural \u2014 a clause, a section, a heading block\n\nThen reply with **the second answer**: did you measure it on your corpus, or inherit it from a\ntutorial default?\n\n### Why ask\n\nThere is no right chunk size. There is a bake-off, and the retrievable unit is a property of your\ndocuments \u2014 for contracts it is a clause, for incident reports a paragraph, for code a function.\nA repository that shipped `512` because a blog post said `512` has made a decision it cannot\ndefend, and the poll is mostly about how many of us have.\n---\n\n**How to vote.** The API cannot create a native poll widget, so vote with a reaction on this post \u2014 \ud83d\udc4d A \u00b7 \ud83c\udf89 B \u00b7 \ud83d\ude04 C \u00b7 \ud83d\ude80 D \u2014 and reply if your answer needs a condition attached. The reveal is posted as a **reply** in about a week, never by editing this body: editing would destroy the record of what you were actually asked.\n"
+}
