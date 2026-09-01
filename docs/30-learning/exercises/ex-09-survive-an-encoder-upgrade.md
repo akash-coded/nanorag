@@ -9,6 +9,7 @@ Simulate an encoder swap that goes wrong in **three** different ways (mixed-vers
 prefix asymmetry, dimension truncation). For each, produce the diagnostic that identifies it.
 
 **Acceptance criteria**
+
 - Three broken configurations, each with the measured recall drop
 - The diagnostic that isolates each, in the order a strong candidate runs them
 - A runbook entry: what you would check first at 2am, and why

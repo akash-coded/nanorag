@@ -10,6 +10,7 @@ retention gap, then close it — by carrying a compacted summary between turns, 
 for early gold, or a better packer.
 
 **Acceptance criteria**
+
 - The gap, before and after
 - Cost delta of the fix
 - Whether the fix helps or hurts single-shot performance (it should not change it at all —

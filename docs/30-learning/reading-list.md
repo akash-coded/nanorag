@@ -143,7 +143,7 @@ job to our `sufficiency_check` and note what ours cannot do.
 
 **Shah & Bender, "Situating Search" (2022)** ·
 [DOI:10.1145/3498366.3505816](https://doi.org/10.1145/3498366.3505816)
-*Look for:* the argument against replacing search with generated answers. Read it even if — 
+*Look for:* the argument against replacing search with generated answers. Read it even if —
 especially if — you disagree. Being able to state the strongest version of the objection to
 your own product is the skill this whole repository is about.
 

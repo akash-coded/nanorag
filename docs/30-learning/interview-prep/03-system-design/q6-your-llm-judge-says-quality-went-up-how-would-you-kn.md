@@ -1,6 +1,5 @@
 # Q6 · Your LLM judge says quality went up. How would you know if the judge is wrong?
 
-
 **Testing:** whether you treat the evaluator as a component that can regress; whether you know
 agreement statistics rather than accuracy; whether you can name specific biases and controls.
 

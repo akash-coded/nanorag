@@ -1,6 +1,5 @@
 # Q10 · How do you select chunk size and overlap for a mixed-format corpus?
 
-
 I would not answer with a number. The size is a consequence of two things: the shape of the
 document and the shape of the question.
 

@@ -17,14 +17,17 @@ taught the opposite of the lesson.
 ## Options considered
 
 ### Option A — keep hand-tuned weights and explain the negative result
+
 Honest, but it teaches "rerankers do not help", which is false in general and false for the
 reason the deck gives.
 
 ### Option B — grid-search the hand-tuned weights
+
 Tried. The best grid point still lost to the fusion it was reranking, because the scorer was
 lexical-only and discarded the dense signal entirely.
 
 ### Option C — make it a *learned* model
+
 Eight pair features, logistic regression, fitted on the dev slice with class weighting.
 
 ## Decision

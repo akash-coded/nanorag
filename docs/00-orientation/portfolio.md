@@ -66,7 +66,7 @@ what you actually did:
 
 Group by capability, not by library. Recruiters keyword-match; engineers read the grouping.
 
-```
+```text
 Retrieval    BM25/inverted indexes · dense retrieval · ANN (HNSW/NSW) · hybrid fusion (RRF,
              weighted) · cross-encoder and late-interaction reranking · chunking strategies
 Evaluation   Evidence/full-chain recall · nDCG · MRR · LLM-as-judge calibration (Cohen's κ) ·

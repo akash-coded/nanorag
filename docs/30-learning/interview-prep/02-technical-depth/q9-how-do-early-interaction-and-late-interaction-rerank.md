@@ -1,6 +1,5 @@
 # Q9 · How do early-interaction and late-interaction rerankers differ?
 
-
 A cross-encoder (early interaction) concatenates query and passage and runs full attention over
 both, so every query token can attend to every passage token. Highest quality. Nothing can be
 precomputed because the representation depends on the pair, so cost is linear in N — reranking

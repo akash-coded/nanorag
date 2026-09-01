@@ -9,6 +9,7 @@ Sweep `n_candidates` and find the point where `Recall@N` flattens. Then argue fo
 point using latency and cost, not just recall.
 
 **Acceptance criteria**
+
 - The sweep, plotted, with the chosen N marked
 - The marginal recall per 100 additional candidates, as a table
 - The latency cost of your choice from `costs.latency_model`

@@ -13,16 +13,19 @@ promise and adds a gigabyte to the setup.
 ## Options considered
 
 ### Option A — sentence-transformers/all-MiniLM-L6-v2
+
 A genuinely good small encoder.
 **Costs:** ~90 MB model download plus ~800 MB of PyTorch, non-deterministic across hardware
 without pinning, and slow enough on CPU that the sweeps in notebook 04 become a coffee break.
 
 ### Option B — a mocked/random encoder
+
 Fast and dependency-free.
 **Costs:** dishonest. Every dense-retrieval number becomes meaningless, and a student who
 notices would be right to distrust the whole curriculum.
 
 ### Option C — latent semantic analysis
+
 TF-IDF over the corpus, then a truncated SVD. The original dense retrieval method.
 
 ## Decision

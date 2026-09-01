@@ -9,6 +9,7 @@ The offline reader has no position sensitivity. Point the same harness at a real
 (Bedrock or Claude) and measure the U-curve on this eval set.
 
 **Acceptance criteria**
+
 - The gold chunk forced into position 1, mid, and last — identical evidence set
 - The spread, with an interval
 - Whether edge-interleaving recovers it, measured

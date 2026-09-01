@@ -50,7 +50,7 @@ design intent, and it is why RRF is robust when one leg is unreliable.
 (2009), fitted on TREC, and the result is insensitive across roughly `30–120`. Swept on this
 corpus:
 
-```
+```text
  k     evidence_recall
   0          0.781
  10          0.796

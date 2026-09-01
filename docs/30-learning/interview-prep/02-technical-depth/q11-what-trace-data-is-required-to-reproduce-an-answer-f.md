@@ -1,6 +1,5 @@
 # Q11 · What trace data is required to reproduce an answer failure?
 
-
 Retrieved chunk ids and their scores at each stage, the packed context with full provenance
 (doc id, chunk ordinal, title, publication date, score), the assembled prompt, the model
 response, per-stage latency, the index version and the encoder tag.

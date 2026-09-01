@@ -1,6 +1,5 @@
 # Q18 · What would block a retrieval-model release in your evaluation pipeline?
 
-
 Two hard blocks and two warnings.
 
 **Hard block** if any frozen-slice metric drops beyond its tolerance — the frozen slice is the

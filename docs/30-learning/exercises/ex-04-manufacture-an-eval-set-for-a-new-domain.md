@@ -9,6 +9,7 @@ Add a new document family to `corpus.py` (regulatory filings, product manuals, m
 — your choice) and generate questions for it through the SEED → FILTER → MAINTAIN pipeline.
 
 **Acceptance criteria**
+
 - At least 20 new questions across ≥3 types, with gold evidence that resolves
   (`test_every_gold_anchor_resolves_under_the_shipped_chunking` must pass)
 - The filter drop-rate per gate, reported

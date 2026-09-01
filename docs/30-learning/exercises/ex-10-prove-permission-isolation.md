@@ -9,6 +9,7 @@ Extend `assert_persona_isolation` into a property-based test that runs over the 
 and every persona, and wire it into CI.
 
 **Acceptance criteria**
+
 - The test, passing, in `tests/`
 - A deliberately broken configuration that the test **catches** (demonstrate the failure)
 - The k-collapse measurement for the broken configuration

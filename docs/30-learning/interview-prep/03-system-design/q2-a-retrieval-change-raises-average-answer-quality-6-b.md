@@ -1,6 +1,5 @@
 # Q2 · A retrieval change raises average answer quality 6%, but one business unit reports the system got worse. Do you ship it?
 
-
 **Testing:** whether you treat an aggregate as evidence or as a summary that hides its own
 counterexample; whether you will actually make a decision.
 

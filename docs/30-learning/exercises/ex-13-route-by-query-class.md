@@ -9,6 +9,7 @@ Notebook 04 finds a single global α is a compromise. Build a router that picks 
 class and measure whether routing beats the best global value.
 
 **Acceptance criteria**
+
 - The router (text-only features — **no gold labels**)
 - Router precision/recall reported as its own metric
 - Routed vs best-global, with an interval, on dev and on frozen

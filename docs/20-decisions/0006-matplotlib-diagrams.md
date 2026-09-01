@@ -13,6 +13,7 @@ render wherever a student opens them.
 ## Options considered
 
 ### Option A — Mermaid in markdown cells
+
 Concise source, renders on GitHub and in recent JupyterLab.
 **Costs:** renders in *some* environments and shows raw text in others — older JupyterLab, some
 VS Code configurations, PDF export, nbconvert without a plugin. A diagram that silently
@@ -20,6 +21,7 @@ degrades to source text is worse than no diagram, and a student cannot tell whet
 seeing a bug.
 
 ### Option B — pre-rendered PNGs
+
 Renders everywhere.
 **Costs:** binary assets in git, a build step, and diagrams that cannot use the numbers the
 notebook just computed.

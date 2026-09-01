@@ -65,7 +65,7 @@ Before the questions, the sheet they are scoring against. Most candidates lose p
 The derivations behind the methods — where most candidates stop at the name of the
 technique. See [`01-mathematical-foundations/`](01-mathematical-foundations/).
 
-# Part 3 — Questions to ask *them*
+## Part 3 — Questions to ask *them*
 
 Panels score you on the questions you ask, and these also tell you whether the role is real.
 

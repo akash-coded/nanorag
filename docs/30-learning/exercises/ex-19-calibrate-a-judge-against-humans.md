@@ -9,6 +9,7 @@ Two people label the same 100 examples against the faithfulness rubric. Compute 
 agreement, then judge–human agreement, then compare.
 
 **Acceptance criteria**
+
 - Both κ values
 - The disagreements read and categorised: judge bug vs ambiguous rubric
 - At least one rubric revision, with the κ before and after

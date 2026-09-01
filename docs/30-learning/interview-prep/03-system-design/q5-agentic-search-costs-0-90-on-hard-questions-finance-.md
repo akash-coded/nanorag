@@ -1,6 +1,5 @@
 # Q5 · Agentic search costs $0.90 on hard questions. Finance wants $0.15. What do you change, and what do you refuse to change?
 
-
 **Testing:** whether you can decompose a per-query cost from memory; whether you optimise the
 distribution or the worst case; whether you push back with a quantified consequence.
 

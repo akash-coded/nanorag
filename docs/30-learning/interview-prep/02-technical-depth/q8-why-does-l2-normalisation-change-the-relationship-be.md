@@ -1,6 +1,5 @@
 # Q8 · Why does L2 normalisation change the relationship between cosine similarity and dot product?
 
-
 Cosine is `q·d / (‖q‖‖d‖)`. After L2 normalisation both norms are 1, so the denominator
 vanishes and cosine *is* the dot product. The rankings become identical.
 

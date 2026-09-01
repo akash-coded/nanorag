@@ -20,6 +20,7 @@ curve that undercut the notebook's own conclusion.
 ## Options considered
 
 ### Option A — engineer the corpus until every matrix row confirms
+
 Every lesson lands cleanly. Students see the expected result every time.
 **Costs:** it teaches that decision matrices are facts to recite. It also teaches, implicitly,
 that when your measurement disagrees with the slide you should change the measurement.

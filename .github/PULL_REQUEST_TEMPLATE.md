@@ -38,9 +38,10 @@ Closes #
 <details>
 <summary>Paste the <code>run_eval.py</code> output</summary>
 
-```
+```text
 
 ```
+
 </details>
 
 ## Checklist

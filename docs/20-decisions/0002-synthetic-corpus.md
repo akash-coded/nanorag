@@ -13,6 +13,7 @@ described.
 ## Options considered
 
 ### Option A — download MultiHop-RAG
+
 The real dataset, 2,556 questions, human-annotated evidence.
 **Costs:** a ~200 MB download, so the notebook is no longer one-click. Human annotation means
 an annotation-error floor under every number — you cannot tell a retrieval miss from a bad
@@ -20,10 +21,12 @@ label. And crucially, it contains whatever failure modes it happens to contain: 
 guarantee it exercises the lexical gap, the identifier miss, ACL leakage or temporal ordering.
 
 ### Option B — scrape a public corpus
+
 Wikipedia, news archives.
 **Costs:** licensing ambiguity, no gold labels at all, and the same coverage problem.
 
 ### Option C — generate from a fact graph
+
 Twenty-four organisations, six quarters of results, acquisitions, incidents, launches,
 funding, regulatory determinations, and market commentary. Documents rendered from the graph;
 questions generated from the same graph.
