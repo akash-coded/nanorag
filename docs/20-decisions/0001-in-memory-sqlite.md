@@ -54,3 +54,13 @@ find rather than a lesson we planned.
 **Revisit when:** the curriculum needs to teach sharding, replication or multi-region
 residency. Those are genuinely not teachable here, and `docs/10-architecture/seams.md` #18 is the
 migration path.
+
+## What would change this
+
+A corpus size at which `:memory:` stops fitting. The design assumes the teaching corpus stays
+in the low tens of thousands of chunks; at roughly **250k chunks** the float32 vector block
+alone approaches a gigabyte and the "press Run All" promise breaks on a modest laptop.
+
+Concretely: if `build_corpus()` is ever extended so a default run exceeds **1 GB resident**, or
+if a cold `make lab` to first metric takes longer than **60 seconds**, this decision is wrong
+and the store needs an on-disk path.

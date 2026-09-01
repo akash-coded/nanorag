@@ -49,3 +49,15 @@ number silently.
 **Revisit when:** the eval set grows enough that the noise band shrinks. Tolerances should
 shrink with it, and someone has to remember to do that — which is itself an argument for
 recording the noise band in the baseline file.
+
+## What would change this
+
+A false-positive rate high enough that people route around it.
+
+A gate that blocks correct changes gets disabled, and a disabled gate is worse than none
+because it still looks like a control. The number to watch is **how often the gate is
+overridden**: if more than roughly one in ten blocked PRs is merged anyway after review, the
+threshold is wrong — most likely the noise band is too tight for the eval-set size, which is
+the [power problem](../30-learning/interview-prep/01-mathematical-foundations/paired-bootstrap-and-power.md).
+
+The fix in that case is to **grow the eval set, not to loosen the gate.**

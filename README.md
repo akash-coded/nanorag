@@ -417,28 +417,64 @@ measurement discipline transfers; the values do not.
 
 ---
 
-## Three results that contradict the expected answer
+## Four results that contradict the expected answer
 
-These are the parts worth your attention, and they are reported rather than tuned away.
+These are the parts worth your attention, and they are reported rather than tuned away. Each
+one names the mechanism, the condition under which the expected result would return, and
+**how to re-test it yourself** — because a finding you cannot re-test is an assertion with
+better manners.
 
-<table>
-<tr><th>Finding</th><th>Why it happens</th><th>When the expected result returns</th></tr>
-<tr>
-<td><b>Equal-weight RRF does not beat BM25 alone</b> here; weighted fusion at α=0.2 does.</td>
-<td>RRF gives both legs the same vote, and the offline dense leg is a fifty-year-old method that is genuinely weaker on this corpus. Fusing strong with weak at equal weight moves you toward the weak one.</td>
-<td>With a modern encoder the balance shifts and α moves up. The <i>procedure</i> — default to RRF, then measure once you have a labelled set — does not change.</td>
-</tr>
-<tr>
-<td><b>Comparison-question starvation does not reproduce.</b></td>
-<td>The corpus is balanced by construction: every company has the same number of quarters, so the prevalence ratio between two compared entities is ≈1.</td>
-<td>On a client corpus where one product line has 10,000 tickets and another has 200, the same question shape starves — in the direction the prevalence ratio predicts.</td>
-</tr>
-<tr>
-<td><b>No retrieval-score threshold separates answerable from unanswerable</b> (best F1 0.38).</td>
-<td>Null questions name real entities in the corpus's own vocabulary; answerable ones paraphrase. The unanswerable questions are <i>lexically closer</i> to the corpus.</td>
-<td>Never, by this route. Abstention is an entailment question and entailment needs a reader — a prompt contract, a sufficiency call, and a judged null set.</td>
-</tr>
-</table>
+### 1 · Equal-weight RRF does not beat BM25 alone here
+
+Weighted fusion at α=0.2 does. RRF gives both legs the same vote, and the offline dense leg is
+a fifty-year-old method that is genuinely weaker on this corpus. **Fusing a strong retriever
+with a weak one at equal weight moves you toward the weak one.**
+
+| | |
+|---|---|
+| **Returns when** | The dense leg is competitive. With a modern encoder the balance shifts and α moves up. The *procedure* — default to RRF, then measure once you have labels — does not change |
+| **Re-test** | `notebooks/04` §4.9. Sweep α against RRF **and against each single leg** — the second comparison is the one people skip, and it is the one that caught this |
+| **Falsified if** | RRF beats both the α-sweep optimum and BM25-alone, outside the noise band, on your corpus |
+
+### 2 · Comparison-question starvation does not reproduce
+
+The matrix predicts one entity dominating top-k while the other starves. It does not happen
+here, because the corpus is **balanced by construction** — every company has the same number of
+quarters, so the prevalence ratio between two compared entities is ≈1.
+
+| | |
+|---|---|
+| **Returns when** | Prevalence is skewed. On a client corpus where one product line has 10,000 tickets and another has 200, the same question shape starves — in the direction the ratio predicts |
+| **Re-test** | [EX-05](docs/30-learning/exercises/ex-05-make-starvation-reproduce.md) is this experiment. Drop documents to create a deliberate prevalence skew between two compared entities, then re-slice full-chain recall by `question_type` — `notebooks/02` §2.2 has the slicing |
+| **Falsified if** | Starvation appears at a prevalence ratio near 1, which would mean the mechanism is not prevalence at all |
+
+### 3 · No retrieval-score threshold separates answerable from unanswerable
+
+Best F1 **0.38**. Four signals were tried and all sit near chance. Null questions name real
+entities in the corpus's own vocabulary while answerable ones paraphrase — so **the
+unanswerable questions are lexically closer to the corpus.**
+
+| | |
+|---|---|
+| **Returns when** | Never, by this route. Abstention is an entailment question and entailment needs a reader — a prompt contract, a sufficiency call, and a judged null set. See [#10](https://github.com/akash-coded/nanorag/issues/10) |
+| **Re-test** | `notebooks/05`. Sweep θ **on the full eval set at its real null base rate** — subsampling to balance the classes flatters the threshold, which is the bug in [#7](https://github.com/akash-coded/nanorag/issues/7) |
+| **Falsified if** | Any score-derived signal clears F1 0.6 at the true base rate on a held-out slice |
+
+### 4 · The learned reranker made retrieval worse at every k
+
+`ER 0.849 → 0.752` at k=8. The scorer used lexical features only, so reranking a *hybrid*
+candidate list discarded the dense signal entirely — a worse BM25 applied on top of a
+well-fused list. The transferable form:
+
+> **A reranker only helps if it can see something the first stage could not. A reranker over
+> the same signals as the retriever is an expensive identity function, and occasionally worse
+> than one.**
+
+| | |
+|---|---|
+| **Returns when** | The reranker adds genuinely pair-wise semantic features — `maxsim`, `doc_cosine` — or is a real cross-encoder doing full attention over the pair. See [#15](https://github.com/akash-coded/nanorag/issues/15) |
+| **Re-test** | `notebooks/04` §4.10, and [EX-14](docs/30-learning/exercises/ex-14-beat-the-reranker.md). Ablate the feature set: score with lexical features only, then add each semantic feature and re-measure |
+| **Falsified if** | A lexical-only reranker beats no-reranking on a hybrid candidate list, outside the noise band |
 
 A decision matrix names a mechanism you should go and test. **The test is allowed to come back
 negative**, and saying so is the difference between a result and a story.

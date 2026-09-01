@@ -51,3 +51,16 @@ by construction*, which is why the deck's comparison-starvation failure does not
 
 **Revisit when:** a cohort needs to work on a real client corpus. At that point the generator
 becomes the *template* for manufacturing their eval set — which is notebook 02's actual lesson.
+
+## What would change this
+
+Evidence that the synthetic corpus produces conclusions that do not hold on real text.
+
+The check is concrete and someone should run it: port the harness to MultiHop-RAG — the record
+schema already matches — and compare the *direction* of the three headline findings. **If the
+ordering of retrieval methods flips**, or fusion behaves qualitatively differently, then the
+fact-graph corpus is teaching an artefact of its own construction and the trade is no longer
+worth the annotation-error-free labels.
+
+What would *not* falsify it: absolute numbers moving. Those are expected to move, and the
+README says so.

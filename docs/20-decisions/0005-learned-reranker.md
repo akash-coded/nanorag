@@ -49,3 +49,16 @@ student who does not read that far could over-read the headline.
 
 **Revisit when:** someone swaps in a real cross-encoder (EX-14). The weights become irrelevant
 and the lesson about fit-then-verify becomes more important, not less.
+
+## What would change this
+
+A hand-tuned weight vector that beats the fitted model on the frozen slice, outside the noise
+band.
+
+The argument for fitting is that eight features cannot be balanced by intuition. If a grid
+search over hand-set coefficients ever finds a point that beats the fitted reranker, the
+premise is wrong and the added machinery is not paying for itself.
+
+This was tested during [#4](https://github.com/akash-coded/nanorag/issues/4): the grid search
+lost, which is what promoted the diagnosis from *weights* to *features*. **That test is the
+falsifier, and it has been run once — it should be re-run whenever the feature set changes.**
