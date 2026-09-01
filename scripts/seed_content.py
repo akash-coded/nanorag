@@ -267,7 +267,7 @@ frozen slice: FCR 0.419 → 0.548
 It made the toolkit more honest about something the deck only implies: **a reranker is a
 model.** It has training data, it can overfit, and its gain has to survive on a slice it never
 saw. That is now notebook 04 §4.10 rather than an assumption. See
-[ADR-0005](../blob/main/docs/adr/0005-learned-reranker.md).""",
+[ADR-0005](https://github.com/akash-coded/nanorag/blob/main/docs/20-decisions/0005-learned-reranker.md).""",
     },
     {
         "title": "[bug] Every chunking strategy scores the same — documents are too short for the comparison to mean anything",
@@ -315,7 +315,7 @@ parent_document  1,258 chunks   median 490 tok
 
 This is the second time the corpus had to be scaled. The first was because N=100 candidates
 over 230 chunks is a full scan wearing a costume — the "first stage" was not narrowing
-anything. Both are recorded in [ADR-0002](../blob/main/docs/adr/0002-synthetic-corpus.md).""",
+anything. Both are recorded in [ADR-0002](https://github.com/akash-coded/nanorag/blob/main/docs/20-decisions/0002-synthetic-corpus.md).""",
     },
     {
         "title": "[bug] decision_tree() crashes when a case falls through to the default branch",
@@ -476,7 +476,7 @@ result should be distrusted.
 - [ ] Offline path works with no network
 - [ ] Evidence recall **sliced by query class**, with 95% intervals
 - [ ] Added latency measured, not estimated
-- [ ] A note in `docs/EXTENSION-POINTS.md` recording the result — including if it is negative
+- [ ] A note in `docs/10-architecture/seams.md` recording the result — including if it is negative
 
 Good first extension: one seam, a clear hypothesis, and a well-understood technique.""",
     },
@@ -673,7 +673,7 @@ context with the same status as the system prompt.
       cost, measured
 - [ ] `SECURITY.md` updated to reflect what changed
 
-Linked: `docs/EXTENSION-POINTS.md` #17.""",
+Linked: `docs/10-architecture/seams.md` #17.""",
     },
     {
         "title": "[chore] Add a real ANN backend behind the same Hit interface",
@@ -700,9 +700,9 @@ threshold is more useful than the swap itself.
 - [ ] Optional dependency; the offline path is unchanged when it is absent
 - [ ] Recall/latency curve for both, at two corpus sizes
 - [ ] The crossover point, stated
-- [ ] `docs/ARCHITECTURE.md` local→AWS table updated
+- [ ] `docs/10-architecture/overview.md` local→AWS table updated
 
-Linked: `docs/EXTENSION-POINTS.md` #18.""",
+Linked: `docs/10-architecture/seams.md` #18.""",
     },
 ]
 
@@ -720,7 +720,7 @@ CATEGORIES = [
      "lives here.", "DISCUSSION"),
     ("Interview Prep", "🎯",
      "Practise an answer and get it critiqued. Nothing under NDA — use the scenarios in "
-     "docs/INTERVIEW-PREP.md or invent your own.", "DISCUSSION"),
+     "docs/30-learning/interview-prep/README.md or invent your own.", "DISCUSSION"),
 ]
 
 # ───────────────────────────────────────────────────────────────── discussions ──
@@ -765,7 +765,7 @@ README.
 
 ## A thing worth knowing on day one
 
-There is a `good first issue` label with real, scoped work behind it, and a `docs/EXERCISES.md`
+There is a `good first issue` label with real, scoped work behind it, and a `docs/30-learning/exercises/README.md`
 with 22 exercises graded by difficulty. You are not expected to invent your own starting point.
 
 Ask anything. The only bad question here is the one asked in a DM, because it helps one person
@@ -817,7 +817,7 @@ under which the expected result would return.
 That sequence — measure, contradict, explain, bound — is most of what separates a senior
 engineer from a competent one in this field.
 
-Full write-up: [ADR-0007](../blob/main/docs/adr/0007-report-negative-results.md).""",
+Full write-up: [ADR-0007](https://github.com/akash-coded/nanorag/blob/main/docs/20-decisions/0007-report-negative-results.md).""",
     },
 
     # ── Q&A ──────────────────────────────────────────────────────────────────
@@ -1486,7 +1486,7 @@ exist after one cohort. If it is 15, this is not worth building. If it is 60, it
     {
         "category": "Interview Prep",
         "title": "Critique my answer: 'How would you separate a retrieval failure from a generation failure?' [worked example]",
-        "body": """Practising Q1-adjacent from `docs/INTERVIEW-PREP.md`. Here is my answer — please tear it
+        "body": """Practising Q1-adjacent from `docs/30-learning/interview-prep/README.md`. Here is my answer — please tear it
 apart.
 
 ---

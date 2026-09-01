@@ -1,0 +1,21 @@
+{
+  "discussion": 27,
+  "comments": [
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nThe reranker finding is the one I would put first rather than third, because it is the one that contradicts the strongest prior.\n\n\"Add a reranker\" is close to universal advice, and the measurement here shows it making retrieval *worse at every k* on this corpus. What makes it a good finding is not that reranking is bad \u2014 it is that the proxy cross-encoder is fitted on features that the first stage has already optimised for, so it reorders without adding information.\n\n**The transferable version:** a reranker only helps if it can see something the first stage could not. A reranker over the same signals as the retriever is an expensive identity function, and occasionally worse than one.",
+      "replies": [
+        {
+          "body": "That is a better statement of it than the one in the post, and I am going to lift it into the README's finding.\n\nThe measurement that would change the conclusion is a genuine cross-encoder doing full attention over the query-document pair \u2014 that *does* see something the bi-encoder cannot. [#15](https://github.com/akash-coded/nanorag/issues/15) is open for exactly this and is a good second issue for someone."
+        }
+      ]
+    },
+    {
+      "body": "> **Noor** \u00b7 cohort peer \u00b7 works in a regulated bank\n\nWhat makes this page unusual is keeping the findings that contradict the teaching material rather than quietly re-running until they agreed.\n\nWould suggest one addition: for each finding, a line saying **what would change the conclusion.** \"This is true on this corpus with this encoder\" is much stronger with \"and here is the experiment that would overturn it\" attached \u2014 it is the difference between a result and a claim.",
+      "replies": [
+        {
+          "body": "Agreed and adopting it. Adding a *\"what would change this\"* line to all three findings, and to the ADR template \u2014 [`docs/adr/template.md`](https://github.com/akash-coded/nanorag/blob/main/docs/adr/template.md) currently has \"consequences\" but nothing that names the falsifier."
+        }
+      ]
+    }
+  ]
+}

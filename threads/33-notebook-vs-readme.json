@@ -1,0 +1,15 @@
+{
+  "discussion": 33,
+  "answer_existing": 0,
+  "comments": [
+    {
+      "under_existing": 0,
+      "body": "> **Priya** \u00b7 cohort peer\n\nAdding the checklist I wish I had had, because I lost an afternoon to this exact thing and it was none of the obvious causes.\n\nOrdered by how often it turned out to be the answer:\n\n1. **Different `k` or `N`.** The README quotes the default config; a notebook cell three sections earlier may have rebound `cfg`. Print the config next to the number, always.\n2. **Different chunking strategy.** `structural` and `fixed` give materially different evidence recall on the same corpus. If you ran the bake-off cell, you may still be on the last strategy it tried.\n3. **Different slice.** `dev` and `frozen` are different question sets. The README quotes frozen.\n4. **A stale kernel.** You changed a parameter, re-ran the eval cell but not the indexing cell.\n\nThe general habit that makes all four go away: **never report a number without the config that produced it.** `pipeline.RagConfig` has a `__repr__` for this reason \u2014 print it in the same cell as the metric.",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nEndorsing point 4 specifically, because it is the one that survives being careful.\n\nNotebook state is *not* the order of the cells on screen; it is the order you ran them. Nothing in the notebook tells you they differ. The check that costs nothing:\n\n```python\nimport json, hashlib\nfrom nanorag.pipeline import RagConfig\n\nfingerprint = hashlib.sha256(\n    json.dumps(cfg.__dict__, sort_keys=True, default=str).encode()\n).hexdigest()[:12]\nprint(f\"config {fingerprint}  n_chunks={len(chunks)}  n_questions={len(eval_set)}\")\n```\n\nPrint that line above every metric you intend to quote anywhere. If two runs disagree, the fingerprints tell you in one second whether you are looking at a real difference or a stale kernel \u2014 which is the difference between a five-minute check and an afternoon."
+        }
+      ]
+    }
+  ]
+}

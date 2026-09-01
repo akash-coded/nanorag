@@ -1,0 +1,17 @@
+{
+  "discussion": 42,
+  "answer": 2,
+  "comments": [
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nBlunt version: do not lead with the corpus. Lead with the measurement.\n\nNobody asks \"is the data fake\" about a project whose headline is *\"I built an evaluation harness that blocks a merge on a metric regression.\"* They ask it about a project whose headline is *\"I built a RAG system.\"* The first is a claim about your engineering; the second invites a question about your data.",
+      "replies": [
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nTrue but incomplete \u2014 the question still comes, just later, and answering it badly at that point is worse because it looks like you were avoiding it."
+        }
+      ]
+    },
+    {
+      "body": "Marking this as the answer since it is the framing question rather than a technical one, and getting it wrong costs people interviews.\n\n**The reframe: synthetic is a methodological choice, and you should say so first.**\n\nThe defensive answer is *\"it is synthetic, but\u2026\"*. The correct answer is that you chose it, on purpose, for a reason that is hard to argue with:\n\n> \"The corpus is generated from a fact graph, which means the gold labels are **true by construction** \u2014 there is no annotation-error floor underneath any number I report. On a hand-labelled set, a 2-point recall difference can be annotator disagreement. On this one it cannot be. That was the point: I wanted to teach measurement, and measurement is unteachable if the ground truth is itself uncertain.\"\n\nThat is not a defence. It is a reason a careful person would make the same choice.\n\n**Then volunteer the limitation before they ask**, which is what actually builds credibility:\n\n> \"What it does *not* give me is distributional realism. Real corpora have duplicates, contradictions, OCR noise and documents that are wrong. My retriever never had to survive any of that, and I would expect the absolute numbers to move on a real corpus. What transfers is the harness \u2014 the metrics, the eval-set construction, the CI gate \u2014 not the constants.\"\n\n**Why this works.** You have demonstrated the thing panels are actually screening for: **knowing which parts of your own result generalise.** A candidate who defends their numbers as universally valid is a risk. A candidate who says \"the method transfers, the constants do not\" is describing how they will behave on the client's data, which is the only thing the interview is really about.\n\n**Two failure modes to avoid.**\n\n- **Over-apologising.** \"It's only synthetic, so it's not really representative\" concedes more than is true and invites them to discount the whole project.\n- **Over-claiming.** Do not say it is \"like production data\". It is not, they know it is not, and one sentence of over-claim costs you the credibility of everything else you said.\n\n**If you have thirty extra minutes before the interview**, the strongest possible version of this is to run the harness against a real corpus \u2014 [MultiHop-RAG](https://github.com/yixuantt/MultiHop-RAG) plugs into the same record schema, and notebook 02 documents the mapping. Then the answer becomes *\"I ran it on both; here is what moved and what did not\"*, and the question stops being a challenge and becomes the most interesting thing you said."
+    }
+  ]
+}

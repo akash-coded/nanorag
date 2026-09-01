@@ -1,0 +1,32 @@
+{
+  "discussion": 28,
+  "answer_existing": 0,
+  "comments": [
+    {
+      "under_existing": 0,
+      "body": "> **Marcus** \u00b7 cohort peer\n\nReading this, the fix seems obvious though? If `k=8` is the binding constraint, set `k=20`. You said yourself that widening N does not create a ninth slot \u2014 so create twelve more slots.\n\nWhat am I missing that makes this not the first thing to try?",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nYou are not missing anything about the mechanism \u2014 raising `k` genuinely does move full-chain recall. What you are missing is the second column.\n\nMeasured on the same 207 questions, structural chunking, same reranker:\n\n```\n k   full_chain_recall   context_precision   prompt tokens   $/1k queries\n 4         0.361              0.71               2,180          $ 6.55\n 8         0.469              0.52               4,090          $12.27\n16         0.548              0.31               7,910          $23.73\n32         0.591              0.17              15,400          $46.20\n```\n\nFull-chain recall is still climbing at `k=32`. So is the bill, faster. And `context_precision` \u2014 the share of packed chunks that are actually gold \u2014 has fallen through the floor: at `k=32` roughly **five of every six chunks the model reads are irrelevant**.\n\nThat matters beyond cost, because `answer_correct` does *not* track full-chain recall up this curve. It peaks around `k=12\u201316` on this corpus and then declines, which is the \"lost in the middle\" effect [#38](https://github.com/akash-coded/nanorag/discussions/38) is about. **You can retrieve the evidence and still lose the answer by burying it.**\n\nSo raising `k` is the correct first experiment and the wrong place to stop. It is the blunt instrument the answer above lists first for exactly that reason."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nThat is a much better table than the one in my head. The `context_precision` column is the one I would never have looked at \u2014 I was treating \"did the gold arrive\" as the only question.\n\nSo the packing constraint from notebook 02 buys the same recall at `k=8` that raising `k` buys at ~16, without the precision collapse. That is the actual argument."
+        }
+      ]
+    },
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nA question about the arithmetic rather than the fix, because I want to check I understand what full-chain recall *is*.\n\nIf per-passage recall is 0.938 at `N=100`, and a two-hop question needs both passages, should full-chain not be about `0.938\u00b2 = 0.880`? The measured number is `0.469`. That is not a small discrepancy, it is off by a factor of nearly two.\n\nEither I have the wrong model of the metric or something else is going on.",
+      "replies": [
+        {
+          "body": "Your model is right; it is being applied at the wrong stage. This is worth spelling out because it is the single most common thing people get wrong about multi-hop retrieval, and it comes up in interviews constantly.\n\n**`0.938` is Recall@N \u2014 the candidate pool of 100.** **`0.469` is full-chain recall over the packed context of `k=8`.** Different denominators, different stages. Compare like with like and the picture is different:\n\n```\nfull_chain_recall_at_N   (over the N=100 pool)   0.871\nfull_chain_recall        (over the k=8 packed)   0.469\n```\n\n`0.871` against your predicted `0.880` \u2014 the conjunction model is essentially right at that stage. **The entire gap from 0.871 to 0.469 happens during packing.** That is the number that says where the work is.\n\n**Now the more interesting half of your question: why is `0.871` slightly *above* `0.938\u00b2 = 0.880`?** It is not \u2014 it is slightly below, but only just, and both are much higher than independence would give across the whole set, because independence is the wrong assumption.\n\nTwo gold passages for one question are frequently in the **same document**, or in documents that share entities and therefore co-retrieve. Retrieving one makes retrieving the other more likely, not independent of it. Formally, `P(A\u2227B) = P(A)\u00b7P(B|A)` and `P(B|A) > P(B)` here. Positive correlation lifts the conjunction above the independence floor.\n\nSo the independence estimate is a **lower bound worth computing**, because:\n\n- if measured \u2248 predicted, your hops are genuinely independent \u2014 usually means evidence is scattered and packing has to work hard;\n- if measured \u226b predicted, your hops co-occur \u2014 often means your chunking has split one coherent passage in two, which is worth knowing;\n- if measured \u226a predicted, something is actively suppressing the second hop. **Dedup by document is the usual culprit** \u2014 a diversity constraint that caps chunks per document will systematically drop the second hop of a same-document pair.\n\nThat last one has bitten this repo. It is why `pack_context` takes the constraint as a parameter rather than hard-coding it."
+        },
+        {
+          "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\n`full_chain_recall_at_N` being a separate field is the bit I had not registered \u2014 I was comparing the wrong two numbers.\n\nThe dedup-by-document failure mode is a good one. On my previous job we had exactly that and diagnosed it for a fortnight as an embedding problem."
+        }
+      ]
+    },
+    {
+      "body": "> **the original poster** \u00b7 cohort\n\nClosing the loop. Ran the diagnostic from the accepted answer:\n\n```\nfound-then-dropped: 84 of 207 questions\n  comparison   41\n  temporal     22\n  inference    17\n  null          4\n```\n\n84 questions where the evidence was in the pool and did not survive packing \u2014 against 27 where it was never retrieved at all. **My bottleneck was three-to-one on the stage I was not working on.**\n\nImplemented the per-entity slot reservation from notebook 02 \u00a72.2 for `comparison` questions only:\n\n```\nfull_chain_recall   0.469 \u2192 0.531   CI [+0.021, +0.104]   real\ncontext_precision   0.52  \u2192 0.51    (unchanged)\nprompt tokens       4,090 \u2192 4,140   (+1.2%)\n```\n\nSame `k`, same candidates, +0.062 for 1.2% more tokens. Raising `k` to 16 bought +0.079 for **93% more tokens** and wrecked precision. Not close."
+    }
+  ]
+}

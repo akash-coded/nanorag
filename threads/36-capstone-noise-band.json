@@ -1,0 +1,24 @@
+{
+  "discussion": 36,
+  "comments": [
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nThe step-4 write-up is the reason to read this submission, and I want to make the general form explicit because it is worth more than the capstone.\n\n**An exactly zero delta is data, not a null.** Most people see `+0.0000` and report \"no effect\". You instrumented it and found that decomposition *did* change the candidate pool for 47 of 60 questions and changed the packed context for **one**. Those are completely different findings:\n\n- \"no effect\" \u2192 the technique does not work\n- \"the pool changed and the ranking did not\" \u2192 **the technique works and is redundant with something already in the pipeline**\n\nThe second is actionable and the first is not. On a corpus where N=100 does not already contain the second hop, decomposition would earn its keep \u2014 and you now know the diagnostic that would tell you.",
+      "replies": [
+        {
+          "body": "> **the original poster** \u00b7 cohort\n\nThe thing that nearly stopped me digging was that `+0.0000` looks like a bug, and my first instinct was to check whether the routing was firing at all. It was firing on all 60.\n\nThe counter I would give anyone repeating this: **instrument the intermediate stage before you conclude anything about the final metric.** `candidate pool changed: 47` took ten minutes and turned a non-result into the most interesting row in the table."
+        }
+      ]
+    },
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nQuestion about step 2 rather than step 4 \u2014 `+0.2500` with a CI of `[+0.182, +0.318]` is enormous. Larger than every other step combined, by a lot.\n\nIs that not suspicious? A single fusion change nearly doubling full-chain recall makes me wonder whether the baseline was straw.",
+      "replies": [
+        {
+          "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nRight to be suspicious of a huge delta, and in this case the baseline genuinely is weak \u2014 deliberately.\n\nStep 1 is `fixed` chunking, **dense only**, `k=5`. Dense-only on this corpus is the weakest configuration available: the LSA encoder is intentionally modest, and the corpus has a lot of rare identifiers and entity names that lexical matching handles far better than a small dense model does. So step 2 is not really \"fusion helped by 0.25\" \u2014 it is **\"adding a lexical leg to a dense-only system helped by 0.25\"**, which is a much more specific and much less surprising claim.\n\nThat is not a straw baseline, it is a *starting* baseline, and the brief asks for exactly that. But Marcus is right that the row is mislabelled: `+ weighted hybrid \u03b1=0.2` describes the change to the config, not the change to the system. **`+ lexical leg (BM25), fused at \u03b1=0.2`** is the honest row label, and it makes the size of the delta stop looking suspicious."
+        },
+        {
+          "body": "> **the original poster** \u00b7 cohort\n\nRelabelling. That is a fair catch \u2014 the row named the parameter I changed rather than the capability I added, and those are not the same thing when the parameter is what switches the capability on."
+        }
+      ]
+    }
+  ]
+}

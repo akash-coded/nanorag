@@ -1,0 +1,29 @@
+{
+  "discussion": 31,
+  "answer_existing": 0,
+  "comments": [
+    {
+      "under_existing": 0,
+      "body": "> **Marcus** \u00b7 cohort peer\n\nMy first instinct here was that `answer_correct` is just a bad metric. It is string matching \u2014 if the model says \"March 2024\" and the gold says \"2024-03\", the token overlap check fails and you score a zero on an answer that is correct.\n\nIs this not simply a scoring artefact rather than a real failure?",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nWorth checking rather than assuming, because it is a real failure mode of that metric \u2014 just not this one. Here is how to rule it out in about a minute, which is the habit worth taking from this more than the answer.\n\n```python\nfrom nanorag.metrics import answer_correct\n\nfor r in rows:\n    if r[\"question_type\"] == \"temporal\" and r[\"answer_correct\"] == 0.0:\n        print(f\"gold: {r['gold_answer']!r}\")\n        print(f\"got : {r['answer'][:120]!r}\")\n        print(f\"  exact-mode: {answer_correct(r['answer'], r['gold_answer'], mode='exact')}\")\n        print()\n```\n\nRead twenty of those. If the answers look right and only the formatting differs, you have found a scoring artefact and you should fix the metric.\n\n**On this corpus they do not look right.** The answers are fluent, on-topic, drawn from the correct documents \u2014 and they do not contain the derived fact the question asks for. Scoring them by hand gives roughly the same number the metric does.\n\nFor completeness on the metric itself, since your objection is a good one and the answer is specific: `answer_correct(mode=\"contains\")` normalises both strings, splits gold on non-alphanumerics, keeps tokens longer than two characters, takes the first six, and requires 60% of them to appear. For a gold answer of `\"2024-03-15\"` the surviving token is `[\"2024\"]` \u2014 `\"03\"` and `\"15\"` are too short. So `\"March 2024\"` **does** score 1.0. The metric is more forgiving than you assumed. That is why it is not the explanation here."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nChecked twenty by hand as suggested. Fourteen are fluent sentences about the right entities that never state a date relation at all. You are right, and my objection was the comfortable answer rather than the true one."
+        }
+      ]
+    },
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nIf retrieval is fine and the metric is fine, what is left is the generator \u2014 and I think the answer is that we are asking an extractive reader to do arithmetic.\n\n`ExtractiveGenerator` is the default. It scores sentences in the packed context and returns the best one verbatim. A temporal question like *\"which incident was resolved first\"* has an answer that **appears in no single sentence** \u2014 it has to be derived by comparing two dates in two different chunks.\n\nAn extractive reader cannot produce a fact that is not literally present. So retrieval succeeds, packing succeeds, and generation cannot possibly succeed. Is that the whole story?",
+      "replies": [
+        {
+          "body": "That is the whole story, and you have arrived at the most important distinction in the curriculum, so let me put a frame around it.\n\n**The four verdicts.** \"Retrieval problem or generation problem\" is the two-bucket version people give in interviews. The useful version has four, because each has a different owner and a different fix:\n\n| Verdict | Evidence in pool? | Survived packing? | Answer correct? | Fix |\n|---|---|---|---|---|\n| **Retrieval miss** | \u2717 | \u2014 | \u2717 | chunking, encoder, N, fusion |\n| **Packing loss** | \u2713 | \u2717 | \u2717 | `k`, reranker, packing constraints |\n| **Generation failure** | \u2713 | \u2713 | \u2717 | the generator, or the prompt |\n| **Right by accident** | \u2717 | \u2717 | \u2713 | **the scariest one** \u2014 model knew it without evidence |\n\nTemporal questions on this corpus are squarely in row three. `evidence_recall 0.807` and `full_chain_recall` healthy say rows one and two are fine. `answer_correct 0.061` says row three.\n\n**Why the repo ships this way rather than fixing it.** Swap in `AnthropicGenerator` or `BedrockGenerator` and temporal correctness jumps immediately \u2014 a real model does the comparison. That is a one-line change and it is documented in notebook 05.\n\nIt is not the default because **the default has to run with no API key**, and a curriculum whose first cell requires a credential is a curriculum most people never run. The cost of that choice is exactly the confusion in this thread: a metric that looks like a retrieval failure and is not.\n\n**Which is the lesson, not the bug.** Row four is the reason to care. If you only measure `answer_correct`, an ungrounded model that happens to know the answer scores identically to a working RAG system. `UngroundedGenerator` exists in `generate.py` purely so you can measure that gap \u2014 run it and you will see a non-zero score with *no retrieval at all*. That number is your \"right by accident\" floor, and every `answer_correct` you report should be read against it."
+        },
+        {
+          "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nThe `UngroundedGenerator` baseline is the part I had not thought to run. Measuring what the model gets right with no context at all, and subtracting, is obviously the correct thing to do and I have never once done it."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "discussion": 26,
+  "comments": [
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nOne thing worth adding for people arriving from a search or platform background rather than an ML one.\n\nThe instinct here is to read the toolkit first \u2014 `store.py`, `retrieve.py` \u2014 because that is where the code you recognise lives. **Read [notebook 01](https://github.com/akash-coded/nanorag/blob/main/notebooks/01_retrieval_and_evaluation_foundations.ipynb) first anyway.** The whole repository is organised around the idea that a number without an interval is an anecdote, and if you skip the measurement material the retrieval code looks over-engineered \u2014 you cannot see what the harness is protecting against.\n\nFastest path if you have an hour: notebook 01 end to end, then \u00a71.3 twice."
+    },
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nPractical note for anyone who hits it: `make lab` on a fresh machine wants the dev extras, and `pip install -e .` alone is not enough \u2014 you want `make setup` or `pip install -e \".[dev]\"`. Cost me ten minutes before I read the Makefile.\n\nAlso worth saying out loud since it took me a while to believe it: there really is no dataset download and no API key. If you are waiting for something to install, you have gone wrong somewhere."
+    }
+  ]
+}

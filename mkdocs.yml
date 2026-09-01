@@ -1,0 +1,115 @@
+site_name: nanorag
+site_description: >-
+  The whole retrieval stack — BM25, dense, ANN, fusion, reranking, evaluation —
+  with no vector database, no framework and no API key.
+site_url: https://akash-coded.github.io/nanorag/
+repo_url: https://github.com/akash-coded/nanorag
+repo_name: akash-coded/nanorag
+edit_uri: edit/main/docs/
+docs_dir: docs
+site_dir: _site_docs
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - content.code.copy
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle: { icon: material/weather-night, name: Switch to dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle: { icon: material/weather-sunny, name: Switch to light mode }
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc: { permalink: true }
+  - pymdownx.details
+  - pymdownx.highlight: { anchor_linenums: true }
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.arithmatex: { generic: true }
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+plugins:
+  - search
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/akash-coded/nanorag
+
+# Warnings are expected: several documents link out to notebooks/ and to the
+# repository root, which live outside docs_dir. Those links are correct on
+# GitHub, which is the primary reading surface. Do not build with --strict.
+validation:
+  links:
+    absolute_links: ignore
+    unrecognized_links: ignore
+
+nav:
+  - Home: README.md
+  - Orientation:
+      - Start here: 00-orientation/start-here.md
+      - Curriculum: 00-orientation/curriculum.md
+      - Put it on your CV: 00-orientation/portfolio.md
+  - Architecture:
+      - Overview: 10-architecture/overview.md
+      - The seams: 10-architecture/seams.md
+  - Decisions:
+      - 20-decisions/README.md
+      - Template: 20-decisions/template.md
+      - 0001 In-memory SQLite: 20-decisions/0001-in-memory-sqlite.md
+      - 0002 Synthetic corpus: 20-decisions/0002-synthetic-corpus.md
+      - 0003 LSA default encoder: 20-decisions/0003-lsa-default-encoder.md
+      - 0004 Stable chunk ids: 20-decisions/0004-stable-chunk-ids.md
+      - 0005 Learned reranker: 20-decisions/0005-learned-reranker.md
+      - 0006 Matplotlib diagrams: 20-decisions/0006-matplotlib-diagrams.md
+      - 0007 Report negative results: 20-decisions/0007-report-negative-results.md
+      - 0008 Eval gate in CI: 20-decisions/0008-eval-gate-in-ci.md
+  - Learning:
+      - Exercises: 30-learning/exercises/README.md
+      - Interview prep:
+          - 30-learning/interview-prep/README.md
+          - Mathematical foundations:
+              - 30-learning/interview-prep/01-mathematical-foundations/README.md
+              - BM25 from first principles: 30-learning/interview-prep/01-mathematical-foundations/bm25-from-first-principles.md
+              - Reciprocal rank fusion: 30-learning/interview-prep/01-mathematical-foundations/reciprocal-rank-fusion.md
+              - Multi-hop recall: 30-learning/interview-prep/01-mathematical-foundations/multi-hop-recall.md
+              - Cohen's kappa: 30-learning/interview-prep/01-mathematical-foundations/cohens-kappa.md
+              - Paired bootstrap and power: 30-learning/interview-prep/01-mathematical-foundations/paired-bootstrap-and-power.md
+      - Reading list: 30-learning/reading-list.md
+  - Operations:
+      - Runbook: 40-operations/runbook.md
+      - Project board: 40-operations/project-board.md
+      - GitHub setup: 40-operations/github-setup.md
+  - Community:
+      - Discussions guide: 50-community/discussions-guide.md
+      - Casebook convention: 50-community/casebook-convention.md
+  - Reference:
+      - Notation: 90-reference/notation.md
