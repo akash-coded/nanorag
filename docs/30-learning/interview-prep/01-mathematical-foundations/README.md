@@ -13,7 +13,7 @@ repository, the notebook cell is named.
 | | Question | Status |
 |---|---|---|
 | [BM25 from first principles](bm25-from-first-principles.md) | Derive the term-frequency component from the probabilistic relevance model. Why does it saturate, and what does `k₁` control? | ✅ |
-| Cosine, dot product and MIPS | Why does L2 normalisation make them rank-equivalent, and when is that a bug? | ◻ planned |
+| [Cosine, dot product and MIPS](cosine-dot-product-and-mips.md) | Why does L2 normalisation make them rank-equivalent, and when is that a bug? | ✅ |
 | [Reciprocal rank fusion](reciprocal-rank-fusion.md) | Why `1/(k+rank)`? Why not `1/rank` or the nDCG discount? | ✅ |
 | nDCG | Why a `log₂` discount, and what breaks when relevant-set sizes differ across queries? | ◻ planned |
 | [Multi-hop recall](multi-hop-recall.md) | Per-passage recall is 0.938 and you need three passages. What is full-chain recall? | ✅ |
@@ -22,9 +22,9 @@ repository, the notebook cell is named.
 
 | | Question | Status |
 |---|---|---|
-| Eckart–Young–Mirsky | Prove that truncating the SVD at rank `k` is the optimal rank-`k` approximation. In which norm? | ◻ planned |
-| Johnson–Lindenstrauss | How many dimensions preserve pairwise distances among `n` points to within `ε`? | ◻ planned |
-| Navigable small-world graphs | Why is greedy search `O(log n)`, and what breaks the guarantee? | ◻ planned |
+| [Eckart–Young–Mirsky](eckart-young-and-svd.md) | Prove that truncating the SVD at rank `k` is the optimal rank-`k` approximation. In which norm? | ✅ |
+| [Johnson–Lindenstrauss](johnson-lindenstrauss.md) | How many dimensions preserve pairwise distances among `n` points to within `ε`? | ✅ |
+| [Navigable small-world graphs](navigable-small-world.md) | Why is greedy search `O(log n)`, and what breaks the guarantee? | ✅ |
 | Product quantization | Derive the memory saving and the distortion cost. What is asymmetric distance computation? | ◻ planned |
 
 ## Evaluation and statistics
