@@ -21,9 +21,11 @@ from __future__ import annotations
 import pathlib
 
 import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
+
+matplotlib.use("Agg")  # headless: must be set before pyplot is imported
+
+import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.patches import FancyBboxPatch  # noqa: E402
 
 # The palette is the repo's own — the same values the mermaid classDefs use.
 INK_BG    = "#0F1417"
@@ -91,7 +93,8 @@ def main() -> None:
         (0.548, 0.135), 0.390, 0.73,
         boxstyle="round,pad=0.012,rounding_size=0.018",
         facecolor=PANEL, edgecolor=RULE, linewidth=1.4))
-    bg.set_xlim(0, 1); bg.set_ylim(0, 1)
+    bg.set_xlim(0, 1)
+    bg.set_ylim(0, 1)
 
     ax = fig.add_axes([0.628, 0.300, 0.264, 0.385], zorder=2)
     ax.set_facecolor(PANEL)
