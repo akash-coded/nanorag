@@ -46,3 +46,16 @@ a diagram means changing Python, not a two-line diff.
 
 **Revisit when:** Mermaid rendering becomes universal across Jupyter frontends and export
 paths. Even then, the data-driven diagrams stay in matplotlib.
+
+## What would change this
+
+Mermaid rendering reliably in executed-notebook HTML exports without a JavaScript runtime.
+
+The decision rests on notebooks needing to render identically in JupyterLab, in nbconvert HTML,
+and on GitHub — and Mermaid not doing that. **If `nbconvert` gains native Mermaid rendering, or
+the Pages build pre-renders fences to inline SVG, the constraint is gone** and Mermaid becomes
+the better choice for structural diagrams.
+
+Note this ADR is scoped to *notebooks*. Markdown files use Mermaid throughout and are validated
+in CI by `tools/validate-mermaid.mjs` — the two surfaces have different constraints and this
+decision does not apply to both.

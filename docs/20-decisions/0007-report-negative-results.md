@@ -49,3 +49,18 @@ here, and here is why", which is a harder room to hold than a clean confirmation
 
 **Revisit when:** never, as a policy. Individual findings should be revisited whenever the
 corpus, the encoder or the eval set changes — and re-measured rather than assumed to still hold.
+
+## What would change this
+
+This one is a value, not an empirical claim, and it is worth being honest that the falsifier is
+different in kind.
+
+It would be wrong if reporting contradicting results **measurably harmed** the thing it exists
+to serve — if readers came away believing the underlying techniques do not work, rather than
+that they were tested under conditions that did not meet their preconditions.
+
+The observable: if Discussions accumulate posts of the form *"the repo says reranking doesn't
+work"* — dropping the corpus-specific condition — then the framing has failed even though the
+measurements are correct, and the fix is presentation rather than suppression. **The
+"returns when" and "falsified if" rows in the README exist as the guard against exactly
+that.**

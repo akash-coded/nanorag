@@ -45,3 +45,16 @@ load-bearing component nobody thinks about.
 **Revisit when:** chunks need to be addressable across chunking strategies — for example if a
 future extension wants to compare two strategies' retrieval of "the same" passage. That would
 need a separate content-addressed identity alongside this one.
+
+## What would change this
+
+A re-chunking strategy under which `doc_id + ordinal + content_hash` is not stable.
+
+The scheme assumes ordinal is meaningful and stable within a document. **A semantic or
+sliding-window chunker that re-segments on every ingest breaks it** — the same text lands at a
+different ordinal, the id changes, and the incremental path degrades into a full rebuild
+without saying so.
+
+Check it by re-running the same document through a chunker twice with a one-word edit in the
+middle and counting how many chunk ids change. **More than the chunks that actually changed
+means this decision does not hold for that strategy.**

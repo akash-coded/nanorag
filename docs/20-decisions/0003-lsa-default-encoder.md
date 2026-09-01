@@ -52,3 +52,17 @@ nothing a bag of words would not.
 
 **Revisit when:** a student has a GPU and wants to re-derive α with a real encoder. That is
 EX-15, and the expected outcome is that α moves up and the hybrid story gets easier.
+
+## What would change this
+
+A sentence-transformer model that loads offline, from cache, in **under 3 seconds on a cold
+machine with no network**, at a download size small enough to vendor.
+
+LSA's only advantage is that it has no download and no import cost. The moment that advantage
+disappears, the argument collapses — a modern encoder is straightforwardly better at the
+retrieval task, and the curriculum would rather teach against a strong dense leg than a weak
+one.
+
+Partial falsifier already observed: the weak dense leg is *why* [finding 1](../../README.md)
+(RRF losing to weighted fusion) reproduces here. That finding is a consequence of this ADR, not
+an independent result, and the README says so.
