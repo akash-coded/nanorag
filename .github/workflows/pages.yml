@@ -1,8 +1,16 @@
-# Publish executed notebooks as a browsable static site, so a recruiter or an
-# interviewer can read the work without installing anything.
+# Publishes two things to one site:
+#   /            the documentation, built with MkDocs Material (search, dark mode,
+#                native mermaid, MathJax for the derivations)
+#   /notebooks/  the ten notebooks, executed, with their outputs
+#
+# Pages must be configured with Source = GitHub Actions for the deploy step to
+# work. Enabling the workflow alone is not enough; deploy-pages fails with a
+# "Not Found" if the Pages site does not exist yet.
 name: Pages
 on:
-  push: { branches: [main], paths: ["notebooks/**", "nanorag/**", "docs/**"] }
+  push:
+    branches: [main]
+    paths: ["notebooks/**", "nanorag/**", "docs/**", "mkdocs.yml", ".github/workflows/pages.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -11,37 +19,59 @@ permissions:
 concurrency:
   group: pages
   cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: "3.11", cache: pip }
-      - run: pip install -e ".[dev]" nbconvert
-      - name: Execute and export notebooks to HTML
+        with: { python-version: "3.12", cache: pip }
+
+      - name: Install
+        run: pip install -e ".[dev]" nbconvert mkdocs-material
+
+      - name: Build the documentation site
+        run: mkdocs build            # -> _site_docs/
+
+      - name: Execute and export the notebooks
         run: |
-          mkdir -p _site
+          mkdir -p _site_docs/notebooks
           for nb in notebooks/*.ipynb; do
             jupyter nbconvert --to html --execute --ExecutePreprocessor.timeout=900 \
-              --output-dir _site "$nb" || echo "::warning::$nb failed to export"
+              --output-dir _site_docs/notebooks "$nb" || echo "::warning::$nb failed to export"
           done
+
+      - name: Index the notebooks
+        run: |
           python - <<'PY'
           import pathlib
-          links = "\n".join(
+          out = pathlib.Path("_site_docs/notebooks")
+          items = "\n".join(
               f'<li><a href="{p.name}">{p.stem.replace("_", " ")}</a></li>'
-              for p in sorted(pathlib.Path("_site").glob("*.html")))
-          pathlib.Path("_site/index.html").write_text(f"""<!doctype html>
-          <meta charset=utf-8><title>Advanced RAG — executed notebooks</title>
-          <style>body{{font:16px/1.6 system-ui;max-width:52rem;margin:4rem auto;padding:0 1rem}}
-          h1{{letter-spacing:-.02em}} li{{margin:.4rem 0}}</style>
-          <h1>Advanced RAG — hands on</h1>
-          <p>Executed notebooks, rendered with their outputs. Source:
-          <a href="https://github.com/akash-coded/nanorag">GitHub</a>.</p>
-          <ul>{links}</ul>""")
+              for p in sorted(out.glob("*.html")) if p.name != "index.html")
+          (out / "index.html").write_text(f"""<!doctype html>
+          <html lang="en"><head><meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>nanorag — executed notebooks</title>
+          <style>
+            :root {{ color-scheme: light dark; }}
+            body {{ font:16px/1.6 system-ui,sans-serif; max-width:46rem;
+                   margin:4rem auto; padding:0 1.25rem; }}
+            h1 {{ letter-spacing:-.02em; margin-bottom:.25rem; }}
+            p  {{ color:#667; }}
+            li {{ margin:.45rem 0; }}
+          </style></head><body>
+          <h1>Executed notebooks</h1>
+          <p>Rendered with their outputs, from the run that built this site.
+          &larr; <a href="../">Back to the documentation</a></p>
+          <ul>{items}</ul>
+          </body></html>""", encoding="utf-8")
           PY
+
       - uses: actions/upload-pages-artifact@v3
-        with: { path: _site }
+        with: { path: _site_docs }
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
