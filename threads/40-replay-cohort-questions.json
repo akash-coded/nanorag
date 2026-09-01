@@ -1,0 +1,16 @@
+{
+  "discussion": 40,
+  "comments": [
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nStrongly in favour, and I think the value is different from the one in the proposal.\n\nThe proposal frames it as *more eval data*. The bigger win is **distribution**. Our synthetic eval set is generated from a fact graph, so its questions are uniformly well-formed: complete sentences, correct entity names, unambiguous intent. Real cohort questions are none of those. They have typos, missing context, two questions in one, and pronouns with no antecedent.\n\nA retriever tuned on well-formed questions and deployed against real ones degrades in ways the synthetic set cannot show you. **The replay slice is valuable precisely because it is messy**, and that should be the headline argument rather than the sample count.",
+      "replies": [
+        {
+          "body": "> **Noor** \u00b7 cohort peer \u00b7 works in a regulated bank\n\nAdding the constraint that will decide whether this is buildable: if you replay real questions you are handling real user data, and in my industry that needs consent and a retention policy before the first question is stored.\n\nNot an objection \u2014 a design requirement. Anonymise at capture, not later; store the question text and nothing that identifies who asked it; and put a TTL on the slice. It is much easier to build this correctly than to retrofit it."
+        },
+        {
+          "body": "Both right, and Noor's point promotes this from an idea to something with a design. Capturing the shape:\n\n- **Value** is distributional realism, not volume \u2014 that is the sentence that goes in the issue.\n- **Capture** anonymises at write time; question text only; TTL enforced.\n- **Labelling** is the cost nobody has priced. Real questions have no gold evidence, so somebody has to label them, and that is the work. Probably a small hand-labelled slice rather than the whole stream.\n- **Open question worth its own thread:** if the replay slice disagrees with the synthetic slice, which one gates a release? I do not think the answer is obvious and I would rather argue it before we have the data than after."
+        }
+      ]
+    }
+  ]
+}

@@ -91,7 +91,7 @@ gh repo create akash-coded/nanorag \
 ```
 
 Or at [github.com/new](https://github.com/new). **Public** is recommended — the portfolio value
-in `docs/PORTFOLIO.md` depends on a recruiter being able to open it, and Discussions on a
+in `docs/00-orientation/portfolio.md` depends on a recruiter being able to open it, and Discussions on a
 private repo are invisible to anyone outside the org.
 
 Do not initialise it with a README, licence or `.gitignore` — this repository already has all

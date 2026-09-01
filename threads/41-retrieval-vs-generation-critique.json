@@ -1,0 +1,25 @@
+{
+  "discussion": 41,
+  "answer": 3,
+  "comments": [
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nThe self-critique is already better than the answer. One thing I would add: I would open with the *distribution*, not the taxonomy. Panels have heard the taxonomy. Something like \"I'd pull fifty failures and bucket them, because the shape of the distribution decides what I work on\" gets to the point faster.",
+      "replies": [
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nI would push back slightly. Leading with \"I'd pull fifty failures\" without saying what you are bucketing them *into* sounds like process for its own sake. The taxonomy is what makes the bucketing meaningful \u2014 it just needs to be two sentences, not a lecture.\n\nOrder it: the four verdicts, then the distribution, then what each bucket implies. That is thirty seconds and it does not sound rehearsed."
+        }
+      ]
+    },
+    {
+      "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nPractical warning from having been on the other side of this panel: **do not name four buckets unless you can name the trace field that distinguishes each pair.** The follow-up is always \"how would you tell those two apart\", and a taxonomy you cannot operationalise is worse than two honest buckets.\n\nIf you say \"retrieved but dropped during packing\", be ready for \"what in your logs tells you that\", instantly, without thinking.",
+      "replies": [
+        {
+          "body": "> **the original poster** \u00b7 cohort\n\nThat is the question I would have fallen over on. Writing the mapping out so I actually know it:\n\n| Verdict | The field that proves it |\n|---|---|\n| Retrieval miss | gold \u2209 `trace.candidates` |\n| Packing loss | gold \u2208 `candidates`, gold \u2209 `packed` |\n| Generation failure | gold \u2208 `packed`, `answer_correct == 0` |\n| Right by accident | gold \u2209 `packed`, `answer_correct == 1` |\n\nThe fourth row is the one I would never have listed unprompted, and it is the one that matters most for whether the system works at all."
+        }
+      ]
+    },
+    {
+      "body": "Marking this one as the answer because it is the version I would want to hear, and because the shape matters as much as the content.\n\n---\n\n**A stronger answer, roughly as I would say it out loud:**\n\n> \"I'd separate them with the trace rather than by intuition, because the two-bucket version hides the case that actually matters.\n>\n> For each failure I check three things: was the gold evidence in the candidate pool, did it survive into the packed context, and was the answer right. That gives four verdicts, not two.\n>\n> **Retrieval miss** \u2014 never in the pool. Chunking, encoder, or the analyzer. **Packing loss** \u2014 in the pool, not in the context. That is `k`, the reranker, or a packing constraint, and it is the bucket people miss because retrieval metrics look healthy. **Generation failure** \u2014 evidence was right there and the answer is still wrong. **Right by accident** \u2014 the answer is correct and the evidence was never retrieved. That one is the most important, because it means the model is answering from parametric memory and the whole retrieval system is decorative for that query.\n>\n> Then I'd look at the distribution over fifty or so failures, because that decides where the work goes. If it is mostly packing loss, widening retrieval is wasted effort \u2014 I have seen a team spend a month on the encoder for a problem that was `k=5`.\n>\n> If there is no trace, that is the first finding. I'd say so on day one and instrument before promising a number, because without it every one of these verdicts is a guess.\"\n\n---\n\n**Why this scores.** Panels are not testing whether you know the word \"reranker\". They are testing three things:\n\n1. **Do you reach for evidence or for intuition?** \"I'd check the trace\" versus \"I'd look at whether the right documents were retrieved\" \u2014 the second is a wish, the first is a procedure.\n2. **Do you know what you cannot see?** Naming the missing trace as a *finding* rather than a blocker is the difference between a consultant and a candidate.\n3. **Have you actually done this?** The \"team spent a month on the encoder\" line is doing real work. One concrete failure you have lived through beats any amount of taxonomy.\n\n**What still would not survive a hard follow-up:** you have not said how you know what the gold evidence *is* for a production query with no labels. The honest answer is that you do not, and the first week is spent manufacturing an eval set \u2014 which is [notebook 02](https://github.com/akash-coded/nanorag/blob/main/notebooks/02_multihop_rag_use_case.ipynb) and the real work. Have that ready; it is the most common second question."
+    }
+  ]
+}

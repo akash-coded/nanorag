@@ -1,5 +1,5 @@
 # Every mermaid block is parsed with the real mermaid parser before it can merge.
-# docs/ARCHITECTURE.md once shipped a diagram that silently failed to render because
+# docs/10-architecture/overview.md once shipped a diagram that silently failed to render because
 # of an unquoted "()" inside a [] node label; a diff review will not catch that.
 name: Diagrams
 on:

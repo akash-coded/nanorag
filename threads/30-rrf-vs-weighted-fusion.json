@@ -1,0 +1,29 @@
+{
+  "discussion": 30,
+  "answer_existing": 0,
+  "comments": [
+    {
+      "under_existing": 0,
+      "body": "> **Marcus** \u00b7 cohort peer\n\nFollow-up on the RRF side of this. `k=60` looks like a magic number \u2014 it is in every RRF implementation I have seen and nobody explains it. If we are tuning \u03b1 anyway, should we not be tuning `k` too? It seems odd to accept one hard-coded constant while carefully fitting another.",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nRight to be suspicious of an unexplained constant, but the two knobs are not comparable in importance, and it is worth seeing why.\n\n**What `k` does.** RRF scores a document as `\u03a3_r 1/(k + rank_r)`, summed over retrievers. `k` is a damping constant that flattens the gap between top ranks. At `k=0` the scores are `1, 1/2, 1/3\u2026` \u2014 rank 1 is worth twice rank 2, and a single retriever's top hit can dominate the merge. At `k=60` they are `1/61, 1/62, 1/63\u2026` \u2014 nearly equal, so what matters is *how many retrievers ranked the document at all*, not how highly any one of them did.\n\nThat is the design intent: **RRF is deliberately a voting scheme, not a scoring scheme.** `k=60` is from Cormack et al. (2009), chosen empirically on TREC data, and it is large precisely to suppress the influence of any one retriever's confidence.\n\n**Measured on our corpus, sweeping it:**\n\n```\n k     evidence_recall\n  0          0.781\n 10          0.796\n 30          0.802\n 60          0.804\n120          0.803\n300          0.799\n```\n\nNearly flat from 30 to 120. The whole range is worth about **+0.023**, and everything above `k=10` is within noise of everything else.\n\n**Compare that to \u03b1**, which moves the same metric by **+0.061** across its range on this corpus. One of these is worth your afternoon and it is not `k`.\n\n**The rule of thumb:** tune `k` only if you have many retrievers with wildly different reliability, where you want to suppress a bad one's confident wrong answers. With two legs it is not where the signal is."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nThe `k=0` versus `k=60` framing makes it click \u2014 it is a confidence-suppressor, not a free parameter. And +0.023 across the whole sweep versus +0.061 for \u03b1 settles where to spend the time."
+        }
+      ]
+    },
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nCan I ask the more basic question underneath this? *Why* `1/(k + rank)` specifically? Why not `1/log(rank+1)` like nDCG's discount, or just `1/rank`? It looks arbitrary and I have never seen it justified, only used.\n\nI would like to be able to answer this if I am asked it, rather than saying \"it is what everyone uses\".",
+      "replies": [
+        {
+          "body": "Good question, and it is a real interview question \u2014 I have been asked it twice. There are three properties doing the work, and the form follows from wanting all three at once.\n\n**1 \u00b7 It must consume ranks, not scores.** BM25 returns values around 8\u201325; cosine returns values in `[-1, 1]`. There is no principled way to add those. Any monotone transform of a retriever's scores leaves its ranking unchanged, so the ranking is the only part that is comparable across legs. This kills every score-based fusion unless you first calibrate the scores \u2014 which needs labelled data, which is the thing you do not have when you reach for RRF.\n\n**2 \u00b7 It must be steeply decreasing but bounded.** Rank 1 should beat rank 50, but not by so much that one retriever's top hit wins outright. `1/(k+r)` with a large `k` is nearly flat over the region you care about, so a document at rank 3 in *both* legs beats a document at rank 1 in one and rank 200 in the other. **That is the behaviour you actually want from a merge** and it is the entire argument for RRF.\n\n**3 \u00b7 It must not require training.** No parameter fitted to labels means nothing to overfit and nothing to re-tune when the corpus drifts.\n\n**On the alternatives you named:**\n\n- **`1/rank`** satisfies 1 and 3 but fails 2 \u2014 rank 1 is worth twice rank 2, ten times rank 10. One confident retriever dominates. This is the failure `k` exists to prevent.\n- **`1/log(r+1)`** is the nDCG discount, and it is defensible. It decays more slowly in the tail than `1/(k+r)` with large `k`. Empirically it performs similarly; RRF won on adoption, not on a proof.\n\n**The framing worth carrying into an interview:** RRF is a **positional voting system** \u2014 closer to Borda count than to a scoring rule. Borda gives a candidate `n - rank` points; RRF gives `1/(k + rank)`, which is Borda with a convex weighting that cares more about the top of the list. Once you say that out loud, \"why not a scoring rule\" answers itself: **scoring rules require interpersonal comparison of utility, and two retrievers' scores are not interpersonally comparable.** Arrow's framing, borrowed for search.\n\nThe honest bit at the end: `k=60` has no derivation. It is an empirical constant from Cormack et al. (2009) that turned out to be robust. If someone asks you to justify `60` specifically, the correct answer is that it was fitted on TREC and the result is insensitive across roughly `30\u2013120` \u2014 which Dana's sweep above confirms on our corpus too."
+        },
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nThe Borda framing is exactly what I was missing, and \"two retrievers' scores are not interpersonally comparable\" is the sentence I will actually remember."
+        }
+      ]
+    }
+  ]
+}

@@ -447,7 +447,7 @@ def create_project(owner, repo, issues, dry):
         print("      A classic PAT with the `project` scope, or a fine-grained token with")
         print("      account permission Projects: read/write, is required to create boards.")
         print("      Everything else in this script has still run. Create the board manually")
-        print("      following docs/PROJECT-BOARD.md — it takes about five minutes.")
+        print("      following docs/40-operations/project-board.md — it takes about five minutes.")
         return
 
     for name, options in FIELDS:

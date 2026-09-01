@@ -1,0 +1,30 @@
+{
+  "discussion": 37,
+  "comments": [
+    {
+      "body": "> **Priya** \u00b7 cohort peer\n\nStrong write-up, but I think the headline overstates what was tested. You say contextual chunking \"did not clear the band\" \u2014 what you tested was a **template** that concatenates metadata you already had in the chunk.\n\nThe Anthropic recipe generates a situating sentence *with a model*, using the full parent document as context. That is a different operation. Your section 2 acknowledges this, and then the title does not.\n\nI do not think the result is wrong. I think it is scoped much more narrowly than the framing suggests.",
+      "replies": [
+        {
+          "body": "> **the original poster** \u00b7 cohort\n\nAccepting this. The honest title is *\"a template-based approximation of contextual chunking did not clear the band on a corpus whose chunks already carry their heading path\"*, which is unwieldy but true.\n\nWhat I would defend: the **diagnostic** in the write-up is the transferable part, and it does not depend on which implementation you use. Sample twenty chunks, read them cold, ask whether you can tell what they are about. If yes, you do not have the failure this technique fixes \u2014 and no implementation of it will help, model-generated or otherwise."
+        },
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nBoth right, and the resolution is a rule worth adopting for every negative result in this repo:\n\n**State the mechanism you tested, not the technique you were inspired by.**\n\n\"Contextual chunking does not work\" is unfalsifiable marketing in reverse. \"Prepending already-present metadata to chunks that already carry their heading path does not improve recall on this corpus, at 2.4\u00d7 storage\" is a claim someone can check, disagree with, and reuse.\n\nI have retitled nothing \u2014 the write-up should stand as posted with this thread attached, because the correction *is* the teaching content."
+        }
+      ]
+    },
+    {
+      "body": "> **Marcus** \u00b7 cohort peer\n\nOn the cost side \u2014 is 2.4\u00d7 storage actually a decision-grade number? Storage is the cheapest thing in the stack. On S3 that is fractions of a cent per GB-month. It feels like the write-up is treating a rounding error as the deciding factor.",
+      "replies": [
+        {
+          "body": "> **Rafael** \u00b7 cohort peer \u00b7 came from search infra\n\nStorage is cheap. **Storage multipliers are not**, and this is the mistake I watched a team make for two quarters.\n\nWhat 2.4\u00d7 actually multiplies:\n\n- **The embedding backfill.** 2.4\u00d7 the text is 2.4\u00d7 the tokens through the encoder. On a 40M-chunk corpus that is the difference between a weekend and most of a week on GPU, and you pay it again on every encoder upgrade.\n- **The index.** Vector storage is unchanged (same chunk count, same dimensions), but the **BM25 postings list grows with the augmented text**, and that memory is on the serving path, not in S3. RAM at cluster prices, not object-store prices.\n- **The re-embed cycle.** This is the one that actually hurts. A parent document changing now invalidates the generated context for *every* chunk in it, not just the chunk that changed. You have coupled chunks that were previously independent, so your incremental update path partially collapses into a rebuild path.\n- **Cache locality.** 2.4\u00d7 the bytes per chunk is fewer chunks per cache line and per page.\n\nThe storage bill is a rounding error. The **dependency structure change** it signals is not, and it is invisible in the storage column. That is what makes 2.4\u00d7 decision-grade \u2014 not the dollars, the coupling."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nThe re-embed coupling is the argument and I had completely missed it. Changing one paragraph invalidating an entire document's chunks is a genuinely different operational shape."
+        }
+      ]
+    },
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nAdding the thing the write-up does that I want everyone to copy, since it is easy to miss under the result.\n\nThe last section says:\n\n> *\"the storage column is what made the decision, and I would not have looked at it if the recall column had gone the other way \u2014 which is itself worth knowing about myself.\"*\n\nThat sentence is the most valuable thing on this page. It is a **pre-registration failure caught and reported by the person who committed it.** The recall column going the other way would have made storage feel like a detail; storage was only decisive because the result was already negative.\n\nThe fix is procedural and it is now in the PR template: **name the columns that can veto a change before you run it.** If storage can veto, it can veto in both directions."
+    }
+  ]
+}

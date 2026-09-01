@@ -1,0 +1,16 @@
+{
+  "discussion": 39,
+  "comments": [
+    {
+      "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nIn favour, with a scope reduction that I think is the difference between this shipping and this becoming a maintenance burden.\n\n**Do not try to detect bad statistics.** A linter that tries to judge whether an interval was computed correctly will be wrong constantly and people will disable it within a fortnight.\n\n**Do detect missing statistics.** That is a syntactic check and it is nearly always right:\n\n- PR touches `nanorag/retrieve.py`, `metrics.py`, `chunking.py`, `embed.py` or `context.py`\n- and the body contains no line matching `CI [` or `inside the noise band` or `verdict`\n- \u2192 fail, with a message pointing at the PR template\n\nThat is twenty lines and it catches the actual failure mode, which is not \"someone computed a bad interval\" but \"someone shipped a retrieval change with a point estimate and no interval at all\". The `needs: eval-numbers` label already encodes the same intent manually; this just stops it being manual.",
+      "replies": [
+        {
+          "body": "> **Priya** \u00b7 cohort peer\n\nAgreed, and one addition that costs nothing: **make it a warning for the first month, then a failure.** A new gate that blocks merges on day one gets bypassed by someone with admin rights and then never re-enabled."
+        },
+        {
+          "body": "Both accepted. Scoping this to the syntactic check, warn-then-fail, and opening it as an issue against `P7 \u00b7 Hardening` with the twenty-line spec in the body rather than leaving it as an idea. Thanks \u2014 the \"detect missing, not bad\" line is what made it buildable."
+        }
+      ]
+    }
+  ]
+}

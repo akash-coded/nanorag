@@ -1,0 +1,18 @@
+{
+  "discussion": 32,
+  "answer_existing": 0,
+  "comments": [
+    {
+      "under_existing": 0,
+      "body": "> **Marcus** \u00b7 cohort peer\n\nContrarian view: is this not over-cautious? The cost model in notebook 07 uses published per-token prices and real token counts. The arithmetic is arithmetic. If a client asks \"roughly what does a query cost\", saying \"about a cent\" is more useful than refusing to answer.\n\nI understand not quoting the *recall* numbers. But cost seems different in kind.",
+      "replies": [
+        {
+          "body": "> **Dana** \u00b7 reviewer \u00b7 owns the eval harness\n\nThe distinction you are drawing is real and I want to agree with half of it, then show you where the half that is wrong actually bites.\n\n**You are right that cost and quality are different in kind.** Quality numbers are corpus-dependent in a way that makes them nearly meaningless off this corpus. Token counts are more portable \u2014 a 4,000-token prompt is 4,000 tokens anywhere.\n\n**Where it breaks is that the per-query price is not the number a client is asking for.** They are asking what the *system* costs, and the query price is typically a minority of it. Off notebook 07's own model, for a mid-size deployment:\n\n```\n                              share of monthly bill\ngeneration tokens                      31%\nembedding \u2014 initial backfill           18%   (one-off, but it lands in month one)\nembedding \u2014 re-embed on drift          14%   (recurring, always forgotten)\nvector store / OpenSearch cluster      22%   (fixed, does not scale down)\nreranker inference                      9%\ntrace + eval storage                    6%\n```\n\nQuote \"about a cent a query\" and you have described **31%** of the bill with high confidence and implied the other 69% is rounding. That is the conversation that goes badly in month three, and it goes badly *because* the number you gave was accurate.\n\n**What is safe to say**, and it is genuinely useful:\n\n> \"The per-query token cost is around X, and I can show you the model. It is roughly a third of the total \u2014 the cluster and the re-embedding cycle dominate, and both depend on facts about your corpus I do not have yet. Give me your document count and change rate and I will turn this into a real number in a week.\"\n\nThat is more credible than a confident cent-per-query, not less. **The methodology transfers; the constants do not** \u2014 and saying which is which is the thing that makes a client trust the next number you give them."
+        },
+        {
+          "body": "> **Marcus** \u00b7 cohort peer\n\nThe 31% breakdown is the argument. I was going to quote a number that was true and load-bearing for the wrong conclusion."
+        }
+      ]
+    }
+  ]
+}

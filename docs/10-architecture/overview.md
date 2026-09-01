@@ -1,7 +1,7 @@
 # Architecture
 
 > **Audience:** anyone about to change `nanorag/`, and anyone who wants to explain this system
-> in an interview. Read [the README's architecture section](../README.md#architecture) first for
+> in an interview. Read [the README's architecture section](../../README.md#architecture) first for
 > the context and HLD diagrams; this document is the level below that.
 
 ## Contents
@@ -19,7 +19,7 @@
 
 ## Design principles
 
-Five decisions shape everything else. Each has an [ADR](adr/) with the alternative that lost.
+Five decisions shape everything else. Each has an [ADR](../20-decisions/) with the alternative that lost.
 
 | # | Principle | Consequence you will feel |
 |---|---|---|
@@ -160,7 +160,7 @@ erDiagram
 **Why `chunk_id = doc_id + ordinal + content hash.`** An unchanged chunk keeps its id across a
 re-chunk and needs no new vector; a changed one gets a new id an upsert can write over.
 Delete-then-insert orphans rows; upsert-then-tombstone does not. This single choice is what
-makes the incremental freshness path cheap — see [ADR-0004](adr/0004-stable-chunk-ids.md).
+makes the incremental freshness path cheap — see [ADR-0004](../20-decisions/0004-stable-chunk-ids.md).
 
 ---
 
@@ -270,7 +270,7 @@ the trace store, so a sweep costs nothing but the evaluation itself.
 
 ## The seams — where to plug things in
 
-Every extension in [EXTENSION-POINTS.md](EXTENSION-POINTS.md) attaches at exactly one of
+Every extension in [EXTENSION-POINTS.md](seams.md) attaches at exactly one of
 these. If your idea does not fit one, it is probably two ideas.
 
 ```mermaid

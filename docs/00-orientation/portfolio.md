@@ -35,7 +35,7 @@ Notice that none of those is a technology. Do not lead with "Python, FAISS, Lang
 Use **three to five** bullets, each with a number and a mechanism. Pick from these based on
 what you actually did:
 
-> **Advanced RAG — Retrieval, Evaluation & Cost Engineering** · [github.com/…/nanorag](../../)
+> **Advanced RAG — Retrieval, Evaluation & Cost Engineering** · [github.com/…/nanorag](../../../)
 >
 > - Built a retrieval stack (BM25 over FTS5, LSA dense retrieval, weighted hybrid fusion, a
 >   learned cross-encoder reranker) with an evaluation harness that reports **evidence recall,
@@ -213,7 +213,7 @@ result, and ends on a mechanism you understood rather than a feature you built.
 | Evaluation rigour | `notebooks/06_…` — κ, bias probes, judge drift |
 | Cost engineering | `notebooks/07_…` — four cache killers, priced |
 | Engineering practice | `.github/workflows/eval-regression.yml`, the PR template, `tests/` |
-| Communication | `docs/ARCHITECTURE.md`, the ADRs, and this document |
+| Communication | `docs/10-architecture/overview.md`, the ADRs, and this document |
 
 ---
 
