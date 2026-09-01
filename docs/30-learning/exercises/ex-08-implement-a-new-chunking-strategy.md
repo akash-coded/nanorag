@@ -1,7 +1,10 @@
 # EX-08 · Implement a new chunking strategy
 
 > **Difficulty:** 🔴 · label [`difficulty: 3`](https://github.com/akash-coded/nanorag/labels/difficulty:%203)
-> **Submit:** open a thread in [Solutions & Peer Review](https://github.com/akash-coded/nanorag/discussions) with your numbers, or a PR linking to it.
+> **Stuck?** Ask in the [clinic thread for EX-08](https://github.com/akash-coded/nanorag/discussions/69) — one long-running
+> thread per exercise, so the answers accumulate where the next person will look.
+> **Submit:** post it in [Show and Tell](https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell) titled
+> `[solution · EX-08] ...`, with your numbers and your interval.
 
 **Notebook 03** · ~2 h · Seam ① · *Skill: extending a system through its seams*
 

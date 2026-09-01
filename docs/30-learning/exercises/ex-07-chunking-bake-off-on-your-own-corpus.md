@@ -1,7 +1,10 @@
 # EX-07 · Chunking bake-off on your own corpus
 
 > **Difficulty:** 🟡 · label [`difficulty: 2`](https://github.com/akash-coded/nanorag/labels/difficulty:%202)
-> **Submit:** open a thread in [Solutions & Peer Review](https://github.com/akash-coded/nanorag/discussions) with your numbers, or a PR linking to it.
+> **Stuck?** Ask in the [clinic thread for EX-07](https://github.com/akash-coded/nanorag/discussions/68) — one long-running
+> thread per exercise, so the answers accumulate where the next person will look.
+> **Submit:** post it in [Show and Tell](https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell) titled
+> `[solution · EX-07] ...`, with your numbers and your interval.
 
 **Notebook 03** · ~2 h · *Skill: choosing a strategy from corpus shape*
 
