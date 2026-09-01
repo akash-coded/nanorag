@@ -2,13 +2,22 @@ blank_issues_enabled: false
 contact_links:
   - name: 💬 Ask a question (Q&A)
     url: https://github.com/akash-coded/nanorag/discussions/categories/q-a
-    about: "Stuck on an exercise, an error, or a concept? Ask in Discussions — questions get answered there and stay searchable. Issues are for tracked work."
+    about: "Stuck on an exercise, a lab, an error or a concept? Ask in Discussions — answers stay searchable there. Issues are for tracked work."
+  - name: 🗺 Has this been answered already?
+    url: https://github.com/akash-coded/nanorag/blob/main/docs/50-community/discussion-map.md
+    about: "Every thread grouped by purpose. Roughly half of new questions are already answered in a clinic thread."
+  - name: 🧪 Stuck on a lab
+    url: https://github.com/akash-coded/nanorag/discussions?discussions_q=label%3Alab
+    about: "One thread per L.A.B. track. Ask there rather than opening a duplicate."
+  - name: 🛠 Something broke and there is an error message
+    url: https://github.com/akash-coded/nanorag/wiki/Common-Errors
+    about: "The wiki lists real error strings with their causes. Search it before filing."
   - name: 🏗 Propose a design (Design Reviews)
     url: https://github.com/akash-coded/nanorag/discussions/categories/design-reviews
-    about: "Have an architecture you want challenged before you build it? Post it for review."
+    about: "An architecture you want challenged before you build it. Constraints in, critique out."
   - name: 🎤 Share what you built (Show & Tell)
     url: https://github.com/akash-coded/nanorag/discussions/categories/show-and-tell
-    about: "Post your capstone, your decision record, or a result that surprised you."
+    about: "A capstone, a solution with numbers, or a result you measured and rejected."
   - name: 📚 Reading list and references
     url: https://github.com/akash-coded/nanorag/blob/main/docs/30-learning/reading-list.md
     about: "Papers and posts behind each section, with what to look for in each."

@@ -57,3 +57,10 @@ Closes #
 ## Reviewer notes
 
 <!-- What should the reviewer look at hardest? Where are you least sure? -->
+
+---
+
+<sub>**Other templates:**
+[measurement](?expand=1&template=measurement.md) for anything that moves a number ·
+[lab submission](?expand=1&template=lab_submission.md) ·
+[docs](?expand=1&template=docs.md)</sub>

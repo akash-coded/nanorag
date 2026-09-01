@@ -1,0 +1,48 @@
+name: "💬➡️ Graduate a discussion into work"
+description: A thread reached a conclusion that needs code, docs or a decision. Turn it into tracked work.
+title: "[followup] "
+labels: ["type: discussion-followup"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Threads that quietly stop are indistinguishable from threads nobody read. If a discussion
+        produced a conclusion, this is how it becomes work — **and then you go back and say so in
+        the thread**, with this issue's number.
+  - type: input
+    id: thread
+    attributes:
+      label: The thread
+      placeholder: "#39"
+    validations: { required: true }
+  - type: textarea
+    id: conclusion
+    attributes:
+      label: What did the thread conclude?
+      description: >-
+        Including anything the thread *changed its mind about*. The scoped-down version is usually
+        the buildable one — #39 started as a linter that judges statistics and ended as one that
+        detects missing ones, and only the second is shippable.
+    validations: { required: true }
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checkboxes. Specific enough that someone else can tell when it is done.
+      value: |
+        - [ ] 
+        - [ ] 
+    validations: { required: true }
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Explicitly out of scope
+      description: What this deliberately does not do. Scope that is not written down gets re-argued.
+  - type: dropdown
+    id: measurement
+    attributes:
+      label: Does this need a measurement to be accepted?
+      options:
+        - "Yes — it touches retrieval, metrics or the packer"
+        - "No — docs, CI or tooling only"
+    validations: { required: true }
