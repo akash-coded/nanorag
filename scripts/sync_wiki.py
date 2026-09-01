@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -27,6 +28,9 @@ import tempfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SEED = ROOT / "wiki"
 REMOTE = "https://github.com/akash-coded/nanorag.wiki.git"
+
+# What GitHub writes into a page created through the UI with no body.
+PLACEHOLDER = re.compile(r"^Welcome to the [\w.-]+ wiki!?$", re.I)
 
 NOT_INITIALISED = """
 The wiki git repository does not exist yet.
@@ -68,13 +72,29 @@ def main() -> int:
             print(got.stderr.strip(), file=sys.stderr)
             return 1
 
-        existing = [p for p in clone.glob("*.md")]
-        substantive = [p for p in existing if p.read_text(encoding="utf-8").strip()]
-        if len(substantive) > 1 and not args.force:
-            print(f"the wiki already has {len(substantive)} pages. This is a seed, not a mirror --"
-                  "\nrerun with --force only if you mean to overwrite what is there.",
-                  file=sys.stderr)
+        # A wiki initialised through the UI contains GitHub's placeholder text, and
+        # possibly a throwaway page whose only job was to create the repository. Neither
+        # is content anybody wrote, so neither should trigger the overwrite guard --
+        # otherwise the very first sync, which is the whole point, needs --force.
+        existing = list(clone.glob("*.md"))
+        substantive = [
+            p for p in existing
+            if p.read_text(encoding="utf-8").strip()
+            and not PLACEHOLDER.match(p.read_text(encoding="utf-8").strip())
+        ]
+        if substantive and not args.force:
+            names = ", ".join(sorted(p.stem for p in substantive))
+            print(f"the wiki already has {len(substantive)} page(s) somebody wrote: {names}\n"
+                  "This is a seed, not a mirror -- rerun with --force only if you mean to "
+                  "overwrite them.", file=sys.stderr)
             return 3
+
+        seeded = {p.name for p in pages}
+        for stale in existing:
+            if stale.name not in seeded and PLACEHOLDER.match(
+                    stale.read_text(encoding="utf-8").strip()):
+                stale.unlink()
+                print(f"removed placeholder page {stale.stem}")
 
         for page in pages:
             shutil.copy2(page, clone / page.name)
