@@ -240,9 +240,10 @@ def render_report(report: dict) -> str:
             out.append(f"- **{r['name']}**{tag} — {detail}")
         hidden_only = all(not r["public"] for r in misses)
         if hidden_only:
-            out += ["", "Every public check passed and a hidden one did not. That is the normal"
-                        " experience: the hidden checks cover what the brief left unsaid, and the"
-                        " gap is the lesson."]
+            gap = ("Every public check passed and a hidden one did not. That is the normal"
+                   " experience: the hidden checks cover what the brief left unsaid, and the"
+                   " gap is the lesson.")
+            out += ["", gap]
 
     out += ["", f"**What this gave you:** {lab.skill}" if lab.skill else ""]
     if lab.deeper:
@@ -250,10 +251,10 @@ def render_report(report: dict) -> str:
         url = f"https://github.com/akash-coded/nanorag/blob/main/{path.strip()}"
         out.append(f"**Go deeper:** [{pathlib.Path(path.strip()).name}]({url})"
                    + (f" — {why.strip()}" if why else ""))
-    out += ["", _next_line(labs, lab, ok), "",
-            f"<sub>{lab.section} · sandboxed run, no network, no credentials · "
-            f"[brief](https://github.com/akash-coded/nanorag/blob/main/labs/{lab.dirname}/brief.md)</sub>",
-            "<!-- lab-submission-review -->"]
+    brief = f"https://github.com/akash-coded/nanorag/blob/main/labs/{lab.dirname}/brief.md"
+    stamp = (f"<sub>{lab.section} · sandboxed run, no network, no credentials · "
+             f"[brief]({brief})</sub>")
+    out += ["", _next_line(labs, lab, ok), "", stamp, "<!-- lab-submission-review -->"]
     return "\n".join(x for x in out if x is not None)
 
 
