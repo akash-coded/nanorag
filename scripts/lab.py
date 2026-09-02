@@ -15,7 +15,6 @@ way to mark something complete that does not actually work.
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import pathlib
 import shutil
 import subprocess
@@ -30,10 +29,7 @@ GREEN, RED, DIM, BOLD, RESET = "\033[32m", "\033[31m", "\033[2m", "\033[1m", "\0
 
 
 def _load_module(path: pathlib.Path, name: str):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return _harness.load_solution(path, name)
 
 
 def _checks_for(lab: _registry.Lab) -> list[_harness.Check]:
@@ -41,8 +37,12 @@ def _checks_for(lab: _registry.Lab) -> list[_harness.Check]:
 
 
 def _run_one(lab: _registry.Lab, hidden: bool) -> list[_harness.Result]:
-    solution = _load_module(lab.path / "starter.py", f"starter_{lab.id}")
-    return _harness.run_checks(solution, _checks_for(lab), include_hidden=hidden)
+    checks = _checks_for(lab)
+    try:
+        solution = _harness.try_load(lab.path / "starter.py", f"starter_{lab.id}")
+    except _harness.ImportFailed as exc:
+        return _harness.import_failure(checks, exc, include_hidden=hidden)
+    return _harness.run_checks(solution, checks, include_hidden=hidden)
 
 
 def _resolve(labs: dict, token: str) -> _registry.Lab | None:
@@ -82,9 +82,10 @@ def cmd_list(args) -> int:
             continue
         stage, artefact = _registry.PDLC[track]
         print(f"\n{BOLD}{track} · {name}{RESET}  {DIM}— {stage}: {artefact}{RESET}")
-        for lab in sorted(in_track, key=lambda x: x.id):
+        for lab in sorted(in_track, key=lambda x: (x.kind != "challenge", x.id)):
             gate = f"{DIM}needs {','.join(lab.prereqs)}{RESET}" if lab.prereqs else ""
-            print(f"  {lab.badge} {lab.id}  {lab.title:<52} {lab.minutes:>3}m  {gate}")
+            tag = f"{DIM}[{lab.format}]{RESET} " if lab.kind == "challenge" else ""
+            print(f"  {lab.badge} {lab.id}  {tag}{lab.title:<50} {lab.minutes:>3}m  {gate}")
     print(f"\n{len(labs)} labs")
     return 0
 
@@ -92,13 +93,16 @@ def cmd_list(args) -> int:
 def cmd_next(args) -> int:
     labs = _registry.load()
     done = {i for i, lab in labs.items() if _passing(lab)}
-    ready = sorted(_registry.unlocked(labs, done), key=lambda x: (x.track, x.id))
+    # Challenges first: they are the on-ramp, 5-15 minutes, and unlock a lab.
+    ready = sorted(_registry.unlocked(labs, done),
+                   key=lambda x: (x.kind != "challenge", x.track, x.id))
     if not ready:
         print("Everything unlocked is done. Nice.")
         return 0
     print(f"{BOLD}Ready to start{RESET}  {DIM}(prerequisites satisfied){RESET}\n")
     for lab in ready[:8]:
-        print(f"  {lab.badge} {lab.id}  {lab.title:<52} {lab.minutes:>3}m")
+        tag = f"{DIM}[{lab.format}]{RESET} " if lab.kind == "challenge" else ""
+        print(f"  {lab.badge} {lab.id}  {tag}{lab.title:<50} {lab.minutes:>3}m")
         print(f"     {DIM}{lab.concept}{RESET}")
     return 0
 
@@ -152,7 +156,12 @@ def cmd_index(args) -> int:
     out = [
         "# L.A.B. simulator",
         "",
-        "**L**ook · **A**ttribute · **B**uild — one loop, twelve labs, eight tracks.",
+        "**L**ook · **A**ttribute · **B**uild — one loop, eight tracks.",
+        "",
+        "Two sizes. **Challenges** (`C`) are 5–15 minutes and one mechanism each, in four",
+        "shapes — `implement`, `fill` (blanks), `fix` (a planted bug), `predict` (submit the",
+        "number). Finishing one points you at the **lab** (`L`) it unlocks: 15–50 minutes,",
+        "a real decision, and public plus hidden checks.",
         "",
         "Read [the method](../docs/80-lab/README.md) first. Then:",
         "",
@@ -173,11 +182,12 @@ def cmd_index(args) -> int:
         stage, artefact = _registry.PDLC[track]
         out += [f"## {track} · {name}", "",
                 f"**{stage}** — hands on {artefact}.", "",
-                "| | Lab | | Time | After |", "|---|---|---|---:|---|"]
-        for lab in in_track:
+                "| | Item | Format | | Time | After |", "|---|---|---|---|---:|---|"]
+        for lab in sorted(in_track, key=lambda x: (x.kind != "challenge", x.id)):
             after = ", ".join(f"`{p}`" for p in lab.prereqs) or "—"
-            out.append(f"| {lab.badge} | [`{lab.id}`]({lab.dirname}/brief.md) | {lab.title} "
-                       f"| {lab.minutes}m | {after} |")
+            fmt = lab.format if lab.kind == "challenge" else "lab"
+            out.append(f"| {lab.badge} | [`{lab.id}`]({lab.dirname}/brief.md) | {fmt} "
+                       f"| {lab.title} | {lab.minutes}m | {after} |")
         out.append("")
     out += ["---", "",
             f"{len(labs)} labs · "

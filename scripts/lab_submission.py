@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import json
 import pathlib
 import re
 import sys
@@ -187,12 +188,91 @@ def render(lab: _registry.Lab, passed, problems, notes) -> str:
     return "\n".join(out)
 
 
+def _next_line(labs: dict, lab: _registry.Lab, passed_all: bool) -> str:
+    """The one sentence a learner most needs after a result, and the reason."""
+    done = {lab.id} if passed_all else set()
+    nxt = _registry.next_after(labs, lab.id, done) if passed_all else None
+    if not passed_all:
+        return (f"**Next:** the checks above, then `python scripts/lab.py run {lab.id}"
+                " --hidden`. Re-post here when it passes — every attempt is counted, not"
+                " only the first.")
+    if nxt is None:
+        return ("**Next:** nothing left in this track. Pick another with"
+                " `python scripts/lab.py next`.")
+    fmt = f" · {nxt.format}" if nxt.kind == "challenge" else ""
+    return (f"**Next:** {nxt.badge} **{nxt.id}** · {nxt.title} ({nxt.minutes} min{fmt}) — "
+            f"{nxt.concept}")
+
+
+def render_report(report: dict) -> str:
+    """Turn a sandbox JSON report into the reply a learner reads.
+
+    Nothing here is a template sentence. Every line comes from data that exists
+    per lab -- the check's own failure message, the meta.json skill line, the
+    deeper link, the DAG -- so two labs never produce the same paragraph.
+    """
+    labs = _registry.load()
+    lab = labs.get(report.get("lab", "").upper())
+    if "error" in report or lab is None:
+        return (f"⚠️ The sandbox could not evaluate this: "
+                f"`{report.get('error', 'unknown lab')}`.\n\n"
+                "If it was a timeout, something in your solution never returns -- a check"
+                " gets 25 seconds. <!-- lab-submission-review -->")
+
+    passed, total = report["passed"], report["total"]
+    ok = passed == total
+    head = "✅" if ok else ("🟡" if passed >= total // 2 else "🔎")
+    out = [f"### {head} {lab.badge} {lab.id} · {lab.title} — **{passed}/{total} checks**", ""]
+
+    hits = [r for r in report["results"] if r["passed"]]
+    misses = [r for r in report["results"] if not r["passed"]]
+    if hits:
+        out.append("**Passed:** " + " · ".join(r["name"] for r in hits))
+        measures = [r["measure"] for r in hits if r["measure"]]
+        if measures:
+            out.append("")
+            out += [f"> {m}" for m in measures[:3]]
+    if misses:
+        out += ["", "**Missed:**", ""]
+        for r in misses:
+            tag = "" if r["public"] else " *(hidden)*"
+            detail = (r["detail"] or "").replace("\n", " ")
+            out.append(f"- **{r['name']}**{tag} — {detail}")
+        hidden_only = all(not r["public"] for r in misses)
+        if hidden_only:
+            out += ["", "Every public check passed and a hidden one did not. That is the normal"
+                        " experience: the hidden checks cover what the brief left unsaid, and the"
+                        " gap is the lesson."]
+
+    out += ["", f"**What this gave you:** {lab.skill}" if lab.skill else ""]
+    if lab.deeper:
+        path, _, why = lab.deeper.partition(" -- ")
+        url = f"https://github.com/akash-coded/nanorag/blob/main/{path.strip()}"
+        out.append(f"**Go deeper:** [{pathlib.Path(path.strip()).name}]({url})"
+                   + (f" — {why.strip()}" if why else ""))
+    out += ["", _next_line(labs, lab, ok), "",
+            f"<sub>{lab.section} · sandboxed run, no network, no credentials · "
+            f"[brief](https://github.com/akash-coded/nanorag/blob/main/labs/{lab.dirname}/brief.md)</sub>",
+            "<!-- lab-submission-review -->"]
+    return "\n".join(x for x in out if x is not None)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--lab", required=True)
-    ap.add_argument("--comment-file", required=True, type=pathlib.Path)
+    ap.add_argument("--lab")
+    ap.add_argument("--comment-file", type=pathlib.Path)
+    ap.add_argument("--report", type=pathlib.Path, help="render a sandbox JSON report instead")
     ap.add_argument("--out", type=pathlib.Path)
     args = ap.parse_args()
+
+    if args.report:
+        text = render_report(json.loads(args.report.read_text(encoding="utf-8")))
+        if args.out:
+            args.out.write_text(text, encoding="utf-8")
+        print(text)
+        return 0
+    if not (args.lab and args.comment_file):
+        ap.error("--lab and --comment-file are required unless --report is given")
 
     labs = _registry.load()
     lab = labs.get(args.lab.upper())

@@ -1,0 +1,22 @@
+{
+  "id": "C04",
+  "slug": "fusion-normalisation",
+  "kind": "challenge",
+  "title": "Weighted fusion is quietly favouring one leg",
+  "track": "T3",
+  "difficulty": "medium",
+  "minutes": 10,
+  "format": "fix",
+  "section": "04 \u00a74.9",
+  "prereqs": [],
+  "unlocks": [
+    "L05"
+  ],
+  "tags": [
+    "fusion",
+    "normalisation"
+  ],
+  "concept": "Min-max normalisation divides by the RANGE. Divide by the max and a leg whose floor is not zero gets compressed toward the top.",
+  "skill": "You can spot a normalisation that is not scale-free by asking what happens to a leg whose minimum is not zero.",
+  "deeper": "docs/30-learning/interview-prep/01-mathematical-foundations/reciprocal-rank-fusion.md -- why RRF avoids this whole class of bug by consuming ranks"
+}

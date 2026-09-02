@@ -1,0 +1,22 @@
+{
+  "id": "C08",
+  "slug": "budget-guard",
+  "kind": "challenge",
+  "title": "The agent takes one step past its budget",
+  "track": "T7",
+  "difficulty": "medium",
+  "minutes": 10,
+  "format": "fix",
+  "section": "08 \u00a78.3",
+  "prereqs": [],
+  "unlocks": [
+    "L11"
+  ],
+  "tags": [
+    "agent",
+    "stopping"
+  ],
+  "concept": "A budget guard that checks AFTER spending, or with the wrong comparison, always overspends by one step -- and the trace says it stopped on budget.",
+  "skill": "You can read a stop condition and say whether it fires before or after the step it is meant to prevent.",
+  "deeper": "labs/L11-replayable-trace/brief.md -- why the trace has to record WHICH condition stopped the loop"
+}

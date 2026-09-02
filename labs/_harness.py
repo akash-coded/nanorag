@@ -18,8 +18,52 @@ prints it next to the result.
 from __future__ import annotations
 
 import dataclasses
+import importlib.util
+import pathlib
 import traceback
 from collections.abc import Callable
+
+
+class Blank(str):
+    """What a ____ evaluates to before the learner fills it.
+
+    Fill-format starters have blanks at module level (`ANSWER = ____`), and a bare
+    NameError there stops the module importing at all -- so no check ever runs and
+    the learner sees a traceback instead of "you have a blank left".
+
+    It is a `str` holding the literal text "____" rather than a custom sentinel, on
+    purpose: a str works everywhere a value is expected -- re.escape, concatenation,
+    .strip() -- so the module imports and every CHECK gets to explain, in its own
+    domain terms, what an unfilled blank does to the result. A sentinel that raised
+    on every operation could only ever say "blank unfilled" -- true, but less useful
+    than "'v2.1.4' was split apart". The one thing a blank must not be is callable.
+    """
+
+    def __new__(cls):
+        return super().__new__(cls, "____")
+
+    def __repr__(self) -> str:
+        return "____"
+
+    def __bool__(self) -> bool:
+        return False
+
+    def __call__(self, *_a, **_k):
+        raise CheckFailed("a ____ blank is being called like a function -- it is still unfilled")
+
+
+def load_solution(path, name: str | None = None):
+    """Import a starter or reference with ____ pre-bound to the Blank sentinel.
+
+    Every loader in the repo goes through here so the four formats behave the same
+    in `lab.py run`, in CI, and in the discussion reviewer.
+    """
+    path = pathlib.Path(path)
+    spec = importlib.util.spec_from_file_location(name or f"sol_{path.parent.name}", path)
+    module = importlib.util.module_from_spec(spec)
+    module.____ = Blank()
+    spec.loader.exec_module(module)
+    return module
 
 
 @dataclasses.dataclass
@@ -61,6 +105,33 @@ def expect(condition: bool, message: str) -> None:
     """
     if not condition:
         raise CheckFailed(message)
+
+
+class ImportFailed(Exception):
+    """The learner's file did not import. Carries a message written for them."""
+
+
+def try_load(path, name: str | None = None):
+    """load_solution, but an import-time failure becomes an ImportFailed whose
+    message a learner can act on -- a leftover blank, a syntax error, a bad
+    import -- instead of a traceback through the harness."""
+    try:
+        return load_solution(path, name)
+    except CheckFailed as exc:                       # a ____ used at module level
+        raise ImportFailed(f"starter.py could not be imported: {exc}") from exc
+    except SyntaxError as exc:
+        raise ImportFailed(
+            f"starter.py has a syntax error on line {exc.lineno}: {exc.msg}") from exc
+    except Exception as exc:  # noqa: BLE001
+        raise ImportFailed(
+            f"starter.py raised {type(exc).__name__} while importing: {exc}") from exc
+
+
+def import_failure(checks: list[Check], error: ImportFailed,
+                   include_hidden: bool = False) -> list[Result]:
+    """Every check fails with the same reason: the file never loaded."""
+    return [Result(c.name, False, detail=str(error))
+            for c in checks if c.public or include_hidden]
 
 
 def run_checks(module, checks: list[Check], include_hidden: bool = False) -> list[Result]:

@@ -1,88 +1,146 @@
-# Reviews a lab solution posted in a discussion, and replies.
+# Reviews and RUNS a lab solution posted in a discussion, then replies.
 #
-# SECURITY
-# --------
-# Anyone can comment on a public discussion, so the comment body is UNTRUSTED
-# INPUT. Two things follow, and both are load-bearing:
+# SECURITY -- read before editing
+# -------------------------------
+# Anyone can comment on a public discussion, so the comment body is UNTRUSTED.
+# Executing it is remote code execution on the runner unless the execution has
+# nothing to reach and nothing to steal. So:
 #
-#   1. The body is never interpolated into a shell command. It reaches the
-#      script through an environment variable and a file, so a comment
-#      containing backticks or $(...) is text rather than a command.
+#   review   permissions: discussions:write   reads the code with the AST, never runs it
+#   execute  permissions: {}                  the ONLY job that runs the code, inside
+#                                              docker --network=none --read-only
+#                                              --cap-drop=ALL, as an unprivileged user,
+#                                              with a 30s kill. It has NO token: the
+#                                              GITHUB_TOKEN it is issued has zero scopes.
+#   post     permissions: discussions:write   never touches the code; reads a JSON
+#                                              artifact and posts it
 #
-#   2. The submission is NEVER EXECUTED. scripts/lab_submission.py reviews it
-#      with Python's AST. A workflow that runs code from a public comment is
-#      remote code execution on the runner, and no `permissions:` tightening
-#      changes the fact that the code ran. Real execution happens on a pull
-#      request, in labs.yml, where somebody with an account had to push a branch.
-#
-# Permissions are the minimum that lets it reply.
+# The body never reaches a shell command line -- it is passed by environment
+# variable into a file, so backticks and $(...) in a comment are text.
 name: Lab submissions
 on:
   discussion:
     types: [created]
   discussion_comment:
     types: [created]
-permissions:
-  contents: read
-  discussions: write
+permissions: {}
 concurrency:
-  group: lab-submission-${{ github.event.discussion.number }}-${{ github.event.comment.id || 'root' }}
+  group: lab-${{ github.event.discussion.number }}-${{ github.event.comment.id || 'root' }}
   cancel-in-progress: false
 
 jobs:
-  review:
-    # Only on a submission thread, and never on our own reply.
+  triage:
+    # Which lab, and is this a submission we should act on at all.
     if: >
-      startsWith(github.event.discussion.title, '[submit · L') &&
+      (startsWith(github.event.discussion.title, '[submit · ') ||
+       startsWith(github.event.discussion.title, '[arena · ')) &&
       github.event.sender.type != 'Bot' &&
       !contains(github.event.comment.body, 'lab-submission-review')
     runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      lab: ${{ steps.id.outputs.lab }}
+    steps:
+      - id: id
+        env:
+          TITLE: ${{ github.event.discussion.title }}
+        run: |
+          LAB=$(printf '%s' "$TITLE" | grep -oE '[LC][0-9]{2}' | head -1)
+          echo "lab=$LAB" >> "$GITHUB_OUTPUT"
+          echo "lab: ${LAB:-none}"
+
+  execute:
+    # Runs the submission. This job has no credentials and the container has no network.
+    needs: triage
+    if: needs.triage.outputs.lab != ''
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+
+      - name: Capture the submission (env var -> file, never a command line)
+        env:
+          BODY: ${{ github.event.comment.body || github.event.discussion.body }}
+        run: printenv BODY > submission.md
+
+      - name: Extract the code block, or the bare value for a predict challenge
+        run: |
+          python3 - <<'PY'
+          import re, pathlib
+          body = pathlib.Path("submission.md").read_text(encoding="utf-8")
+          blocks = re.findall(r"```(?:python|py)?\s*\n(.*?)```", body, re.S)
+          if blocks:
+              code = max(blocks, key=len)
+          else:
+              # predict-format: the whole comment may just be a word or a number
+              value = body.strip().strip("`'\"")
+              code = f"ANSWER = {value!r}\n" if value and len(value) < 60 else ""
+          pathlib.Path("submission.py").write_text(code, encoding="utf-8")
+          print(f"{len(code)} chars of submission")
+          PY
+
+      - name: Run inside a sealed container
+        id: run
+        env:
+          LAB: ${{ needs.triage.outputs.lab }}
+        run: |
+          set +e
+          # No -e/--env-file: the container inherits NOTHING from this shell.
+          docker run --rm \
+            --network=none --read-only --tmpfs /tmp:rw,size=32m \
+            --memory=256m --memory-swap=256m --cpus=1 --pids-limit=64 \
+            --cap-drop=ALL --security-opt=no-new-privileges \
+            --user=65534:65534 \
+            -v "$PWD:/repo:ro" -w /repo \
+            python:3.12-slim \
+            timeout --signal=KILL 30 \
+              python scripts/lab_sandbox.py --lab "$LAB" --submission /repo/submission.py \
+            > stdout.txt 2> stderr.txt
+          code=$?
+          # Only the sentinel-prefixed last line is trusted as the report.
+          grep -a '^@@LAB-REPORT@@' stdout.txt | tail -1 | sed 's/^@@LAB-REPORT@@//' > report.json
+          if [ ! -s report.json ]; then
+            printf '{"lab":"%s","error":"no report (exit %s)"}' "$LAB" "$code" > report.json
+          fi
+          echo "exit=$code"; head -c 400 stderr.txt || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lab-report-${{ github.run_id }}
+          path: report.json
+          retention-days: 1
+
+  post:
+    # Reads the report and replies. Never sees the submission.
+    needs: [triage, execute]
+    if: needs.triage.outputs.lab != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      discussions: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+      - uses: actions/download-artifact@v4
+        with:
+          name: lab-report-${{ github.run_id }}
 
-      - name: Identify the lab from the thread title
-        id: lab
-        env:
-          TITLE: ${{ github.event.discussion.title }}
-        run: |
-          LAB=$(printf '%s' "$TITLE" | grep -oE 'L[0-9]{2}' | head -1)
-          if [ -z "$LAB" ]; then
-            echo "no lab id in the title; nothing to do"
-            echo "found=" >> "$GITHUB_OUTPUT"
-          else
-            echo "found=$LAB" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Capture the submission
-        if: steps.lab.outputs.found != ''
-        env:
-          # Untrusted. Passed as an environment variable, never interpolated
-          # into a command line.
-          BODY: ${{ github.event.comment.body || github.event.discussion.body }}
-        run: printenv BODY > submission.md
-
-      - name: Review it, without running it
-        if: steps.lab.outputs.found != ''
-        run: |
-          python scripts/lab_submission.py \
-            --lab "${{ steps.lab.outputs.found }}" \
-            --comment-file submission.md \
-            --out review.md
+      - name: Render the reply from the report
+        run: python scripts/lab_submission.py --report report.json --out reply.md
 
       - name: Reply in the thread
-        if: steps.lab.outputs.found != ''
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const body = fs.readFileSync('review.md', 'utf8');
-            const discussionId = context.payload.discussion.node_id;
-            const replyToId = context.payload.comment?.node_id ?? null;
+            const body = fs.readFileSync('reply.md', 'utf8');
             await github.graphql(`
               mutation($d:ID!, $b:String!, $p:ID) {
-                addDiscussionComment(input:{discussionId:$d, body:$b, replyToId:$p}) {
-                  comment { url }
-                }
-              }`, { d: discussionId, b: body, p: replyToId });
+                addDiscussionComment(input:{discussionId:$d, body:$b, replyToId:$p}) { comment { url } }
+              }`, {
+                d: context.payload.discussion.node_id,
+                b: body,
+                p: context.payload.comment?.node_id ?? null,
+              });

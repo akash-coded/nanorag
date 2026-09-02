@@ -1,0 +1,22 @@
+{
+  "id": "C06",
+  "slug": "expected-agreement",
+  "kind": "challenge",
+  "title": "Compute the agreement you would get for free",
+  "track": "T5",
+  "difficulty": "easy",
+  "minutes": 8,
+  "format": "implement",
+  "section": "06 \u00a76.3",
+  "prereqs": [],
+  "unlocks": [
+    "L09"
+  ],
+  "tags": [
+    "kappa",
+    "judge"
+  ],
+  "concept": "Two raters who each say yes 90% of the time agree 82% of the time by chance alone. That 82% is p_e, and it is what kappa subtracts.",
+  "skill": "You can compute chance agreement from two marginals in your head, which is what makes a raw agreement number readable.",
+  "deeper": "docs/30-learning/interview-prep/01-mathematical-foundations/cohens-kappa.md -- the full derivation, and why kappa can go negative"
+}

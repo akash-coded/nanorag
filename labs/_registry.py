@@ -15,6 +15,16 @@ LABS_DIR = pathlib.Path(__file__).resolve().parent
 
 DIFFICULTY = {"easy": "🟢", "medium": "🟡", "hard": "🔴", "boss": "⚫"}
 
+# A challenge is a lab's smaller sibling: 5-15 minutes, one mechanism, one of four
+# shapes. The shapes exist because "implement this function" is only one way to
+# find out whether somebody understands a thing, and not always the best one.
+FORMATS = {
+    "implement": "write the function from a spec",
+    "fill":      "the starter has ____ blanks; fill them",
+    "fix":       "the starter has a planted bug; make the checks pass",
+    "predict":   "no code -- submit the number or verdict the run will produce",
+}
+
 TRACKS = {
     "T1": "Corpus & Chunking",
     "T2": "Indexing & Retrieval",
@@ -54,6 +64,13 @@ class Lab:
     tags: list[str]
     concept: str
     path: pathlib.Path
+    kind: str = "lab"            # lab | challenge
+    format: str = "implement"    # one of FORMATS
+    skill: str = ""              # one line: what you can now do, said to the learner
+    deeper: str = ""             # one link, with a reason
+    unlocks: list[str] = dataclasses.field(default_factory=list)
+    section: str = ""            # notebook section this derives from, e.g. "04 §4.3"
+    answer: str = ""             # predict-format only: the accepted value
 
     @property
     def badge(self) -> str:
@@ -66,13 +83,19 @@ class Lab:
 
 def load() -> dict[str, Lab]:
     labs: dict[str, Lab] = {}
-    for meta_path in sorted(LABS_DIR.glob("L*/meta.json")):
+    # Labs live in labs/L*, challenges in labs/C*. One registry, one DAG, so a
+    # challenge can be a prerequisite for a lab and `next` can cross the boundary.
+    for meta_path in sorted(LABS_DIR.glob("[LC]*/meta.json")):
         raw = json.loads(meta_path.read_text(encoding="utf-8"))
         lab = Lab(
             id=raw["id"], slug=raw["slug"], title=raw["title"], track=raw["track"],
             difficulty=raw["difficulty"], minutes=raw["minutes"],
             prereqs=raw.get("prereqs", []), tags=raw.get("tags", []),
             concept=raw.get("concept", ""), path=meta_path.parent,
+            kind=raw.get("kind", "lab"), format=raw.get("format", "implement"),
+            skill=raw.get("skill", ""), deeper=raw.get("deeper", ""),
+            unlocks=raw.get("unlocks", []), section=raw.get("section", ""),
+            answer=raw.get("answer", ""),
         )
         labs[lab.id] = lab
     return labs
@@ -86,6 +109,15 @@ def validate(labs: dict[str, Lab]) -> list[str]:
             problems.append(f"{lab.id}: unknown track {lab.track!r}")
         if lab.difficulty not in DIFFICULTY:
             problems.append(f"{lab.id}: unknown difficulty {lab.difficulty!r}")
+        if lab.format not in FORMATS:
+            problems.append(f"{lab.id}: unknown format {lab.format!r}")
+        if lab.kind not in ("lab", "challenge"):
+            problems.append(f"{lab.id}: kind must be lab or challenge, got {lab.kind!r}")
+        if lab.format == "predict" and not lab.answer:
+            problems.append(f"{lab.id}: predict format needs an 'answer'")
+        for target in lab.unlocks:
+            if target not in labs:
+                problems.append(f"{lab.id}: unlocks {target} which does not exist")
         for prereq in lab.prereqs:
             if prereq not in labs:
                 problems.append(f"{lab.id}: prerequisite {prereq} does not exist")
@@ -110,6 +142,21 @@ def validate(labs: dict[str, Lab]) -> list[str]:
         if colour[node] == WHITE:
             visit(node, [node])
     return problems
+
+
+def next_after(labs: dict[str, Lab], lab_id: str, done: set[str]) -> Lab | None:
+    """What to do after finishing `lab_id`: the first thing it unlocks that is
+    now startable, else the first startable item in the same track."""
+    lab = labs[lab_id]
+    done = done | {lab_id}
+    for target in lab.unlocks:
+        t = labs.get(target)
+        if t and t.id not in done and all(p in done for p in t.prereqs):
+            return t
+    same_track = [x for x in unlocked(labs, done) if x.track == lab.track]
+    if not same_track:
+        return None
+    return sorted(same_track, key=lambda x: (x.kind != "challenge", x.id))[0]
 
 
 def unlocked(labs: dict[str, Lab], done: set[str]) -> list[Lab]:

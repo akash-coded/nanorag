@@ -1,0 +1,22 @@
+{
+  "id": "C07",
+  "slug": "recurring-or-one-off",
+  "kind": "challenge",
+  "title": "Which of these bills comes back every month?",
+  "track": "T6",
+  "difficulty": "easy",
+  "minutes": 8,
+  "format": "fill",
+  "section": "07 \u00a77.1",
+  "prereqs": [],
+  "unlocks": [
+    "L10"
+  ],
+  "tags": [
+    "cost",
+    "tco"
+  ],
+  "concept": "Capex-shaped costs are decisions you make twice a year. Opex-shaped costs are bills you pay daily. Blending them into one per-query number hides which is which.",
+  "skill": "You can sort a cost line into recurring or one-off, and say which input drives each -- which is what a client actually asks.",
+  "deeper": "docs/60-cheatsheets/frameworks/cost-iceberg.md -- the 69% of the bill that is not tokens"
+}
