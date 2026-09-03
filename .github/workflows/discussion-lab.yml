@@ -130,6 +130,20 @@ jobs:
       - name: Render the reply from the report
         run: python scripts/lab_submission.py --report report.json --out reply.md
 
+      - name: Record the attempt on the Hands-on Tracker
+        # A workflow-issued token cannot write to a user-owned project, so this one
+        # step -- and only this step -- uses the PROJECT_TOKEN secret. It never sees
+        # the submission; it reads the same JSON report the reply was rendered from.
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          LEARNER: ${{ github.event.sender.login }}
+          LAB: ${{ needs.triage.outputs.lab }}
+          THREAD: ${{ github.event.comment.html_url || github.event.discussion.html_url }}
+        run: |
+          PASSED=$(python3 -c "import json;r=json.load(open('report.json'));print('--passed' if r.get('passed')==r.get('total') and 'error' not in r else '')")
+          python scripts/tracker.py --learner "$LEARNER" --item "$LAB" --thread "$THREAD" $PASSED \
+            || echo "::warning::tracker update failed (is PROJECT_TOKEN set with the project scope?)"
+
       - name: Reply in the thread
         uses: actions/github-script@v7
         with:

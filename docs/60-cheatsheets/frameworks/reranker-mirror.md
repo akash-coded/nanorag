@@ -66,3 +66,5 @@ point is spending compute where it matters. But be honest that you are buying sp
 
 **Practise:** [EX-14 — Beat the reranker](../../30-learning/exercises/ex-14-beat-the-reranker.md) ·
 **Measured in:** [#4](https://github.com/akash-coded/nanorag/issues/4) · **Stated in:** [#27](https://github.com/akash-coded/nanorag/discussions/27)
+
+**Standalone:** [gist](https://gist.github.com/akash-coded/f0ff2ca5be44bf2ec8567209602eb9ce) — RRF in eight lines, and why k is a damping constant. Stdlib only, no clone needed.

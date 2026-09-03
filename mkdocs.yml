@@ -110,6 +110,7 @@ nav:
       - Reading list: 30-learning/reading-list.md
   - Operations:
       - Runbook: 40-operations/runbook.md
+      - The lifecycle: 40-operations/lifecycle.md
       - Project board: 40-operations/project-board.md
       - GitHub setup: 40-operations/github-setup.md
   - Cheat sheets:

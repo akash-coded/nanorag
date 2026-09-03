@@ -25,31 +25,35 @@ OWNER = "akash-coded"
 TRACKER, PULSE, LIFECYCLE = 11, 12, 13
 
 
-# GitHub applies a SECONDARY rate limit to Projects mutations and to bursts of
-# GraphQL that `gh api rate_limit` never shows: the primary gauge can read 5000/5000
-# while calls are being refused. The budget is also shared by every session on the
-# account. So every call backs off on refusal, and every write is paced.
-_BACKOFF = (20, 45, 90)          # seconds, on successive refusals
+# The GraphQL quota is 5,000 points an hour, shared by every session on the
+# account, and Projects item-list is priced by nodes returned -- a few big lists
+# plus a polling loop can spend it in minutes. `gh api rate_limit` does NOT show
+# this; the headers on a real GraphQL response do. On refusal: if the reset is
+# close, wait for it once; if it is far, stop and say when, rather than sleeping
+# through the hour in 90-second pieces.
+_WAIT_UP_TO_MIN = 3
 _PACE = 0.4                      # seconds between writes
 
 
 def _gh(*args: str) -> str:
-    for attempt, wait in enumerate((*_BACKOFF, None)):
+    for attempt in (1, 2):
         proc = subprocess.run(["gh", *args], capture_output=True, text=True)
-        if proc.returncode == 0:
+        if proc.returncode == 0 and "RATE_LIMIT" not in proc.stdout[:400]:
             if args[:2] in (("project", "item-edit"), ("project", "item-create"),
                             ("project", "item-archive"), ("project", "item-delete")):
                 time.sleep(_PACE)
             return proc.stdout
-        err = proc.stderr.strip()
-        if "rate limit" in err.lower() and wait is not None:
-            print(f"    rate limited; backing off {wait}s", file=sys.stderr)
-            time.sleep(wait)
+        text = (proc.stdout + proc.stderr).strip()
+        if "rate limit" not in text.lower():
+            raise RuntimeError(f"gh {' '.join(args[:3])}...: {text[:300]}")
+        remaining, mins = graphql_budget()
+        if attempt == 1 and mins <= _WAIT_UP_TO_MIN:
+            print(f"    GraphQL quota spent; reset in ~{mins} min, waiting", file=sys.stderr)
+            time.sleep(mins * 60 + 15)
             continue
-        if "rate limit" in err.lower():
-            raise RateLimited(err[:200])
-        raise RuntimeError(f"gh {' '.join(args[:3])}...: {err[:300]}")
-    raise RateLimited("gave up after backoff")
+        raise RateLimited(f"GraphQL quota spent (remaining={remaining}); resets in ~{mins} min. "
+                          "Stop and rerun after the reset.")
+    raise RateLimited("GraphQL quota still spent after waiting for the reset")
 
 
 class RateLimited(RuntimeError):
@@ -59,10 +63,24 @@ class RateLimited(RuntimeError):
 
 
 def graphql_budget() -> tuple[int, int]:
-    """(remaining points, minutes until reset). REST, so it never costs GraphQL points."""
-    out = json.loads(_gh("api", "rate_limit"))["resources"]["graphql"]
-    import time as _t
-    return out["remaining"], max(0, int((out["reset"] - _t.time()) // 60))
+    """(remaining points, minutes until reset), read from the HEADERS of one real
+    GraphQL call.
+
+    `gh api rate_limit` reports graphql 5000/5000 while the actual quota is fully
+    spent -- it is a different accounting, and it misled every guard built on it
+    here. The X-Ratelimit-* headers on a GraphQL response are the only gauge that
+    agrees with what the API is about to do. One point per read."""
+    proc = subprocess.run(["gh", "api", "graphql", "-i", "-f", "query={viewer{login}}"],
+                          capture_output=True, text=True)
+    remaining, reset = -1, 0
+    for line in (proc.stdout + proc.stderr).splitlines():
+        low = line.lower()
+        if low.startswith("x-ratelimit-remaining:"):
+            remaining = int(line.split(":", 1)[1].strip() or -1)
+        elif low.startswith("x-ratelimit-reset:"):
+            reset = int(line.split(":", 1)[1].strip() or 0)
+    mins = max(0, int((reset - time.time()) // 60)) if reset else 0
+    return remaining, mins
 
 
 def require_budget(points: int, what: str = "this run") -> None:

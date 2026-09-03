@@ -74,3 +74,5 @@ becomes the headline rather than a prerequisite.
 
 **Derivation:** [Cohen's κ](../../30-learning/interview-prep/01-mathematical-foundations/cohens-kappa.md) ·
 **Practise:** [EX-19](../../30-learning/exercises/ex-19-calibrate-a-judge-against-humans.md), [EX-20](../../30-learning/exercises/ex-20-build-a-third-bias-probe.md)
+
+**Standalone:** [gist](https://gist.github.com/akash-coded/868f1bf36f96172a9f36b828cedc92db) — kappa with the base rate printed beside it. Stdlib only, no clone needed.

@@ -68,6 +68,11 @@ mutation($l:[ID!]!,$t:ID!){
 """
 
 
+# A batch of threads is many mutations in a row, and GitHub applies a secondary
+# rate limit to bursts that the primary gauge never shows. A refusal mid-batch
+# used to leave half the threads posted; now each call backs off and retries.
+
+
 def graphql(query: str, **variables) -> dict:
     cmd = ["gh", "api", "graphql", "-f", f"query={query}"]
     for key, value in variables.items():
@@ -79,13 +84,35 @@ def graphql(query: str, **variables) -> dict:
         else:
             cmd += (["-F", f"{key}={value}"] if isinstance(value, int)
                     else ["-f", f"{key}={value}"])
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    if proc.returncode:
-        raise RuntimeError(f"graphql failed: {proc.stderr.strip()}")
-    payload = json.loads(proc.stdout)
-    if "errors" in payload:
-        raise RuntimeError(f"graphql errors: {payload['errors']}")
-    return payload["data"]
+    for attempt in (1, 2):
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        text = (proc.stdout or "") + (proc.stderr or "")
+        if proc.returncode == 0 and "RATE_LIMIT" not in text:
+            payload = json.loads(proc.stdout)
+            if "errors" in payload:
+                raise RuntimeError(f"graphql errors: {payload['errors']}")
+            return payload["data"]
+        if "rate limit" not in text.lower():
+            raise RuntimeError(f"graphql failed: {text.strip()[:300]}")
+        mins = _reset_minutes()
+        if attempt == 1 and mins <= 3:
+            print(f"     GraphQL quota spent; reset in ~{mins} min, waiting", file=sys.stderr)
+            time.sleep(mins * 60 + 15)
+            continue
+        raise RuntimeError(f"GraphQL quota spent; resets in ~{mins} min. Rerun after the reset.")
+    raise RuntimeError("graphql: quota still spent after waiting")
+
+
+def _reset_minutes() -> int:
+    """Minutes until the GraphQL quota resets, from the response headers of one real
+    call. `gh api rate_limit` reports 5000/5000 while the quota is spent, so it is
+    never consulted here."""
+    proc = subprocess.run(["gh", "api", "graphql", "-i", "-f", "query={viewer{login}}"],
+                          capture_output=True, text=True)
+    for line in (proc.stdout + proc.stderr).splitlines():
+        if line.lower().startswith("x-ratelimit-reset:"):
+            return max(0, int((int(line.split(":", 1)[1].strip()) - time.time()) // 60))
+    return 0
 
 
 def load_meta() -> tuple[str, dict, dict, dict]:

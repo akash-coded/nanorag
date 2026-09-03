@@ -70,6 +70,9 @@ ignore = [
 # Seeded GitHub content is prose in string literals; wrapping it to 100 columns would
 # reflow markdown that is meant to be read on GitHub.
 "scripts/seed_content.py" = ["E501"]
+# Same reason: the lifecycle board rows are a table of prose pointing at real files,
+# and reflowing them to 100 columns makes the table unreadable in the source.
+"scripts/lifecycle_seed.py" = ["E501"]
 # Tests name things for legibility, not brevity.
 "tests/*" = ["E501"]
 # Lab check messages are prose written for a learner mid-problem. Wrapping them to

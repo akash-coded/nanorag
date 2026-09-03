@@ -62,3 +62,5 @@ directly. A 40% latency regression needs a percentile, not a bootstrap.
 
 **Derivation:** [Paired bootstrap and power](../../30-learning/interview-prep/01-mathematical-foundations/paired-bootstrap-and-power.md) ·
 **Argued out in:** [#29](https://github.com/akash-coded/nanorag/discussions/29)
+
+**Standalone:** [gist](https://gist.github.com/akash-coded/2445ad2c80f5cb886a21b55cf97ef0a5) — the ladder as a gist, and [the paired bootstrap that computes rung 4](https://gist.github.com/akash-coded/23ab2169436e2646068f2ff41fb8a4c0). Stdlib only, no clone needed.

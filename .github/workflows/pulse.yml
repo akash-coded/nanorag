@@ -1,0 +1,22 @@
+# Refreshes the Repo Pulse board every six hours: unanswered Q&A, hot threads,
+# open PRs and issues, content churn by area, arena activity, new learners.
+# Writes to a user-owned project, so it needs the PROJECT_TOKEN secret.
+name: Repo pulse
+on:
+  schedule: [{ cron: "17 */6 * * *" }]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency: { group: pulse, cancel-in-progress: true }
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Refresh the board
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+        run: python scripts/pulse.py

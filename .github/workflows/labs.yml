@@ -48,6 +48,24 @@ jobs:
             python scripts/lab_report.py --changed --out report.md
           fi
 
+      - name: Record each evaluated lab on the Hands-on Tracker
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          LEARNER: ${{ github.event.pull_request.user.login }}
+          THREAD: ${{ github.event.pull_request.html_url }}
+        run: |
+          # lab_report.py wrote report.md; the per-lab pass/fail is in its headings.
+          python3 - <<'PY' || echo "::warning::tracker update failed"
+          import re, subprocess, os, pathlib
+          md = pathlib.Path("report.md").read_text(encoding="utf-8")
+          for ok, lab in re.findall(r"^### (✅|❌) \S+ ([LC]\d{2}) ·", md, re.M):
+              cmd = ["python", "scripts/tracker.py", "--learner", os.environ["LEARNER"],
+                     "--item", lab, "--thread", os.environ["THREAD"], "--source", "pr"]
+              if ok == "✅": cmd.append("--passed")
+              subprocess.run(cmd, check=False)
+          PY
+
       - name: Post the result on the pull request
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
