@@ -548,7 +548,7 @@ flowchart LR
 |---|---|---|
 | **Discussions** | Questions, design reviews, show & tell, announcements, polls | [docs/50-community/discussions-guide.md](docs/50-community/discussions-guide.md) |
 | **Issues** | Tracked work with an owner and acceptance criteria | [templates](.github/ISSUE_TEMPLATE) |
-| **Projects** | Delivery board with phase, effort, cohort and risk fields | [docs/40-operations/project-board.md](docs/40-operations/project-board.md) |
+| **Projects** | Four public boards: [delivery](https://github.com/users/akash-coded/projects/2), [Hands-on Tracker](https://github.com/users/akash-coded/projects/11), [Repo Pulse](https://github.com/users/akash-coded/projects/12) (refreshed 6-hourly), [Lifecycle Reference](https://github.com/users/akash-coded/projects/13) | [docs/40-operations/lifecycle.md](docs/40-operations/lifecycle.md) |
 | **Actions** | CI, notebook execution, the eval gate, Pages, board automation | [.github/workflows](.github/workflows) |
 | **ADRs** | Decisions that were genuinely hard, with the alternative that lost | [docs/adr](docs/20-decisions) |
 
@@ -563,7 +563,9 @@ flowchart LR
 | If you are… | Start here |
 |---|---|
 | Working through the course | [notebooks/00_start_here.ipynb](notebooks/00_start_here.ipynb), then [docs/30-learning/exercises/](docs/30-learning/exercises/README.md) |
-| Wanting bite-sized, auto-graded practice | [docs/80-lab/](docs/80-lab/README.md) — the **L.A.B. simulator**, 12 labs on a prerequisite DAG |
+| Wanting bite-sized, auto-graded practice | [docs/80-lab/](docs/80-lab/README.md) — the **L.A.B. simulator**: 8 challenges (5–15 min, fill / fix / predict / implement) feeding 12 labs on a prerequisite DAG. Post a solution in its `[arena · CNN]` thread and a sealed sandbox grades it |
+| Running a session, or tracking who has done what | [docs/80-lab/](docs/80-lab/README.md#for-whoever-runs-a-session) — `assign.py`, the [Hands-on Tracker](https://github.com/users/akash-coded/projects/11), the [Session Runbook](https://github.com/akash-coded/nanorag/wiki/Session-Runbook) |
+| Wanting one function to copy into your own repo | [the gists](https://gist.github.com/akash-coded) — paired bootstrap, four verdicts, RRF, κ, IDF; stdlib only |
 | Preparing for an AI-engineer interview | [docs/30-learning/interview-prep/](docs/30-learning/interview-prep/README.md) — 18 questions with full answers |
 | Deciding what to build next | [docs/10-architecture/seams.md](docs/10-architecture/seams.md) — 20 techniques with hypotheses and seams |
 | Wanting to understand the code | [docs/10-architecture/overview.md](docs/10-architecture/overview.md) — HLD, LLD, every seam |
