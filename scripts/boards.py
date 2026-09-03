@@ -126,31 +126,107 @@ def require_budget(points: int, what: str = "this run") -> None:
     # the obviously-doomed run.
 
 
+_SCHEMA_QUERY = """
+query($o:String!,$n:Int!){
+  user(login:$o){ projectV2(number:$n){ id title
+    fields(first:40){ nodes{
+      ... on ProjectV2FieldCommon{ id name dataType }
+      ... on ProjectV2SingleSelectField{ options{ id name } } } } } } }
+"""
+
+# GraphQL dataType -> the kind names the edit path has always used.
+_KIND = {"TEXT": "Text", "NUMBER": "Number", "DATE": "Date",
+         "SINGLE_SELECT": "SingleSelect", "ITERATION": "Iteration"}
+
+_ROWS_QUERY = """
+query($id:ID!,$n:Int!,$f:Int!,$after:String){
+  node(id:$id){ ... on ProjectV2{ items(first:$n, after:$after){
+    pageInfo{ hasNextPage endCursor }
+    nodes{ id
+      content{ __typename
+        ... on DraftIssue{ id title body }
+        ... on Issue{ id title number url }
+        ... on PullRequest{ id title number url } }
+      fieldValues(first:$f){ nodes{ __typename
+        ... on ProjectV2ItemFieldTextValue{ text
+          field{ ... on ProjectV2FieldCommon{ name } } }
+        ... on ProjectV2ItemFieldNumberValue{ number
+          field{ ... on ProjectV2FieldCommon{ name } } }
+        ... on ProjectV2ItemFieldDateValue{ date
+          field{ ... on ProjectV2FieldCommon{ name } } }
+        ... on ProjectV2ItemFieldSingleSelectValue{ name
+          field{ ... on ProjectV2FieldCommon{ name } } }
+      } } } } } } }
+"""
+
+
+def flatten_item(item: dict) -> dict:
+    """One GraphQL project item -> the row gh's item-list would print for it: `id`,
+    `content`, `title`, and each field under its lowercased name. Numbers that are
+    whole come back as ints, as gh prints them; unset fields are simply absent."""
+    row: dict = {"id": item["id"], "content": item.get("content") or {}}
+    for fv in item.get("fieldValues", {}).get("nodes", []):
+        name = (fv.get("field") or {}).get("name")
+        if not name:
+            continue                                   # a type this query does not read
+        value = next((fv[k] for k in ("text", "date", "number", "name") if k in fv), None)
+        if isinstance(value, float) and value.is_integer():
+            value = int(value)
+        row[name.lower()] = value
+    row.setdefault("title", row["content"].get("title"))
+    return row
+
+
 class Board:
     """One project, with its fields and options resolved by name."""
 
     def __init__(self, number: int):
+        """One query for id, title, fields and options: about 2 points. The
+        `gh project view` + `field-list` pair it replaces cost about 104, more than
+        the listing itself, on every construction -- so every tracker write from CI
+        paid it."""
         self.number = number
-        view = json.loads(_gh("project", "view", str(number), "--owner", OWNER, "--format", "json"))
-        self.id = view["id"]
-        self.title = view["title"]
-        raw = json.loads(_gh("project", "field-list", str(number), "--owner", OWNER,
-                             "--format", "json", "--limit", "100"))["fields"]
+        proj = json.loads(_gh("api", "graphql", "-f", f"query={_SCHEMA_QUERY}",
+                              "-f", f"o={OWNER}", "-F", f"n={number}"))
+        proj = proj["data"]["user"]["projectV2"]
+        self.id = proj["id"]
+        self.title = proj["title"]
         self._known: dict[str, str] = {}   # title -> item id, this process only
         self._rows: dict[str, dict] | None = None   # title -> row, listed once
         self.fields: dict[str, dict] = {}
-        for f in raw:
+        for f in proj["fields"]["nodes"]:
+            if not f.get("name"):
+                continue
             self.fields[f["name"]] = {
                 "id": f["id"],
-                "type": f.get("type", "").replace("ProjectV2", "").replace("Field", ""),
+                "type": _KIND.get(f.get("dataType", ""), ""),
                 "options": {o["name"]: o["id"] for o in f.get("options", [])},
             }
 
     # ── reading ────────────────────────────────────────────────────────────
     def items(self, limit: int = 100) -> list[dict]:
-        out = json.loads(_gh("project", "item-list", str(self.number), "--owner", OWNER,
-                             "--format", "json", "--limit", str(limit)))
-        return out.get("items", [])
+        """Rows in the shape `gh project item-list --format json` gives -- id, title,
+        content, one lowercased key per field -- at a fraction of its price.
+
+        gh asks for fieldValues(first:100) on every item, so a page of 100 costs about
+        100 GraphQL points whatever the board holds (measured 102 on a 31-row board),
+        and every write that first finds its row cost about 105. This asks for exactly
+        the board's own fields: about 1 + fields points a page, 14 on the tracker."""
+        rows: list[dict] = []
+        after = None
+        want = len(self.fields) + 2          # every field, with headroom for built-ins
+        while len(rows) < limit:
+            n = min(100, limit - len(rows))
+            args = ["api", "graphql", "-f", f"query={_ROWS_QUERY}", "-f", f"id={self.id}",
+                    "-F", f"n={n}", "-F", f"f={want}"]
+            if after:
+                args += ["-f", f"after={after}"]
+            page = json.loads(_gh(*args))["data"]["node"]["items"]
+            rows += [flatten_item(it) for it in page["nodes"]]
+            if not page["pageInfo"]["hasNextPage"]:
+                break
+            after = page["pageInfo"]["endCursor"]
+        return rows
 
     def _index(self, refresh: bool = False) -> dict[str, dict]:
         """title -> row, fetched once per instance. Every find() used to re-list the
