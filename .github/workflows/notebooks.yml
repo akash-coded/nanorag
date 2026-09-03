@@ -35,7 +35,7 @@ jobs:
           - 09_capstone_build.ipynb
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: "3.11", cache: pip }
       - run: pip install -e ".[dev]"
       - name: Execute
