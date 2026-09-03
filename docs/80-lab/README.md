@@ -194,6 +194,30 @@ What the workflow *does* enforce, on every change:
 - **every reference solution still passes its own checks**, including hidden ones
 - every starter still *fails* — a lab whose starter passes has nothing in it
 
+## For whoever runs a session
+
+Everything an instructor needs is a script or a board — nothing here needs a pull request.
+
+```bash
+python scripts/assign.py --session 2026-09-08 --items C03,C02,L03 \
+    --to alice,bob,carol --due 2026-09-10 --announce
+```
+
+That creates one row per person per item on the
+[Hands-on Tracker](https://github.com/users/akash-coded/projects/11) with `Outcome = Assigned`,
+and `--announce` posts a session thread that @mentions everyone with the list and the Codespaces
+button. When a learner submits — in an arena thread or on a PR — the same row moves:
+`Assigned → Attempted → Retrying → Passed`, with the attempt count. **A row still *Assigned*
+past its due date is the thing you actually need to see**, and a row on *Retrying* with four
+attempts is someone to go and sit with.
+
+The [Repo Pulse](https://github.com/users/akash-coded/projects/12) board refreshes every six
+hours with unanswered Q&A older than 48 hours, hot threads, and arena activity. The full
+walk-through — before, during, and the morning after — is the
+[Session Runbook](https://github.com/akash-coded/nanorag/wiki/Session-Runbook) on the wiki, and
+the [Arena FAQ](https://github.com/akash-coded/nanorag/wiki/Arena-FAQ) answers what learners ask
+in the first ten minutes.
+
 ## Where a lab sends you next
 
 Every brief ends with links into the rest of the repository: the ADR that decided it, the

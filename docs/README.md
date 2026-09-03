@@ -13,6 +13,7 @@ document grows past about 250 lines it gets split.
 | prepare for an interview | [`30-learning/interview-prep/`](30-learning/interview-prep/) |
 | read the papers behind it | [`30-learning/reading-list.md`](30-learning/reading-list.md) |
 | run, release or operate this | [`40-operations/runbook.md`](40-operations/runbook.md) |
+| see the lifecycle this repo follows, with every artefact named | [`40-operations/lifecycle.md`](40-operations/lifecycle.md) |
 | take part in Discussions | [`50-community/discussions-guide.md`](50-community/discussions-guide.md) |
 | find a thread that already answered this | [`50-community/discussion-map.md`](50-community/discussion-map.md) |
 | **hit an error and want the fix** | [the wiki](https://github.com/akash-coded/nanorag/wiki/Common-Errors) |
@@ -21,6 +22,7 @@ document grows past about 250 lines it gets split.
 | see what is being built next | [`70-extension/`](70-extension/) |
 | understand the casebook threads | [`50-community/casebook-convention.md`](50-community/casebook-convention.md) |
 | look up notation or a term | [`90-reference/notation.md`](90-reference/notation.md) |
+| copy one function into my own repo | [the gists](https://gist.github.com/akash-coded) — paired bootstrap, four verdicts, RRF, κ, IDF, each stdlib-only |
 | see what has already been answered | [`90-reference/faq.md`](90-reference/faq.md) |
 
 ---

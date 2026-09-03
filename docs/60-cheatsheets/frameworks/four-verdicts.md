@@ -63,3 +63,5 @@ day of work and it is almost always the right first day.
 
 **Practise:** [EX-01 — Attribute ten failures](../../30-learning/exercises/ex-01-attribute-ten-failures.md) ·
 **Argued out in:** [#41](https://github.com/akash-coded/nanorag/discussions/41), [#31](https://github.com/akash-coded/nanorag/discussions/31)
+
+**Standalone:** [gist](https://gist.github.com/akash-coded/8d4412f8b4ebff6dd9447970ab389acc) — the classifier and the distribution, standalone. Stdlib only, no clone needed.

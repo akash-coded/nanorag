@@ -92,3 +92,5 @@ and why fusion is not optional on a corpus with vocabulary mismatch.
 §4.3 builds the inverted index by hand and sweeps `k₁` and `b`, and
 [EX-11](../../exercises/ex-11-bm25-by-hand.md) has you score three documents with a pen before
 running anything.
+
+**Standalone:** [gist](https://gist.github.com/akash-coded/1ff5f449929490207ca30806e3257b02) — the IDF, and the sign flip, runnable. Stdlib only, no clone needed.
