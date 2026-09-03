@@ -222,7 +222,11 @@ def render_report(report: dict) -> str:
     passed, total = report["passed"], report["total"]
     ok = passed == total
     head = "✅" if ok else ("🟡" if passed >= total // 2 else "🔎")
-    out = [f"### {head} {lab.badge} {lab.id} · {lab.title} — **{passed}/{total} checks**", ""]
+    # The difficulty is a word at the end, not a coloured dot beside the verdict: a green
+    # dot next to 🔎 read as a pass on a 0/3 reply.
+    headline = (f"### {head} {lab.id} · {lab.title} — **{passed}/{total} checks**"
+                f" · {lab.difficulty}")
+    out = [headline, ""]
 
     hits = [r for r in report["results"] if r["passed"]]
     misses = [r for r in report["results"] if not r["passed"]]
