@@ -190,11 +190,15 @@ which is why the tracker steps carry the PAT at all. So a red `pulse` run at the
 own `gh` commands are refused is one budget seen from two places — see the entry above for how to
 read the real gauge.
 
-**What spends it, roughly:** one learner assignment or one tracked submission is an item plus its
-field edits, about 8 points. A pulse refresh lists every open thread and costs about 600. The
-lifecycle seed is about 220 mutations. A discussion-map regeneration is two large queries priced
-by nodes returned. A session of twenty learners is therefore comfortable on its own; it is the
-bulk jobs landing in the same hour that empty the pool.
+**What spends it, measured on 3 September:** `gh project item-list --limit 100` costs about 100
+points whatever the board holds, because the price follows the page size requested, not the
+rows returned. Every board write that has to find its row first therefore costs about 105
+points: a tracker update from CI, an assignment, an upsert of a new title. A pulse refresh
+costs about 950, most of it the nested comments-and-replies query. So twenty learners who each
+submit three times in one hour cost around 6,000 points, more than the hour holds, and the
+tracker step starts refusing (the reply still posts; the row is what is lost). Until the board
+listing asks for only the board's own fields, keep writes under about forty an hour, and run
+pulse, seeds and map regenerations in a different hour.
 
 **Fix:** run seeds, map regenerations and other bulk jobs *outside* session hours, and let the
 guards work. Every board script reads the remaining budget from the response headers
