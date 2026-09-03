@@ -2,8 +2,9 @@
 
 **L**ook · **A**ttribute · **B**uild.
 
-Twelve labs, eight tracks, one loop. Each is 15–50 minutes, each ends in code that either passes
-its checks or does not, and each one puts a **decision** in front of you before it lets you type.
+Eight challenges and twelve labs across eight tracks, one loop. A challenge is 5–15 minutes and
+one mechanism; a lab is 15–50 and puts a **decision** in front of you before it lets you type.
+Every one ends in code — or a prediction — that either passes its checks or does not.
 
 ## Run it with nothing installed
 
@@ -132,6 +133,15 @@ what is unlocked.
 
 ```mermaid
 flowchart LR
+    classDef ch fill:#FBF1E2,stroke:#E9A83C,color:#101318,stroke-dasharray:4 2
+    C01["C01 fill<br/>sentence boundary"]:::ch -.-> L01
+    C03["C03 predict<br/>IDF sign"]:::ch -.-> L03
+    C02["C02 fix<br/>tokenizer bug"]:::ch -.-> L04
+    C04["C04 fix<br/>fusion normalisation"]:::ch -.-> L05
+    C05["C05 predict<br/>which stage"]:::ch -.-> L07
+    C06["C06 implement<br/>chance agreement"]:::ch -.-> L09
+    C07["C07 fill<br/>recurring or one-off"]:::ch -.-> L10
+    C08["C08 fix<br/>budget guard"]:::ch -.-> L11
     L01["L01 🟢<br/>chunk ids"] --> L02["L02 🟡<br/>heading path"]
     L03["L03 🟢<br/>IDF"] --> L04["L04 🟡<br/>analyzer trap"]
     L03 --> L05["L05 🟢<br/>rank fusion"]
@@ -148,8 +158,11 @@ flowchart LR
     L11 --> L12
 ```
 
-**Two entry points.** `L01` if you think in data. `L03` if you think in scoring. They converge at
-T3 and stay converged.
+Dotted edges are challenges **unlocking** a lab — a suggestion for what comes next, not a gate.
+Solid edges are prerequisites the DAG enforces.
+
+**Two entry points.** `C01` or `L01` if you think in data. `C03` or `L03` if you think in scoring.
+They converge at T3 and stay converged.
 
 ## Progress is derived, never stored
 
