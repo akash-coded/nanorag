@@ -38,3 +38,8 @@ board:           ## One-time GitHub setup: labels, discussions, issues, project 
 	$(PY) scripts/setup_github.py --owner $${OWNER:?set OWNER=your-github-handle} --repo $${REPO:-nanorag}
 
 .PHONY: help setup lab test test-all lint fmt notebooks strip eval board
+
+.PHONY: check
+## Every check CI runs, locally, with exit codes that mean something. Run before every push.
+check:
+	bash scripts/check.sh

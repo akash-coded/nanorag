@@ -125,3 +125,14 @@ See [SECURITY.md](SECURITY.md). Do not open a public issue for a vulnerability.
 See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). The short version: assume good faith, critique
 the work rather than the person, and remember that most people posting here are learning in
 public — which takes more courage than posting a finished thing.
+
+## Before you push
+
+```bash
+make check      # or: bash scripts/check.sh
+```
+
+That runs every check CI runs — ruff, the test suite, the lab DAG, relative links, every mermaid
+block against the real parser, markdownlint, and a parse of every workflow — with exit codes that
+mean something. **Do not pipe it.** `check.sh | tail` reports `tail`'s exit status, not the gate's,
+and that exact mistake has pushed red commits from this repository twice.
