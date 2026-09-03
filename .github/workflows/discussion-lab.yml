@@ -145,7 +145,7 @@ jobs:
             || echo "::warning::tracker update failed (is PROJECT_TOKEN set with the project scope?)"
 
       - name: Reply in the thread
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

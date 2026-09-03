@@ -26,7 +26,7 @@ jobs:
 
       - name: Explain what the board expects
         if: github.event.action == 'opened' && github.event_name == 'issues'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             await github.rest.issues.createComment({
