@@ -66,9 +66,9 @@ def report(lab_ids: list[str]) -> tuple[str, bool]:
 
         passed = sum(1 for r in results if r.passed)
         head = "✅" if passed == len(results) else "❌"
-        lines += [f"### {head} {lab.badge} {lab.id} · {lab.title}", "",
-                  f"**{passed}/{len(results)} checks** · {lab.minutes} min · "
-                  f"track {lab.track} · [brief](../blob/main/labs/{lab.dirname}/brief.md)", "",
+        meta = (f"**{passed}/{len(results)} checks** · {lab.minutes} min · "
+                f"track {lab.track} · [brief](../blob/main/labs/{lab.dirname}/brief.md)")
+        lines += [f"### {head} {lab.badge} {lab.id} · {lab.title}", "", meta, "",
                   "| | Check | Note |", "|---|---|---|"]
         for r in results:
             note = r.measure if r.passed else (r.detail or "")
@@ -79,13 +79,15 @@ def report(lab_ids: list[str]) -> tuple[str, bool]:
         lines.append("")
         if passed != len(results):
             all_green = False
-            lines += ["> Failing checks include hidden ones, which the brief does not describe. "
-                      "The gap between the public and hidden sets is where the brief's "
-                      "assumptions were doing work.", ""]
+            hidden_note = ("> Failing checks include hidden ones, which the brief does not "
+                           "describe. The gap between the public and hidden sets is where the "
+                           "brief's assumptions were doing work.")
+            lines += [hidden_note, ""]
 
     if all_green:
-        lines += ["---", "", "All checks pass. The reference solution is in `reference.py` — "
-                  "worth reading now, not before.", ""]
+        done_note = ("All checks pass. The reference solution is in `reference.py` — "
+                     "worth reading now, not before.")
+        lines += ["---", "", done_note, ""]
     return "\n".join(lines), all_green
 
 

@@ -189,10 +189,10 @@ def cmd_index(args) -> int:
             out.append(f"| {lab.badge} | [`{lab.id}`]({lab.dirname}/brief.md) | {fmt} "
                        f"| {lab.title} | {lab.minutes}m | {after} |")
         out.append("")
-    out += ["---", "",
-            f"{len(labs)} labs · "
-            f"{sum(x.minutes for x in labs.values())} minutes of work · "
-            "every reference solution is tested against its own checks in CI.", ""]
+    minutes = sum(x.minutes for x in labs.values())
+    footer = (f"{len(labs)} labs · {minutes} minutes of work · "
+              "every reference solution is tested against its own checks in CI.")
+    out += ["---", "", footer, ""]
     (_registry.LABS_DIR / "README.md").write_text("\n".join(out), encoding="utf-8")
     print(f"wrote labs/README.md ({len(labs)} labs)")
     return 0
