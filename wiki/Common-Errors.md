@@ -143,3 +143,61 @@ about — see [Troubleshooting](Troubleshooting).
 
 The three most common: a tokenizer that split your identifiers, a mixed-encoder index, and a
 post-filter that collapsed `k`.
+
+---
+
+## `API rate limit exceeded` from GraphQL while `gh api rate_limit` says 5000/5000
+
+**Where:** anything that talks to Projects boards, `gh pr checks`, `gh pr view`, `create_thread.py`,
+`boards.py` — all GraphQL under the hood.
+
+**Cause:** the GraphQL quota is genuinely spent. `gh api rate_limit` reports a *different
+accounting* for `graphql` and can read `5000/5000` for the entire hour the real quota is at zero.
+The only honest gauge is the `X-Ratelimit-*` headers on an actual GraphQL response:
+
+```bash
+gh api graphql -i -f query='{viewer{login}}' 2>&1 | grep -iE '^x-ratelimit-(remaining|reset|used)'
+```
+
+`X-Ratelimit-Remaining: 0` with a reset epoch 40 minutes out is the answer; `gh api rate_limit`
+will still say `5000/5000`.
+
+**What spends it:** Projects `item-list` is priced in points by *nodes returned* — one list over a
+large board can cost hundreds of the hourly 5,000. A polling loop on `gh pr checks` every 20
+seconds is a steady drain. And the quota is **shared by every session on the account**, so two
+agents working the same repo halve each other's budget.
+
+**Fix:** wait for the reset — there is no way round it. Then stop the drains: cap `item-list`
+page sizes, list a board once per process and cache, never poll `gh pr checks` in a loop (read
+`/pulls/{n}` and `/commits/{sha}/check-runs` over **REST** instead — separate 5,000 budget), and
+use `gh api -X PUT .../pulls/{n}/merge` rather than `gh pr merge`. `scripts/boards.py` now reads
+the headers and stops with the reset time rather than sleeping through the hour in 90-second
+pieces.
+
+**Why it hid:** the guard checked `rate_limit`, saw 5000, proceeded, and got refused — three
+times in one session — before anyone read the headers.
+
+## `needs ~N GraphQL points; 0 remain` from a `pulse` or tracker run in CI
+
+**Where:** the scheduled `pulse.yml` refresh, the tracker step at the end of `labs.yml` and
+`discussion-lab.yml`, `assign.py` — anything that writes a Projects board from a workflow.
+
+**Cause:** `PROJECT_TOKEN` is a personal access token, and a PAT authenticates as *you*. The
+primary GraphQL limit is 5,000 points per hour **per user**, not per token. Every PAT you own,
+every CI step that carries one, and every terminal you are logged into drain a single pool. Only
+the built-in `GITHUB_TOKEN` gets its own allowance, and that token cannot write user-owned boards,
+which is why the tracker steps carry the PAT at all. So a red `pulse` run at the same minute your
+own `gh` commands are refused is one budget seen from two places — see the entry above for how to
+read the real gauge.
+
+**What spends it, roughly:** one learner assignment or one tracked submission is an item plus its
+field edits, about 8 points. A pulse refresh lists every open thread and costs about 600. The
+lifecycle seed is about 220 mutations. A discussion-map regeneration is two large queries priced
+by nodes returned. A session of twenty learners is therefore comfortable on its own; it is the
+bulk jobs landing in the same hour that empty the pool.
+
+**Fix:** run seeds, map regenerations and other bulk jobs *outside* session hours, and let the
+guards work. Every board script reads the remaining budget from the response headers
+(`boards.graphql_budget()`) before it starts and refuses cleanly with the reset time rather than
+dying halfway through an update. A red `pulse` run carrying this message is the guard doing its
+job, not a broken workflow — the next cron tick, every six hours, picks it up.

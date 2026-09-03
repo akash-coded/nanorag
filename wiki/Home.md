@@ -25,6 +25,8 @@ So the rule is:
 | **[Troubleshooting](Troubleshooting)** | Symptom → cause → fix, for things that produce no error at all |
 | **[Environment Setup](Environment-Setup)** | Per-platform gotchas — macOS, Linux, WSL, Colab, devcontainer |
 | **[Glossary](Glossary)** | Every term used across the repo. Edit freely |
+| **[Arena FAQ](Arena-FAQ)** | The first ten minutes of the L.A.B. simulator, answered |
+| **[Session Runbook](Session-Runbook)** | Assign, run, read the board — for whoever runs a cohort |
 | **[Office Hours Log](Office-Hours-Log)** | Running notes from sessions |
 | **[Interview Field Reports](Interview-Field-Reports)** | What people were actually asked, with a template |
 | **[Wiki Conventions](Wiki-Conventions)** | How to edit, and what does **not** belong here |
