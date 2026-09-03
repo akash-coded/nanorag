@@ -25,11 +25,56 @@ OWNER = "akash-coded"
 TRACKER, PULSE, LIFECYCLE = 11, 12, 13
 
 
+# GitHub applies a SECONDARY rate limit to Projects mutations and to bursts of
+# GraphQL that `gh api rate_limit` never shows: the primary gauge can read 5000/5000
+# while calls are being refused. The budget is also shared by every session on the
+# account. So every call backs off on refusal, and every write is paced.
+_BACKOFF = (20, 45, 90)          # seconds, on successive refusals
+_PACE = 0.4                      # seconds between writes
+
+
 def _gh(*args: str) -> str:
-    proc = subprocess.run(["gh", *args], capture_output=True, text=True)
-    if proc.returncode:
-        raise RuntimeError(f"gh {' '.join(args[:3])}...: {proc.stderr.strip()[:300]}")
-    return proc.stdout
+    for attempt, wait in enumerate((*_BACKOFF, None)):
+        proc = subprocess.run(["gh", *args], capture_output=True, text=True)
+        if proc.returncode == 0:
+            if args[:2] in (("project", "item-edit"), ("project", "item-create"),
+                            ("project", "item-archive"), ("project", "item-delete")):
+                time.sleep(_PACE)
+            return proc.stdout
+        err = proc.stderr.strip()
+        if "rate limit" in err.lower() and wait is not None:
+            print(f"    rate limited; backing off {wait}s", file=sys.stderr)
+            time.sleep(wait)
+            continue
+        if "rate limit" in err.lower():
+            raise RateLimited(err[:200])
+        raise RuntimeError(f"gh {' '.join(args[:3])}...: {err[:300]}")
+    raise RateLimited("gave up after backoff")
+
+
+class RateLimited(RuntimeError):
+    """GraphQL points are exhausted. Projects queries are priced by nodes returned,
+    so one item-list over a large board can cost hundreds of the hourly 5,000 --
+    this is why bulk scripts check the budget first and why item-list is capped."""
+
+
+def graphql_budget() -> tuple[int, int]:
+    """(remaining points, minutes until reset). REST, so it never costs GraphQL points."""
+    out = json.loads(_gh("api", "rate_limit"))["resources"]["graphql"]
+    import time as _t
+    return out["remaining"], max(0, int((out["reset"] - _t.time()) // 60))
+
+
+def require_budget(points: int, what: str = "this run") -> None:
+    """Abort BEFORE a bulk operation if it would exhaust the hour's GraphQL points.
+    Failing halfway through leaves a board half-updated and a budget spent."""
+    remaining, mins = graphql_budget()
+    if remaining < points:
+        raise SystemExit(f"{what} needs ~{points} GraphQL points; {remaining} remain, "
+                         f"reset in {mins} min. Wait, or run with fewer rows.")
+    # The primary gauge is necessary, not sufficient: a secondary limit on bursts
+    # is invisible here and is handled by backoff in _gh(). This check only stops
+    # the obviously-doomed run.
 
 
 class Board:
@@ -43,6 +88,7 @@ class Board:
         raw = json.loads(_gh("project", "field-list", str(number), "--owner", OWNER,
                              "--format", "json", "--limit", "100"))["fields"]
         self._known: dict[str, str] = {}   # title -> item id, this process only
+        self._rows: dict[str, dict] | None = None   # title -> row, listed once
         self.fields: dict[str, dict] = {}
         for f in raw:
             self.fields[f["name"]] = {
@@ -52,21 +98,34 @@ class Board:
             }
 
     # ── reading ────────────────────────────────────────────────────────────
-    def items(self, limit: int = 500) -> list[dict]:
+    def items(self, limit: int = 100) -> list[dict]:
         out = json.loads(_gh("project", "item-list", str(self.number), "--owner", OWNER,
                              "--format", "json", "--limit", str(limit)))
         return out.get("items", [])
 
-    def find(self, title: str, tries: int = 4, wait: float = 1.5) -> dict | None:
-        """Projects v2 item-list can lag a create by a second or two. Retrying is
-        what makes upsert idempotent under a burst of workflow runs; without it,
-        two comments ten seconds apart produce two rows."""
-        for attempt in range(tries):
-            for it in self.items():
-                if it.get("title") == title:
-                    return it
-            if attempt < tries - 1:
-                time.sleep(wait)
+    def _index(self, refresh: bool = False) -> dict[str, dict]:
+        """title -> row, fetched once per instance. Every find() used to re-list the
+        whole board up to four times; assign.py called find() twice per row. A
+        class of twenty on three items burned the GraphQL budget in seconds. Now a
+        board is listed once, and again only on a miss."""
+        if self._rows is None or refresh:
+            self._rows = {it.get("title"): it for it in self.items()}
+        return self._rows
+
+    def find(self, title: str, tries: int = 1, wait: float = 1.5) -> dict | None:
+        """A hit costs no API call. A miss lists once by default; pass tries=2 or 3
+        where a duplicate row would matter (tracker.py, one row per learner x item)
+        to re-list after a short wait, because item-list can lag a create by a
+        second or two across processes. Bulk seeders leave it at 1 -- a re-list on
+        every miss is what exhausted the budget."""
+        row = self._index().get(title)
+        if row:
+            return row
+        for attempt in range(1, tries):
+            time.sleep(wait)
+            row = self._index(refresh=True).get(title)
+            if row:
+                return row
         return None
 
     # ── writing ────────────────────────────────────────────────────────────
@@ -85,7 +144,8 @@ class Board:
                                f"has {sorted(meta['options'])}")
             args += ["--single-select-option-id", opt]
         elif kind == "Date" or isinstance(value, (dt.date, dt.datetime)):
-            args += ["--date", value.isoformat()[:10] if hasattr(value, "isoformat") else str(value)]
+            iso = value.isoformat()[:10] if hasattr(value, "isoformat") else str(value)
+            args += ["--date", iso]
         elif kind == "Number" or isinstance(value, (int, float)):
             args += ["--number", str(value)]
         else:
@@ -109,6 +169,8 @@ class Board:
                 made = json.loads(_gh("project", "item-create", str(self.number), "--owner",
                                       OWNER, "--title", title, "--format", "json"))
                 item_id, created = made["id"], True
+                if self._rows is not None:
+                    self._rows[title] = {"id": item_id, "title": title}
             self._known[title] = item_id
         for name, value in fields.items():
             if value is None:
