@@ -1,0 +1,23 @@
+{
+  "id": "C05",
+  "slug": "which-stage",
+  "kind": "challenge",
+  "title": "Which stage is the bottleneck?",
+  "track": "T4",
+  "difficulty": "easy",
+  "minutes": 5,
+  "format": "predict",
+  "section": "01 \u00a71.3",
+  "prereqs": [],
+  "unlocks": [
+    "L07"
+  ],
+  "tags": [
+    "metrics",
+    "diagnosis"
+  ],
+  "answer": "packing",
+  "concept": "When a metric at stage n improves and the metric at stage n+1 does not, the bottleneck has moved.",
+  "skill": "You can read two recall numbers with different denominators and name the stage between them.",
+  "deeper": "docs/60-cheatsheets/frameworks/stage-gradient.md -- the general rule, and the four-line diagnostic"
+}

@@ -51,6 +51,32 @@ The decision is the part most practice material skips, and it is the part interv
 about. A lab where there is one right answer and you type it teaches you an API. A lab where you
 had to choose, and the checks encode *why* that choice, teaches you the judgement.
 
+## Two sizes: challenges and labs
+
+Labs are 15–50 minutes and ask for a decision. That is the right size for learning judgement
+and the wrong size for a first contact with a mechanism — so underneath every lab sit
+**challenges**: 5–15 minutes, one mechanism, one of four shapes.
+
+| Shape | What you get | What you do |
+|---|---|---|
+| `implement` | a spec and a stub | write the function |
+| `fill` | working code with `____` blanks | fill them — the blanks are the *decision points* |
+| `fix` | complete code with a planted bug | make the checks pass with the smallest change |
+| `predict` | a table or a trace, and no code | submit the number or verdict the run will produce |
+
+The shapes exist because "implement this function" is only one way to find out whether somebody
+understands a thing. `fix` tests whether you can *read*; `predict` tests whether you can reason
+without running anything, which is what a design review actually demands.
+
+**Each challenge derives from one notebook section** — the brief names it — and **unlocks a
+lab**. Finish `C03` (predict IDF's sign) and `next` hands you `L03` (find the exact pivot), with
+the reason it comes next. Challenges are the on-ramp, not a gate: nobody partway through the labs
+is walled off by them.
+
+A fill-format starter imports cleanly with its blanks unfilled — the harness binds `____` to a
+placeholder — so every check gets to say, in the mechanism's own terms, what the blank costs:
+*"expected 4 sentences, got 1"*, not a `NameError`.
+
 ## Public checks and hidden checks
 
 Every lab splits its checks in two.

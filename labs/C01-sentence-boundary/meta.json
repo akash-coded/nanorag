@@ -1,0 +1,22 @@
+{
+  "id": "C01",
+  "slug": "sentence-boundary",
+  "kind": "challenge",
+  "title": "Fill the sentence-boundary rule",
+  "track": "T1",
+  "difficulty": "easy",
+  "minutes": 8,
+  "format": "fill",
+  "section": "03 \u00a73.3",
+  "prereqs": [],
+  "unlocks": [
+    "L01"
+  ],
+  "tags": [
+    "chunking",
+    "boundaries"
+  ],
+  "concept": "A chunker that splits on '.' alone splits 'v2.1.4' and 'Dr. Smith'. The rule is a boundary, not a character.",
+  "skill": "You can state what a sentence boundary IS -- a terminator followed by whitespace and an uppercase start -- rather than a character to split on.",
+  "deeper": "docs/60-cheatsheets/frameworks/precondition-test.md -- because a chunker is the first thing people 'improve' without checking their corpus has the failure"
+}

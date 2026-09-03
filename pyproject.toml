@@ -80,7 +80,10 @@ ignore = [
 # spec and reflowing them to fit a linter makes the task harder to read. F401 is
 # deliberate too: an unused `import hashlib` in a starter is the hint that the
 # solution needs hashing, and removing it removes the hint.
-"labs/*/starter.py" = ["E501", "F401"]
+# F821 as well: fill-format starters contain ____ blanks, which the harness binds
+# to a sentinel at load time. Ruff cannot see that, and the undefined name IS the
+# exercise.
+"labs/*/starter.py" = ["E501", "F401", "F821"]
 
 [tool.coverage.run]
 source = ["nanorag"]

@@ -1,0 +1,23 @@
+{
+  "id": "C03",
+  "slug": "idf-sign",
+  "kind": "challenge",
+  "title": "Predict the sign of IDF for a common term",
+  "track": "T2",
+  "difficulty": "easy",
+  "minutes": 5,
+  "format": "predict",
+  "section": "04 \u00a74.2",
+  "prereqs": [],
+  "unlocks": [
+    "L03"
+  ],
+  "tags": [
+    "bm25",
+    "idf"
+  ],
+  "answer": "negative",
+  "concept": "IDF is a log-odds ratio. Above half the collection, the odds are below 1 and the log is negative.",
+  "skill": "You can look at a document frequency and say, before computing anything, whether that term argues for or against relevance.",
+  "deeper": "docs/30-learning/interview-prep/01-mathematical-foundations/bm25-from-first-principles.md -- the derivation that makes the sign inevitable"
+}

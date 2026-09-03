@@ -96,8 +96,7 @@ def render(threads: list[dict]) -> str:
         "the accepted answer; the thread itself carries the argument that got there, which",
         "is usually the more useful half.",
         "",
-        f"{len(threads)} answered "
-        f"{'thread' if len(threads) == 1 else 'threads'}.",
+        f"{len(threads)} answered {'thread' if len(threads) == 1 else 'threads'}.",
         "",
     ]
     for category in sorted(by_category):

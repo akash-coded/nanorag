@@ -11,7 +11,6 @@ someone working locally, not a secret.
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import pathlib
 import subprocess
 import sys
@@ -23,10 +22,7 @@ from labs import _harness, _registry  # noqa: E402
 
 
 def _load(path: pathlib.Path, name: str):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return _harness.load_solution(path, name)
 
 
 def changed_labs(base: str = "origin/main") -> list[str]:
@@ -57,8 +53,11 @@ def report(lab_ids: list[str]) -> tuple[str, bool]:
             continue
         try:
             checks = _load(lab.path / "checks.py", f"c_{lab_id}").CHECKS
-            solution = _load(lab.path / "starter.py", f"s_{lab_id}")
-            results = _harness.run_checks(solution, checks, include_hidden=True)
+            try:
+                solution = _harness.try_load(lab.path / "starter.py", f"s_{lab_id}")
+                results = _harness.run_checks(solution, checks, include_hidden=True)
+            except _harness.ImportFailed as exc:
+                results = _harness.import_failure(checks, exc, include_hidden=True)
         except Exception as exc:  # noqa: BLE001
             lines += [f"### {lab.badge} {lab.id} · {lab.title}", "",
                       f"`starter.py` could not be imported: `{type(exc).__name__}: {exc}`", ""]
@@ -67,9 +66,9 @@ def report(lab_ids: list[str]) -> tuple[str, bool]:
 
         passed = sum(1 for r in results if r.passed)
         head = "✅" if passed == len(results) else "❌"
-        lines += [f"### {head} {lab.badge} {lab.id} · {lab.title}", "",
-                  f"**{passed}/{len(results)} checks** · {lab.minutes} min · "
-                  f"track {lab.track} · [brief](../blob/main/labs/{lab.dirname}/brief.md)", "",
+        meta = (f"**{passed}/{len(results)} checks** · {lab.minutes} min · "
+                f"track {lab.track} · [brief](../blob/main/labs/{lab.dirname}/brief.md)")
+        lines += [f"### {head} {lab.badge} {lab.id} · {lab.title}", "", meta, "",
                   "| | Check | Note |", "|---|---|---|"]
         for r in results:
             note = r.measure if r.passed else (r.detail or "")
@@ -80,13 +79,15 @@ def report(lab_ids: list[str]) -> tuple[str, bool]:
         lines.append("")
         if passed != len(results):
             all_green = False
-            lines += ["> Failing checks include hidden ones, which the brief does not describe. "
-                      "The gap between the public and hidden sets is where the brief's "
-                      "assumptions were doing work.", ""]
+            hidden_note = ("> Failing checks include hidden ones, which the brief does not "
+                           "describe. The gap between the public and hidden sets is where the "
+                           "brief's assumptions were doing work.")
+            lines += [hidden_note, ""]
 
     if all_green:
-        lines += ["---", "", "All checks pass. The reference solution is in `reference.py` — "
-                  "worth reading now, not before.", ""]
+        done_note = ("All checks pass. The reference solution is in `reference.py` — "
+                     "worth reading now, not before.")
+        lines += ["---", "", done_note, ""]
     return "\n".join(lines), all_green
 
 

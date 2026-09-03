@@ -1,0 +1,22 @@
+{
+  "id": "C02",
+  "slug": "tokenizer-bug",
+  "kind": "challenge",
+  "title": "The tokenizer has a bug. Find it.",
+  "track": "T2",
+  "difficulty": "easy",
+  "minutes": 10,
+  "format": "fix",
+  "section": "04 \u00a74.3",
+  "prereqs": [],
+  "unlocks": [
+    "L04"
+  ],
+  "tags": [
+    "analyzer",
+    "tokenizer"
+  ],
+  "concept": "The scoring function was flawless and the results were wrong, because the analyzer quietly re-partitioned the term space.",
+  "skill": "You can read a tokenizer's character class and say which identifiers it will shred before it shreds them.",
+  "deeper": "wiki/Common-Errors.md -- 'A query returns results and they are the wrong results, with no error' is this bug's entry"
+}

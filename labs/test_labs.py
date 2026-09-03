@@ -9,7 +9,6 @@ passes is a lab with nothing in it.
 """
 from __future__ import annotations
 
-import importlib.util
 import pathlib
 
 import pytest
@@ -20,10 +19,7 @@ LABS = _registry.load()
 
 
 def _load(path: pathlib.Path, name: str):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return _harness.load_solution(path, name)
 
 
 def test_pathway_is_a_valid_dag():
@@ -57,10 +53,26 @@ def test_reference_passes_all_checks(lab_id):
 def test_starter_does_not_already_pass(lab_id):
     lab = LABS[lab_id]
     checks = _load(lab.path / "checks.py", f"cs_{lab_id}").CHECKS
-    starter = _load(lab.path / "starter.py", f"s_{lab_id}")
+    try:
+        starter = _harness.try_load(lab.path / "starter.py", f"s_{lab_id}")
+    except _harness.ImportFailed:
+        return  # a starter that cannot import certainly does not pass
     results = _harness.run_checks(starter, checks, include_hidden=True)
     assert not all(r.passed for r in results), (
         f"{lab_id} starter passes every check — there is nothing to do in this lab")
+
+
+@pytest.mark.parametrize("lab_id", sorted(i for i, x in LABS.items() if x.format == "fill"))
+def test_fill_starter_imports_with_blanks_unfilled(lab_id):
+    """A ____ inside a module-level expression -- re.escape(____), "a" + ____ --
+    runs at import and no check ever gets to explain it. Blanks belong in bare
+    assignments or inside function bodies, where a check can name the blank."""
+    lab = LABS[lab_id]
+    try:
+        _harness.try_load(lab.path / "starter.py", f"fill_{lab_id}")
+    except _harness.ImportFailed as exc:
+        pytest.fail(f"{lab_id} is fill-format but its blanks are used at import time: {exc}. "
+                    "Move the expression that uses the blank inside a function.")
 
 
 @pytest.mark.parametrize("lab_id", sorted(LABS))
