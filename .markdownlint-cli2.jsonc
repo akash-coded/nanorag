@@ -17,9 +17,17 @@
     "MD036": false,
     "MD024": { "siblings_only": true }
   },
+  // Ignored paths, each for a reason:
+  //   .venv, venv   a contributor's virtualenv drags third-party markdown into "**/*.md";
+  //                 CI never sees one, so without this the local gate and CI disagree
+  //   wiki          a verbatim mirror of pages authored in the wiki UI (see wiki/README.md);
+  //                 lint the wiki by editing the wiki, not by failing the mirror
   "ignores": [
     "tools/node_modules/**",
     "_site_docs/**",
-    "**/node_modules/**"
+    "**/node_modules/**",
+    ".venv/**",
+    "venv/**",
+    "wiki/**"
   ]
 }

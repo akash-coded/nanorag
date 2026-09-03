@@ -37,9 +37,14 @@ eval:            ## Run the release-gate evaluation and print the scorecard
 board:           ## One-time GitHub setup: labels, discussions, issues, project board
 	$(PY) scripts/setup_github.py --owner $${OWNER:?set OWNER=your-github-handle} --repo $${REPO:-nanorag}
 
-.PHONY: help setup lab test test-all lint fmt notebooks strip eval board
+.PHONY: help setup lab test test-all lint fmt notebooks strip eval board wiki-pull
 
-.PHONY: check
+.PHONY: check wiki-pull
 ## Every check CI runs, locally, with exit codes that mean something. Run before every push.
 check:
 	bash scripts/check.sh
+
+wiki-pull: ## Refresh wiki/ from the live wiki (the wiki is canonical; wiki/ is a mirror)
+	@tmp=$$(mktemp -d) && git clone -q --depth 1 https://github.com/akash-coded/nanorag.wiki.git "$$tmp" \
+	  && rsync -a --delete --exclude .git --exclude README.md "$$tmp/" wiki/ && rm -rf "$$tmp" \
+	  && git status --short wiki/ && echo "wiki/ refreshed from the live wiki; commit the result"

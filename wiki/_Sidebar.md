@@ -14,6 +14,9 @@
 
 **The cohort**
 
+- [Arena FAQ](Arena-FAQ)
+- [Session Runbook](Session-Runbook)
+
 - [Office Hours Log](Office-Hours-Log)
 - [Interview Field Reports](Interview-Field-Reports)
 
