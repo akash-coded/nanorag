@@ -68,6 +68,12 @@ mutation($l:[ID!]!,$t:ID!){
 """
 
 
+# A batch of threads is many mutations in a row, and GitHub applies a secondary
+# rate limit to bursts that the primary gauge never shows. A refusal mid-batch
+# used to leave half the threads posted; now each call backs off and retries.
+_BACKOFF = (20, 45, 90)
+
+
 def graphql(query: str, **variables) -> dict:
     cmd = ["gh", "api", "graphql", "-f", f"query={query}"]
     for key, value in variables.items():
@@ -79,13 +85,20 @@ def graphql(query: str, **variables) -> dict:
         else:
             cmd += (["-F", f"{key}={value}"] if isinstance(value, int)
                     else ["-f", f"{key}={value}"])
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    if proc.returncode:
-        raise RuntimeError(f"graphql failed: {proc.stderr.strip()}")
-    payload = json.loads(proc.stdout)
-    if "errors" in payload:
-        raise RuntimeError(f"graphql errors: {payload['errors']}")
-    return payload["data"]
+    for wait in (*_BACKOFF, None):
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        text = (proc.stdout or "") + (proc.stderr or "")
+        if proc.returncode == 0 and "RATE_LIMIT" not in text:
+            payload = json.loads(proc.stdout)
+            if "errors" in payload:
+                raise RuntimeError(f"graphql errors: {payload['errors']}")
+            return payload["data"]
+        if "rate limit" in text.lower() and wait is not None:
+            print(f"     rate limited; backing off {wait}s", file=sys.stderr)
+            time.sleep(wait)
+            continue
+        raise RuntimeError(f"graphql failed: {text.strip()[:300]}")
+    raise RuntimeError("graphql: gave up after backoff")
 
 
 def load_meta() -> tuple[str, dict, dict, dict]:
