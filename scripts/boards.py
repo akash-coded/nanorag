@@ -13,8 +13,10 @@ secrets.PROJECT_TOKEN) or rely on `gh auth login`, which is what runs locally.
 """
 from __future__ import annotations
 
+import atexit
 import datetime as dt
 import json
+import os
 import subprocess
 import sys
 import time
@@ -35,7 +37,36 @@ _WAIT_UP_TO_MIN = 3
 _PACE = 0.4                      # seconds between writes
 
 
+_baseline: tuple[int, int] | None = None
+
+
+def _note_baseline() -> None:
+    """Read the budget once, before the first real call, and report the spend at
+    exit. Two header reads, so a batch can be accounted step by step instead of
+    discovered spent. Set BOARDS_SPEND=0 to silence it."""
+    global _baseline
+    if _baseline is not None or os.environ.get("BOARDS_SPEND", "1") == "0":
+        return
+    try:
+        _baseline = graphql_budget()
+    except Exception:  # noqa: BLE001  -- no gh, no token: never the script's problem
+        _baseline = (-1, -1)
+        return
+    atexit.register(_report_spend)
+
+
+def _report_spend() -> None:
+    try:
+        remaining, mins = graphql_budget()
+    except Exception:  # noqa: BLE001
+        return
+    spent = (_baseline or (remaining, 0))[0] - remaining
+    print(f"boards: spent {spent} GraphQL points; {remaining} remain, reset in ~{mins} min",
+          file=sys.stderr)
+
+
 def _gh(*args: str) -> str:
+    _note_baseline()
     for attempt in (1, 2):
         proc = subprocess.run(["gh", *args], capture_output=True, text=True)
         if proc.returncode == 0 and "RATE_LIMIT" not in proc.stdout[:400]:

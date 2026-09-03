@@ -31,11 +31,20 @@ concurrency:
 jobs:
   triage:
     # Which lab, and is this a submission we should act on at all.
+    # A thread body is a submission only in a [submit · ] thread a learner opened.
+    # An [arena · ] thread is opened by the instructor with the brief in its body
+    # and is graded on comments alone: on 3 Sep the brief itself was graded, and
+    # every fresh arena thread got a failing first reply.
     if: >
-      (startsWith(github.event.discussion.title, '[submit · ') ||
-       startsWith(github.event.discussion.title, '[arena · ')) &&
       github.event.sender.type != 'Bot' &&
-      !contains(github.event.comment.body, 'lab-submission-review')
+      !contains(github.event.comment.body, 'lab-submission-review') &&
+      (
+        (github.event_name == 'discussion_comment' &&
+         (startsWith(github.event.discussion.title, '[submit · ') ||
+          startsWith(github.event.discussion.title, '[arena · '))) ||
+        (github.event_name == 'discussion' &&
+         startsWith(github.event.discussion.title, '[submit · '))
+      )
     runs-on: ubuntu-latest
     permissions: {}
     outputs:
@@ -44,10 +53,22 @@ jobs:
       - id: id
         env:
           TITLE: ${{ github.event.discussion.title }}
+          BODY: ${{ github.event.comment.body || github.event.discussion.body }}
         run: |
           LAB=$(printf '%s' "$TITLE" | grep -oE '[LC][0-9]{2}' | head -1)
+          # Grade only what is shaped like a submission: a fenced code block, or a
+          # short bare value for a predict challenge. A brief, a question, or a chat
+          # reply gets no run and no reply, rather than a confusing failure.
+          SHAPE=$(python3 - <<'PY'
+          import os
+          body = os.environ.get("BODY", "")
+          bare = body.strip().strip("`'\"")
+          print("submission" if "```" in body or (bare and len(bare) < 60 and "\n" not in bare) else "not-a-submission")
+          PY
+          )
+          [ "$SHAPE" = submission ] || LAB=""
           echo "lab=$LAB" >> "$GITHUB_OUTPUT"
-          echo "lab: ${LAB:-none}"
+          echo "lab: ${LAB:-none} ($SHAPE)"
 
   execute:
     # Runs the submission. This job has no credentials and the container has no network.
