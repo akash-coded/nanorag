@@ -190,15 +190,15 @@ which is why the tracker steps carry the PAT at all. So a red `pulse` run at the
 own `gh` commands are refused is one budget seen from two places — see the entry above for how to
 read the real gauge.
 
-**What spends it, measured on 3 September:** `gh project item-list --limit 100` costs about 100
-points whatever the board holds, because the price follows the page size requested, not the
-rows returned. Every board write that has to find its row first therefore costs about 105
-points: a tracker update from CI, an assignment, an upsert of a new title. A pulse refresh
-costs about 950, most of it the nested comments-and-replies query. So twenty learners who each
-submit three times in one hour cost around 6,000 points, more than the hour holds, and the
-tracker step starts refusing (the reply still posts; the row is what is lost). Until the board
-listing asks for only the board's own fields, keep writes under about forty an hour, and run
-pulse, seeds and map regenerations in a different hour.
+**What spends it, measured on 3 September:** GraphQL prices what a query *could* return.
+`gh project item-list --limit 100` asks for a hundred field values on every item, so a page
+costs about 100 points whatever the board holds, and `gh project view` plus `field-list`
+cost about 104 more. Every board write that first found its row therefore paid about 210
+points, and a pulse refresh about 950. Twenty learners submitting three times in one hour would
+have been far more than the hour holds, with the tracker step refusing mid-session (the reply
+still posts; the row is what is lost). PR #197 replaces both gh calls with queries that ask for
+exactly the board's fields: a write is then about 20 points and a pulse refresh about 140. Even
+so, run seeds and map regenerations in a different hour from a session.
 
 **Fix:** run seeds, map regenerations and other bulk jobs *outside* session hours, and let the
 guards work. Every board script reads the remaining budget from the response headers
