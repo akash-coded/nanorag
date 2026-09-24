@@ -50,7 +50,9 @@ reports `tail`'s exit status, not the gate's.
   they cost latency or money, with a test.
 - **Conventional Commits** with the module or notebook as scope: `feat(retrieve): …`.
   Allowed types are `feat fix docs test perf refactor chore ci`. PR titles are checked
-  against the same list.
+  against the same list, and the subject after the colon must start lower-case
+  (`docs: add C4 views`, not `docs: C4 views`), because the squash-merge commit takes the PR
+  title.
 - **Mermaid diagrams must parse** (`node tools/validate-mermaid.mjs`). Reuse the house palette
   from `nanorag/viz.py`: ink `#101318`, amber `#E9A83C`, cyan `#2F8CA3`, violet `#6C5CE0`,
   green `#3F8F6E`, red `#CF4F35`, bone `#F6F4EF`.
