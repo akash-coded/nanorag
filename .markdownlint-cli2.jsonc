@@ -22,12 +22,17 @@
   //                 CI never sees one, so without this the local gate and CI disagree
   //   wiki          a verbatim mirror of pages authored in the wiki UI (see wiki/README.md);
   //                 lint the wiki by editing the wiki, not by failing the mirror
+  //   .agents/skills/*/  third-party skills kept byte-identical to upstream so a diff against
+  //                 the next release stays readable; .agents/skills/README.md is ours and is linted
+  //   .claude/skills  a symlink to .agents/skills, so the same files would be linted twice
   "ignores": [
     "tools/node_modules/**",
     "_site_docs/**",
     "**/node_modules/**",
     ".venv/**",
     "venv/**",
-    "wiki/**"
+    "wiki/**",
+    ".agents/skills/*/**",
+    ".claude/skills/**"
   ]
 }
