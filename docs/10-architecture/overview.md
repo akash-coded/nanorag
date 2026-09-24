@@ -3,6 +3,9 @@
 > **Audience:** anyone about to change `nanorag/`, and anyone who wants to explain this system
 > in an interview. Read [the README's architecture section](../../README.md#architecture) first for
 > the context and HLD diagrams; this document is the level below that.
+>
+> For the same system at each C4 zoom level, with runtime and deployment views, see
+> [c4.md](c4.md).
 
 ## Contents
 
