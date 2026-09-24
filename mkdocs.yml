@@ -81,6 +81,7 @@ nav:
   - Architecture:
       - Overview: 10-architecture/overview.md
       - The seams: 10-architecture/seams.md
+      - C4 and arc42 views: 10-architecture/c4.md
   - Decisions:
       - 20-decisions/README.md
       - Template: 20-decisions/template.md

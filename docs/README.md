@@ -32,7 +32,7 @@ document grows past about 250 lines it gets split.
 | Group | Contains | Audience |
 |---|---|---|
 | [`00-orientation/`](00-orientation/) | Start here, curriculum, putting this on a CV | Anyone arriving |
-| [`10-architecture/`](10-architecture/) | HLD, the seams, the diagrams | Anyone changing the toolkit |
+| [`10-architecture/`](10-architecture/) | HLD, the seams, C4 and arc42 views | Anyone changing the toolkit |
 | [`20-decisions/`](20-decisions/) | Architecture decision records, with the alternative that lost | Reviewers, interviewers |
 | [`30-learning/`](30-learning/) | 22 exercises, 18 interview questions, the reading list | Students |
 | [`40-operations/`](40-operations/) | Runbook, release process, board, GitHub setup | Maintainers |
