@@ -273,7 +273,7 @@ the trace store, so a sweep costs nothing but the evaluation itself.
 
 ## The seams — where to plug things in
 
-Every extension in [EXTENSION-POINTS.md](seams.md) attaches at exactly one of
+Every extension in [seams.md](seams.md) attaches at exactly one of
 these. If your idea does not fit one, it is probably two ideas.
 
 ```mermaid

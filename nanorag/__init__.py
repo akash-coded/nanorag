@@ -44,7 +44,7 @@ __version__ = "1.0.0"
 
 
 #: The configuration notebook 04 arrives at by measurement rather than by
-#: assumption: weighted fusion with the dense leg at 0.3, a learned
+#: assumption: weighted fusion with the dense leg at 0.2, a learned
 #: cross-encoder over the top 50, k=8 inside a 6,000-token evidence cap.
 #: Notebooks 05 onward start from it; notebook 04 derives it in front of you.
 TUNED = {"fusion": "weighted", "alpha": 0.2, "rerank": "cross", "k": 8, "n": 100}

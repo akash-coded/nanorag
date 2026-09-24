@@ -1,5 +1,5 @@
 // Parses every ```mermaid block in the repository against the real Mermaid parser.
-// Exists because docs/ARCHITECTURE.md shipped a diagram that silently failed to render:
+// Exists because the architecture doc shipped a diagram that silently failed to render:
 // an unquoted "()" inside a [] node label. A human reading the diff cannot catch that.
 import { JSDOM } from 'jsdom';
 import fs from 'fs';

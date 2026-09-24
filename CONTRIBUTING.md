@@ -38,7 +38,7 @@ chmod +x .git/hooks/pre-commit
 | Prefix | For | Example |
 |---|---|---|
 | `exercise/` | Exercise submissions | `exercise/EX-14-priya` |
-| `ext/` | An extension from EXTENSION-POINTS.md | `ext/hyde-retrieval` |
+| `ext/` | An extension from [seams.md](docs/10-architecture/seams.md) | `ext/hyde-retrieval` |
 | `fix/` | Bug fixes | `fix/fts5-tokenizer-identifiers` |
 | `docs/` | Documentation only | `docs/adr-0009-query-routing` |
 | `chore/` | CI, deps, tooling | `chore/bump-numpy` |
