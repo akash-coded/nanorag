@@ -28,7 +28,7 @@ bedrock = ["boto3>=1.34"]
 neural  = ["sentence-transformers>=2.6"]
 claude  = ["anthropic>=1.2.0"]
 dev     = ["pytest>=9.1.1", "pytest-cov>=7.1.0", "ruff>=0.6", "nbclient>=0.9", "nbformat>=5.10",
-           "jupyterlab>=4.2"]
+           "jupyterlab>=4.6.3"]
 
 [project.urls]
 Homepage      = "https://github.com/akash-coded/nanorag"
