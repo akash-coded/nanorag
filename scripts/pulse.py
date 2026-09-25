@@ -42,15 +42,19 @@ AREAS = {
     "nanorag/": "toolkit",
 }
 
+# comments(last:20) x replies(last:5): about 120 points a refresh. The first version
+# asked for 50 x 20 and cost about 950 -- GraphQL prices what a query could return, not
+# what it does. Heat needs five recent events, so the sample loses nothing that matters;
+# the totals stay exact.
 Q = """
 query($o:String!,$r:String!){
   repository(owner:$o,name:$r){
     discussions(first:100, orderBy:{field:UPDATED_AT, direction:DESC}){
       nodes{
         number title url isAnswered createdAt updatedAt category{name}
-        comments(first:50){
+        comments(last:20){
           totalCount
-          nodes{ createdAt replies(first:20){ totalCount nodes{createdAt} } } } } }
+          nodes{ createdAt replies(last:5){ totalCount nodes{createdAt} } } } } }
     pullRequests(first:30, states:OPEN, orderBy:{field:UPDATED_AT, direction:DESC}){
       nodes{ number title url updatedAt comments{totalCount} } }
     issues(first:50, states:OPEN, orderBy:{field:UPDATED_AT, direction:DESC}){
