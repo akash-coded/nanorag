@@ -7,21 +7,33 @@ Every discussion whose answer has been marked, grouped by category.
 the accepted answer; the thread itself carries the argument that got there, which
 is usually the more useful half.
 
-11 answered threads.
+20 answered threads.
 
 ## Design Reviews
 
-### [Design review: retrieval for a regulated insurance client, 40M docs, strict ACLs](https://github.com/akash-coded/nanorag/discussions/34)
+### [Retrieval for a regulated insurer — 40M docs, per-clause ACLs, 12 weeks](https://github.com/akash-coded/nanorag/discussions/34)
 
 Synthesis of the three critiques, and what changes: What stays as designed and why: OpenSearch in-VPC, clause-level structural chunking, and hybrid-with-rerank all survive review unchanged.
 
 [Read the thread →](https://github.com/akash-coded/nanorag/discussions/34)
 
-### [Design review: should the sufficiency check be a model call or a classifier?](https://github.com/akash-coded/nanorag/discussions/35)
+### [Sufficiency check: a cheap model call, or a trained classifier?](https://github.com/akash-coded/nanorag/discussions/35)
 
 Decision: Option A, with Marcus's gate, staged. Phase 1 — model call on every query. Ship the thing that works. Pay the 300 ms and the money. Do not optimise a component whose value you have not yet measured.
 
 [Read the thread →](https://github.com/akash-coded/nanorag/discussions/35)
+
+### [A support desk where a document edited five minutes ago must be findable](https://github.com/akash-coded/nanorag/discussions/149)
+
+The design is sound. What is missing is what is missing from most freshness designs: how do you know the SLA is being met? "Retrievable within 60 seconds" is a claim about a distribution and nothing measures it.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/149)
+
+### [Multi-tenant retrieval where two tenants want different encoders](https://github.com/akash-coded/nanorag/discussions/150)
+
+What will actually hurt is neither of those. It is that you now have two code paths and one eval set. The shared path is exercised by 38 tenants continuously. The dedicated path holds your two largest accounts and is exercised rarely.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/150)
 
 ## Interview Prep
 
@@ -36,6 +48,30 @@ A stronger answer, roughly as I would say it out loud: Why this scores. Panels a
 The reframe: synthetic is a methodological choice, and you should say so first. The defensive answer is "it is synthetic, but…".
 
 [Read the thread →](https://github.com/akash-coded/nanorag/discussions/42)
+
+### [[round · deployment-engineer shape] 45 minutes: retrieval over classified documents](https://github.com/akash-coded/nanorag/discussions/90)
+
+A strong answer, roughly as I would give it. How this is scored The single highest-scoring move is putting the isolation test before the retrieval work.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/90)
+
+### [Critique my answer: 'How would you evaluate a RAG system?'](https://github.com/akash-coded/nanorag/discussions/151)
+
+A stronger answer, roughly as I would say it out loud: Why this scores It leads with the constraint — no labels — rather than a finished system. The shape of the answer reveals whether you have done this before the content does.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/151)
+
+### [[round · platform shape] Ten billion documents, fifty milliseconds](https://github.com/akash-coded/nanorag/discussions/152)
+
+How it is scored The two answers that decide it 1 · "The dense leg cannot be stage one at this scale." Most candidates put the vector index first because that is what tutorials do.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/152)
+
+### [[round · research-lab shape] Design the experiment that would falsify this paper](https://github.com/akash-coded/nanorag/discussions/154)
+
+A strong answer, roughly as I would give it: Why this scores We ran this on ourselves #37 measured contextual chunking on this corpus: worse on both quality metrics at 2.4× storage.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/154)
 
 ## Q&A
 
@@ -74,6 +110,24 @@ The numbers, no. The arithmetic and the method, absolutely — and that is the m
 Almost always a stale kernel holding an older nanorag module. Restart the kernel and run all cells from the top. bootstrap() pins the seed but it cannot un-import a module Python already loaded.
 
 [Read the thread →](https://github.com/akash-coded/nanorag/discussions/33)
+
+### [[maths] How small can I make my embeddings before retrieval degrades?](https://github.com/akash-coded/nanorag/discussions/92)
+
+1 · It says nothing about your query. JL preserves distances among the projected points. Retrieval computes a similarity between a query, which was not in the set the projection was chosen for, and the documents.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/92)
+
+### [[maths] My judge agrees with me 94% of the time. Why is that not good enough?](https://github.com/akash-coded/nanorag/discussions/93)
+
+Three things to take from it. 1 · Raw agreement is uninterpretable without the marginals. The full derivation, including why κ has that particular denominator, is in Cohen's κ.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/93)
+
+### [[maths] Should I normalise my embeddings? What actually breaks if I do not?](https://github.com/akash-coded/nanorag/discussions/94)
+
+If you keep magnitude, you are doing MIPS, and MIPS is not a metric space. Inner product fails the requirements outright: q·q = ‖q‖² is neither zero nor minimal, and there is no triangle inequality.
+
+[Read the thread →](https://github.com/akash-coded/nanorag/discussions/94)
 
 ## Reading Club
 
